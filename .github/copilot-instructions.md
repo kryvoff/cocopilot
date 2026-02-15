@@ -79,3 +79,12 @@ The app monitors **one copilot CLI at a time**. If multiple CLIs are running, sh
 3. Read-only & local-only — never write to copilot state or send data online
 4. Observable & testable — agents can verify the app works
 5. Extensible — clean mode system for new visualizations
+
+## Retina / HiDPI Screenshots
+
+This project runs on macOS Retina. When generating screenshots or GIFs:
+- **E2E tests** use `--force-device-scale-factor=1` for deterministic CI screenshots
+- **docs screenshots** (`scripts/capture-screenshots.sh`) render at native 2x on Retina
+- **demo GIF**: downscale 2x PNGs to 1200×768 with `flags=lanczos` for sharpness
+- **Cover images**: generate SVG at 2x target size, convert via `rsvg-convert`
+- Never use low-DPI capture; always verify output dimensions match 2x expectations

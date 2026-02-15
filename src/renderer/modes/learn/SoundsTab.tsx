@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { Howl } from 'howler'
 
 // Import audio files as URLs via Vite
@@ -214,9 +214,26 @@ function SoundsTab(): React.JSX.Element {
   const [vizMode, setVizMode] = useState<VizMode>('waveform')
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [currentHowl, setCurrentHowl] = useState<Howl | null>(null)
+  const [playbackProgress, setPlaybackProgress] = useState(0)
+  const rafRef = useRef<number>(0)
+
+  // Animate playback progress marker
+  useEffect(() => {
+    if (!currentHowl || !playingId) {
+      setPlaybackProgress(0)
+      return
+    }
+    const tick = (): void => {
+      const seek = currentHowl.seek() as number
+      const dur = currentHowl.duration()
+      if (dur > 0) setPlaybackProgress(seek / dur)
+      rafRef.current = requestAnimationFrame(tick)
+    }
+    rafRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [currentHowl, playingId])
 
   const playSound = useCallback((sound: SoundEntry) => {
-    // Stop any currently playing sound
     if (currentHowl) {
       currentHowl.stop()
     }
@@ -284,11 +301,26 @@ function SoundsTab(): React.JSX.Element {
           </div>
           <div style={styles.soundMeta}>{sound.usedFor}</div>
           <div style={styles.techniqueRow}>Synthesis: {sound.technique}</div>
-          <img
-            src={vizMode === 'waveform' ? sound.waveform : sound.spectrogram}
-            alt={`${sound.name} ${vizMode}`}
-            style={styles.vizImage}
-          />
+          <div style={{ position: 'relative' }}>
+            <img
+              src={vizMode === 'waveform' ? sound.waveform : sound.spectrogram}
+              alt={`${sound.name} ${vizMode}`}
+              style={styles.vizImage}
+            />
+            {playingId === sound.id && (
+              <div style={{
+                position: 'absolute',
+                top: 8,
+                bottom: 0,
+                left: `${playbackProgress * 100}%`,
+                width: 2,
+                background: '#4ecca3',
+                boxShadow: '0 0 6px #4ecca3',
+                pointerEvents: 'none',
+                transition: 'left 0.05s linear'
+              }} />
+            )}
+          </div>
         </div>
       ))}
     </div>

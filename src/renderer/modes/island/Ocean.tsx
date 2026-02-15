@@ -21,7 +21,7 @@ function Ocean({ activityLevel = 0.2 }: OceanProps): React.JSX.Element {
     const positions = geometryRef.current.attributes.position
     const arr = positions.array as Float32Array
     const time = clock.elapsedTime
-    const waveHeight = 0.1 + activityLevel * 0.4
+    const waveHeight = 0.2 + activityLevel * 0.5
     const waveSpeed = 0.5 + activityLevel * 1.5
     const count = positions.count
 

@@ -57,10 +57,10 @@ interface ToolObjectsProps {
 function ToolObjects({ activeTool }: ToolObjectsProps): React.JSX.Element {
   return (
     <group>
-      <ToolObject position={[-0.5, 0.35, 0.5]} color="#4A4A4A" shape="box" isActive={isToolInGroup(activeTool, 'edit')} />
-      <ToolObject position={[1.8, 0.35, 0.5]} color="#8B4513" shape="sphere" isActive={isToolInGroup(activeTool, 'bash')} />
-      <ToolObject position={[0.8, 0.35, -0.3]} color="#2196F3" shape="cylinder" isActive={isToolInGroup(activeTool, 'grep')} />
-      <ToolObject position={[0.8, 0.35, 1.8]} color="#4CAF50" shape="cylinder" isActive={isToolInGroup(activeTool, 'web')} />
+      <ToolObject position={[-0.5, 0.65, 0.5]} color="#4A4A4A" shape="box" isActive={isToolInGroup(activeTool, 'edit')} />
+      <ToolObject position={[1.8, 0.65, 0.5]} color="#8B4513" shape="sphere" isActive={isToolInGroup(activeTool, 'bash')} />
+      <ToolObject position={[0.8, 0.65, -0.3]} color="#2196F3" shape="cylinder" isActive={isToolInGroup(activeTool, 'grep')} />
+      <ToolObject position={[0.8, 0.65, 1.8]} color="#4CAF50" shape="cylinder" isActive={isToolInGroup(activeTool, 'web')} />
     </group>
   )
 }

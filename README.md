@@ -67,23 +67,7 @@ A deep underwater world with **Flipper the dolphin** 🐬:
 
 ### 🔊 Sound System
 
-11 procedurally generated sounds — all synthesized via Python, no external audio assets:
-
-| Sound          | Duration | Used For                              |
-|----------------|----------|---------------------------------------|
-| ambient-island | 30s loop | Island mode background (waves + bird) |
-| ambient-ocean  | 16s loop | Ocean mode background (rumble + bubbles) |
-| monkey-call    | 1.5s     | Session start (Island)                |
-| dolphin-call   | 0.8s     | Session start (Ocean)                 |
-| bubble         | 0.2s     | Bubble effects                        |
-| chime          | 1.2s     | User message / notification           |
-| typewriter     | 1.5s     | Edit/create tool execution            |
-| coconut-crack  | 0.8s     | Bash tool execution                   |
-| error          | 0.6s     | Tool execution failure                |
-| success        | 0.8s     | Tool success / turn end               |
-| goodbye        | 2.5s     | Session shutdown                      |
-
-See [`docs/09-sounds.md`](docs/09-sounds.md) for synthesis details, spectrograms, and regeneration instructions.
+11 procedurally generated sounds — all synthesized via Python, no external audio assets. Explore them in the **Sounds** tab (Learn mode) with waveforms, spectrograms, and playback. See [`docs/09-sounds.md`](docs/09-sounds.md) for synthesis details.
 
 ### 🎯 Across All Modes
 

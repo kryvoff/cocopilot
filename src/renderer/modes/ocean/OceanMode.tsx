@@ -8,11 +8,13 @@ import CoralReef from './CoralReef'
 import { useOceanEvents } from './use-ocean-events'
 import { useFlipperStore } from './flipper-state'
 import OceanCreatures from './OceanCreatures'
+import Flipper from './Flipper'
+import FlipperBubble from './FlipperBubble'
 import HudOverlay from '../island/HudOverlay'
 
 function OceanMode(): React.JSX.Element {
-  // Drive flipper state from events (used once Flipper component is added)
   useOceanEvents()
+  const flipperState = useFlipperStore((s) => s.state)
   const activityLevel = useFlipperStore((s) => s.activityLevel)
   const toolActive = useFlipperStore((s) => s.toolActive)
 
@@ -20,7 +22,7 @@ function OceanMode(): React.JSX.Element {
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <Canvas
         shadows
-        camera={{ position: [6, 4, 8], fov: 55, near: 0.1, far: 500 }}
+        camera={{ position: [4, 3, 6], fov: 50, near: 0.1, far: 500 }}
       >
         <color attach="background" args={['#87CEEB']} />
 
@@ -65,8 +67,9 @@ function OceanMode(): React.JSX.Element {
           />
         </mesh>
 
-        {/* Flipper the dolphin — created in separate file */}
-        {/* <Flipper state={flipperState} position={[0, 2, 0]} /> */}
+        {/* Flipper the dolphin */}
+        <Flipper state={flipperState} position={[0, 4, 0]} />
+        <FlipperBubble state={flipperState} toolName={toolActive} position={[0, 4, 0]} />
 
         {/* Controls — allow more vertical movement for underwater exploration */}
         <OrbitControls

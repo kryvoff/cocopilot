@@ -290,9 +290,28 @@
 - [x] Updated YouTube outline with learnings sections and testing demo
 - [x] Fixed README: updated cost estimate (~$10), added docs 12–14 to documentation table
 
+#### Session 22: 3D Scene Polish, Screenshots, Sounds Playback Marker
+- [x] Enabled Flipper (dolphin) in Ocean mode — was commented out, wired up animation states
+- [x] Added FlipperBubble component to Ocean mode
+- [x] Added caustic sunlight shader to OceanFloor (animated GLSL underwater light dappling)
+- [x] Zoomed Ocean camera closer (4,3,6) and Island camera (6,4,6)
+- [x] Raised island higher (base Y 0.1, mound Y 0.45) so it sticks out more from water
+- [x] Increased wave height (base 0.2, was 0.1)
+- [x] Added 5 more clouds to Island (10 total)
+- [x] Bumped all IslandDecorations, ToolObjects, Coco, palm tree Y positions +0.3
+- [x] Regenerated sharp cover images at 2x resolution with "Coco the Copilot for Copilot!" tagline and `copilot --yolo` command
+- [x] Removed sounds table from README (now in-app and docs only)
+- [x] Added playback progress marker to SoundsTab (green vertical line sweeps left-to-right over visualization during playback)
+- [x] Regenerated docs/screenshots/ at Retina 2x resolution (2400×1536)
+- [x] Regenerated demo.gif at 1200×768 with lanczos downscaling
+- [x] Updated E2E visual regression baselines for all 4 modes
+- [x] Added Retina/HiDPI screenshot guidelines to `.github/copilot-instructions.md`
+- [x] All 226 unit tests pass, 11 E2E tests pass, typecheck clean
+
 #### Next Iteration
 - [ ] Record and publish YouTube video
 - [ ] Final manual testing pass on all modes
+- [ ] Commit, push, CI green, v0.7 release
 - [ ] v1.0 release
 
 ---
@@ -307,5 +326,6 @@
 | v0.3    | Ocean Mode (Flipper + underwater world)            | ✅ Released    |
 | v0.4    | Visual regression tests, performance optimization  | ✅ Complete    |
 | v0.5    | UI polish, review, docs, session stats             | ✅ Released    |
-| v0.6    | Palm trees, button UX, releases, dev docs           | ✅ Complete    |
+| v0.6    | Palm trees, button UX, releases, dev docs           | ✅ Released    |
+| v0.7    | 3D polish, dolphin, caustics, sounds marker, covers  | ✅ Complete    |
 | v1.0    | Final MVP — polished, tested, documented           | 📋 Planned     |

@@ -25,7 +25,7 @@ function IslandMode(): React.JSX.Element {
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
       <Canvas
         shadows
-        camera={{ position: [8, 5, 8], fov: 50 }}
+        camera={{ position: [6, 4, 6], fov: 50 }}
       >
         <color attach="background" args={['#87CEEB']} />
 
@@ -53,8 +53,8 @@ function IslandMode(): React.JSX.Element {
         <Ocean activityLevel={activityLevel} />
         <Island />
         <IslandDecorations />
-        <Coco state={cocoState} position={[0.8, 0.55, 0.8]} />
-        <ThoughtBubble state={cocoState} toolName={toolActive} position={[0.8, 0.55, 0.8]} />
+        <Coco state={cocoState} position={[0.8, 0.85, 0.8]} />
+        <ThoughtBubble state={cocoState} toolName={toolActive} position={[0.8, 0.85, 0.8]} />
         <SubAgentMonkeys />
         <EventEffects />
         <ToolObjects activeTool={toolActive} />

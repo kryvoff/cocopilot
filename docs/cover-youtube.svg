@@ -1,11 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" width="2560" height="1440" viewBox="0 0 2560 1440">
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#0a0a2e"/>
       <stop offset="100%" stop-color="#1a1a4e"/>
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
@@ -13,173 +13,154 @@
     </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="1280" height="720" fill="url(#sky)"/>
+  <rect width="2560" height="1440" fill="url(#sky)"/>
 
   <!-- Stars -->
-  <circle cx="50" cy="30" r="2" fill="#fff" opacity="0.6"/>
-  <circle cx="150" cy="80" r="1.5" fill="#fff" opacity="0.4"/>
-  <circle cx="300" cy="45" r="2" fill="#fff" opacity="0.5"/>
-  <circle cx="500" cy="60" r="1.5" fill="#fff" opacity="0.3"/>
-  <circle cx="700" cy="30" r="2" fill="#fff" opacity="0.6"/>
-  <circle cx="900" cy="55" r="1.5" fill="#fff" opacity="0.4"/>
-  <circle cx="1050" cy="40" r="2" fill="#fff" opacity="0.5"/>
-  <circle cx="1200" cy="70" r="1.5" fill="#fff" opacity="0.3"/>
-  <circle cx="200" cy="110" r="1" fill="#fff" opacity="0.3"/>
-  <circle cx="800" cy="90" r="1" fill="#fff" opacity="0.4"/>
-  <circle cx="1100" cy="100" r="1.5" fill="#fff" opacity="0.3"/>
-  <circle cx="400" cy="100" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="100" cy="60" r="4" fill="#fff" opacity="0.6"/>
+  <circle cx="300" cy="160" r="3" fill="#fff" opacity="0.4"/>
+  <circle cx="600" cy="90" r="4" fill="#fff" opacity="0.5"/>
+  <circle cx="1000" cy="120" r="3" fill="#fff" opacity="0.3"/>
+  <circle cx="1400" cy="60" r="4" fill="#fff" opacity="0.6"/>
+  <circle cx="1800" cy="110" r="3" fill="#fff" opacity="0.4"/>
+  <circle cx="2100" cy="80" r="4" fill="#fff" opacity="0.5"/>
+  <circle cx="2400" cy="140" r="3" fill="#fff" opacity="0.3"/>
 
   <!-- Title -->
-  <text x="640" y="90" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="52" font-weight="bold" fill="#ffffff" filter="url(#glow)">
+  <text x="1280" y="140" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="96" font-weight="bold" fill="#ffffff" filter="url(#glow)">
     🐵 Cocopilot
   </text>
-  <text x="640" y="130" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="24" fill="#888">
-    Monitor Your GitHub Copilot CLI Sessions
+  <text x="1280" y="210" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="40" fill="#888">
+    Coco the Copilot for Copilot!
   </text>
 
   <!-- LEFT: Terminal -->
-  <g transform="translate(50, 170)">
-    <rect width="450" height="380" rx="10" fill="#1e1e2e" stroke="#444" stroke-width="2"/>
-    <rect width="450" height="32" rx="10" fill="#2a2a3e"/>
-    <rect y="20" width="450" height="12" fill="#2a2a3e"/>
-    <circle cx="20" cy="16" r="6" fill="#ff5f56"/>
-    <circle cx="38" cy="16" r="6" fill="#ffbd2e"/>
-    <circle cx="56" cy="16" r="6" fill="#27c93f"/>
-    <text x="225" y="21" text-anchor="middle" font-family="monospace" font-size="13" fill="#888">Terminal — copilot</text>
+  <g transform="translate(80, 280)">
+    <rect width="940" height="740" rx="20" fill="#1e1e2e" stroke="#444" stroke-width="4"/>
+    <rect width="940" height="60" rx="20" fill="#2a2a3e"/>
+    <rect y="40" width="940" height="20" fill="#2a2a3e"/>
+    <circle cx="36" cy="30" r="12" fill="#ff5f56"/>
+    <circle cx="72" cy="30" r="12" fill="#ffbd2e"/>
+    <circle cx="108" cy="30" r="12" fill="#27c93f"/>
+    <text x="470" y="38" text-anchor="middle" font-family="'SF Mono', monospace" font-size="24" fill="#888">Terminal — copilot</text>
 
-    <text x="16" y="62" font-family="monospace" font-size="14" fill="#27c93f">❯ copilot --auto-accept</text>
-    <text x="16" y="86" font-family="monospace" font-size="13" fill="#888">Starting session a7011e76...</text>
-    <text x="16" y="110" font-family="monospace" font-size="13" fill="#00ff88">✓ session.start</text>
-    <text x="16" y="134" font-family="monospace" font-size="13" fill="#58a6ff">→ user.message "Build the app"</text>
-    <text x="16" y="158" font-family="monospace" font-size="13" fill="#d4a0ff">⚡ tool.bash npm init</text>
-    <text x="16" y="182" font-family="monospace" font-size="13" fill="#d4a0ff">⚡ tool.edit package.json</text>
-    <text x="16" y="206" font-family="monospace" font-size="13" fill="#ffbd2e">⊕ subagent.started (explore)</text>
-    <text x="16" y="230" font-family="monospace" font-size="13" fill="#d4a0ff">⚡ tool.grep "*.ts"</text>
-    <text x="16" y="254" font-family="monospace" font-size="13" fill="#00ff88">✓ tool.complete (success)</text>
-    <text x="16" y="278" font-family="monospace" font-size="13" fill="#58a6ff">→ assistant.turn_start</text>
-    <text x="16" y="302" font-family="monospace" font-size="13" fill="#d4a0ff">⚡ tool.create src/main.ts</text>
-    <text x="16" y="326" font-family="monospace" font-size="13" fill="#ffbd2e">⊕ subagent.started (task)</text>
-    <text x="16" y="350" font-family="monospace" font-size="13" fill="#888">events.jsonl █████████████</text>
-    <text x="16" y="370" font-family="monospace" font-size="14" fill="#27c93f">❯ </text>
-    <rect x="32" y="358" width="10" height="16" fill="#27c93f" opacity="0.8"/>
+    <text x="32" y="110" font-family="'SF Mono', monospace" font-size="28" font-weight="bold" fill="#27c93f">❯ copilot --yolo</text>
+    <text x="32" y="155" font-family="'SF Mono', monospace" font-size="24" fill="#ffbd2e">⚠ Experimental mode enabled</text>
+    <text x="32" y="195" font-family="'SF Mono', monospace" font-size="24" fill="#ffbd2e">⚠ Autopilot: auto-accept all</text>
+    <text x="32" y="245" font-family="'SF Mono', monospace" font-size="26" fill="#00ff88">✓ session.start</text>
+    <text x="32" y="285" font-family="'SF Mono', monospace" font-size="26" fill="#58a6ff">→ user.message "Build the app"</text>
+    <text x="32" y="325" font-family="'SF Mono', monospace" font-size="26" fill="#d4a0ff">⚡ tool.bash npm install</text>
+    <text x="32" y="365" font-family="'SF Mono', monospace" font-size="26" fill="#d4a0ff">⚡ tool.edit package.json</text>
+    <text x="32" y="405" font-family="'SF Mono', monospace" font-size="26" fill="#ffbd2e">⊕ /fleet — 3 sub-agents spawned</text>
+    <text x="32" y="445" font-family="'SF Mono', monospace" font-size="26" fill="#d4a0ff">⚡ tool.grep "*.tsx"</text>
+    <text x="32" y="485" font-family="'SF Mono', monospace" font-size="26" fill="#00ff88">✓ tool.complete (success)</text>
+    <text x="32" y="525" font-family="'SF Mono', monospace" font-size="26" fill="#58a6ff">→ assistant.turn_start</text>
+    <text x="32" y="565" font-family="'SF Mono', monospace" font-size="26" fill="#d4a0ff">⚡ tool.create src/main.ts</text>
+    <text x="32" y="605" font-family="'SF Mono', monospace" font-size="26" fill="#ffbd2e">⊕ subagent.started (task)</text>
+    <text x="32" y="650" font-family="'SF Mono', monospace" font-size="24" fill="#888">events.jsonl ████████████████████</text>
+    <text x="32" y="700" font-family="'SF Mono', monospace" font-size="28" font-weight="bold" fill="#27c93f">❯ </text>
+    <rect x="68" y="678" width="18" height="28" fill="#27c93f" opacity="0.8"/>
   </g>
 
   <!-- ARROW -->
-  <g transform="translate(520, 340)">
-    <line x1="0" y1="0" x2="130" y2="0" stroke="#00ff88" stroke-width="3" stroke-dasharray="8,5"/>
-    <polygon points="130,-8 148,0 130,8" fill="#00ff88"/>
-    <text x="74" y="-14" text-anchor="middle" font-family="monospace" font-size="12" fill="#00ff88">events.jsonl</text>
-    <text x="74" y="22" text-anchor="middle" font-family="monospace" font-size="11" fill="#666">real-time monitoring</text>
+  <g transform="translate(1060, 620)">
+    <line x1="0" y1="0" x2="260" y2="0" stroke="#00ff88" stroke-width="5" stroke-dasharray="14,10"/>
+    <polygon points="260,-14 296,0 260,14" fill="#00ff88"/>
+    <text x="148" y="-24" text-anchor="middle" font-family="'SF Mono', monospace" font-size="24" fill="#00ff88">events.jsonl</text>
+    <text x="148" y="36" text-anchor="middle" font-family="'SF Mono', monospace" font-size="20" fill="#666">real-time monitoring</text>
   </g>
 
-  <!-- RIGHT: App with 4 mode previews -->
-  <g transform="translate(690, 170)">
-    <rect width="540" height="380" rx="10" fill="#12122a" stroke="#444" stroke-width="2"/>
-    <rect width="540" height="32" rx="10" fill="#2a2a3e"/>
-    <rect y="20" width="540" height="12" fill="#2a2a3e"/>
-    <circle cx="20" cy="16" r="6" fill="#ff5f56"/>
-    <circle cx="38" cy="16" r="6" fill="#ffbd2e"/>
-    <circle cx="56" cy="16" r="6" fill="#27c93f"/>
-    <text x="270" y="21" text-anchor="middle" font-family="monospace" font-size="13" fill="#888">🐵 Cocopilot</text>
+  <!-- RIGHT: App -->
+  <g transform="translate(1400, 280)">
+    <rect width="1080" height="740" rx="20" fill="#12122a" stroke="#444" stroke-width="4"/>
+    <rect width="1080" height="60" rx="20" fill="#2a2a3e"/>
+    <rect y="40" width="1080" height="20" fill="#2a2a3e"/>
+    <circle cx="36" cy="30" r="12" fill="#ff5f56"/>
+    <circle cx="72" cy="30" r="12" fill="#ffbd2e"/>
+    <circle cx="108" cy="30" r="12" fill="#27c93f"/>
+    <text x="540" y="38" text-anchor="middle" font-family="'SF Mono', monospace" font-size="24" fill="#888">🐵 Cocopilot</text>
 
     <!-- 2x2 grid -->
     <!-- Vanilla -->
-    <g transform="translate(12, 42)">
-      <rect width="248" height="155" rx="6" fill="#1a1a2e" stroke="#333" stroke-width="1"/>
-      <text x="124" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#ccc">📊 Vanilla Dashboard</text>
-      <!-- Stats -->
-      <rect x="8" y="28" width="52" height="26" rx="3" fill="#1e2a3a"/>
-      <text x="34" y="46" text-anchor="middle" font-family="monospace" font-size="11" fill="#58a6ff">1,296</text>
-      <rect x="66" y="28" width="52" height="26" rx="3" fill="#1e2a3a"/>
-      <text x="92" y="46" text-anchor="middle" font-family="monospace" font-size="11" fill="#00ff88">342</text>
-      <rect x="124" y="28" width="52" height="26" rx="3" fill="#1e2a3a"/>
-      <text x="150" y="46" text-anchor="middle" font-family="monospace" font-size="11" fill="#d4a0ff">89</text>
-      <rect x="182" y="28" width="52" height="26" rx="3" fill="#1e2a3a"/>
-      <text x="208" y="46" text-anchor="middle" font-family="monospace" font-size="11" fill="#ffbd2e">12</text>
-      <!-- Chart -->
-      <polyline points="10,130 40,110 70,120 100,95 130,105 160,85 190,90 220,72 238,78"
-                fill="none" stroke="#00ff88" stroke-width="2" opacity="0.7"/>
-      <line x1="8" y1="140" x2="240" y2="140" stroke="#333" stroke-width="1"/>
+    <g transform="translate(20, 76)">
+      <rect width="504" height="300" rx="12" fill="#1a1a2e" stroke="#333" stroke-width="2"/>
+      <text x="252" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#ccc">📊 Vanilla Dashboard</text>
+      <rect x="16" y="48" width="104" height="48" rx="6" fill="#1e2a3a"/>
+      <text x="68" y="80" text-anchor="middle" font-family="'SF Mono', monospace" font-size="20" fill="#58a6ff">1,296</text>
+      <rect x="128" y="48" width="104" height="48" rx="6" fill="#1e2a3a"/>
+      <text x="180" y="80" text-anchor="middle" font-family="'SF Mono', monospace" font-size="20" fill="#00ff88">342</text>
+      <rect x="240" y="48" width="104" height="48" rx="6" fill="#1e2a3a"/>
+      <text x="292" y="80" text-anchor="middle" font-family="'SF Mono', monospace" font-size="20" fill="#d4a0ff">89</text>
+      <rect x="352" y="48" width="104" height="48" rx="6" fill="#1e2a3a"/>
+      <text x="404" y="80" text-anchor="middle" font-family="'SF Mono', monospace" font-size="20" fill="#ffbd2e">12</text>
+      <polyline points="20,260 70,230 120,245 170,200 220,215 270,185 320,195 370,165 420,175 470,160 488,165"
+                fill="none" stroke="#00ff88" stroke-width="4" opacity="0.7"/>
+      <line x1="16" y1="280" x2="490" y2="280" stroke="#333" stroke-width="2"/>
     </g>
 
     <!-- Island -->
-    <g transform="translate(272, 42)">
-      <rect width="248" height="155" rx="6" fill="#1a3a2a" stroke="#333" stroke-width="1"/>
-      <text x="124" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#ccc">🏝️ Island Mode</text>
-      <!-- Water -->
-      <rect x="0" y="105" width="248" height="50" rx="0" fill="#0a4a6a" opacity="0.5"/>
-      <!-- Island -->
-      <ellipse cx="124" cy="108" rx="70" ry="16" fill="#c2a060"/>
-      <!-- Palm tree -->
-      <line x1="105" y1="108" x2="105" y2="55" stroke="#8B4513" stroke-width="4"/>
-      <ellipse cx="118" cy="48" rx="26" ry="10" fill="#228B22" transform="rotate(-15, 118, 48)"/>
-      <ellipse cx="92" cy="52" rx="24" ry="9" fill="#2d9e2d" transform="rotate(15, 92, 52)"/>
-      <!-- Monkey -->
-      <circle cx="140" cy="95" r="11" fill="#8B6914"/>
-      <circle cx="140" cy="85" r="8" fill="#a0792a"/>
-      <circle cx="137" cy="83" r="2" fill="#333"/>
-      <circle cx="143" cy="83" r="2" fill="#333"/>
-      <path d="M136,87 Q140,91 144,87" fill="none" stroke="#333" stroke-width="1"/>
+    <g transform="translate(540, 76)">
+      <rect width="504" height="300" rx="12" fill="#1a3a2a" stroke="#333" stroke-width="2"/>
+      <text x="252" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#ccc">🏝️ Island Mode</text>
+      <rect x="0" y="200" width="504" height="100" rx="0" fill="#0a4a6a" opacity="0.5"/>
+      <ellipse cx="252" cy="205" rx="140" ry="30" fill="#c2a060"/>
+      <line x1="215" y1="205" x2="215" y2="100" stroke="#8B4513" stroke-width="8"/>
+      <ellipse cx="240" cy="90" rx="46" ry="18" fill="#228B22" transform="rotate(-15, 240, 90)"/>
+      <ellipse cx="190" cy="96" rx="42" ry="16" fill="#2d9e2d" transform="rotate(15, 190, 96)"/>
+      <circle cx="290" cy="186" r="20" fill="#8B6914"/>
+      <circle cx="290" cy="168" r="15" fill="#a0792a"/>
+      <circle cx="285" cy="165" r="4" fill="#333"/>
+      <circle cx="295" cy="165" r="4" fill="#333"/>
+      <path d="M283,172 Q290,178 297,172" fill="none" stroke="#333" stroke-width="2"/>
     </g>
 
     <!-- Learn -->
-    <g transform="translate(12, 207)">
-      <rect width="248" height="155" rx="6" fill="#1a1a3a" stroke="#333" stroke-width="1"/>
-      <text x="124" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#ccc">📚 Learn Mode</text>
-      <!-- Tabs -->
-      <rect x="8" y="26" width="40" height="14" rx="2" fill="#2a2a5a"/>
-      <rect x="52" y="26" width="40" height="14" rx="2" fill="#2a2a4a"/>
-      <rect x="96" y="26" width="40" height="14" rx="2" fill="#2a2a4a"/>
-      <rect x="140" y="26" width="40" height="14" rx="2" fill="#2a2a4a"/>
-      <rect x="184" y="26" width="40" height="14" rx="2" fill="#2a2a4a"/>
-      <!-- Content -->
-      <rect x="8" y="50" width="160" height="7" rx="2" fill="#333"/>
-      <rect x="8" y="63" width="120" height="7" rx="2" fill="#333"/>
-      <rect x="8" y="76" width="180" height="7" rx="2" fill="#333"/>
-      <rect x="8" y="89" width="140" height="7" rx="2" fill="#333"/>
-      <!-- Waveform -->
-      <polyline points="8,130 25,122 40,138 55,115 70,142 85,112 100,135 115,118 130,128 145,120 160,132 175,122 190,128"
-                fill="none" stroke="#58a6ff" stroke-width="1.5" opacity="0.6"/>
+    <g transform="translate(20, 392)">
+      <rect width="504" height="300" rx="12" fill="#1a1a3a" stroke="#333" stroke-width="2"/>
+      <text x="252" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#ccc">📚 Learn Mode</text>
+      <rect x="16" y="48" width="82" height="28" rx="4" fill="#2a2a5a"/>
+      <rect x="104" y="48" width="82" height="28" rx="4" fill="#2a2a4a"/>
+      <rect x="192" y="48" width="82" height="28" rx="4" fill="#2a2a4a"/>
+      <rect x="280" y="48" width="82" height="28" rx="4" fill="#2a2a4a"/>
+      <rect x="368" y="48" width="82" height="28" rx="4" fill="#2a2a4a"/>
+      <rect x="16" y="92" width="320" height="14" rx="4" fill="#333"/>
+      <rect x="16" y="114" width="240" height="14" rx="4" fill="#333"/>
+      <rect x="16" y="136" width="380" height="14" rx="4" fill="#333"/>
+      <rect x="16" y="158" width="280" height="14" rx="4" fill="#333"/>
+      <polyline points="16,260 48,248 72,270 96,235 120,275 144,228 168,262 192,240 216,252 240,245 264,258 288,248 312,255"
+                fill="none" stroke="#58a6ff" stroke-width="3" opacity="0.6"/>
     </g>
 
     <!-- Ocean -->
-    <g transform="translate(272, 207)">
-      <rect width="248" height="155" rx="6" fill="#0a1a3a" stroke="#333" stroke-width="1"/>
-      <text x="124" y="18" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#ccc">🌊 Ocean Mode</text>
-      <!-- Water -->
-      <rect x="0" y="26" width="248" height="129" rx="0" fill="#0a2a5a" opacity="0.3"/>
-      <!-- Sun rays -->
-      <line x1="124" y1="26" x2="50" y2="150" stroke="#ffdd44" stroke-width="1" opacity="0.12"/>
-      <line x1="124" y1="26" x2="200" y2="150" stroke="#ffdd44" stroke-width="1" opacity="0.12"/>
-      <line x1="124" y1="26" x2="124" y2="150" stroke="#ffdd44" stroke-width="1" opacity="0.15"/>
+    <g transform="translate(540, 392)">
+      <rect width="504" height="300" rx="12" fill="#0a1a3a" stroke="#333" stroke-width="2"/>
+      <text x="252" y="32" text-anchor="middle" font-family="system-ui, sans-serif" font-size="24" fill="#ccc">🌊 Ocean Mode</text>
+      <rect x="0" y="45" width="504" height="255" rx="0" fill="#0a2a5a" opacity="0.3"/>
+      <line x1="252" y1="45" x2="100" y2="290" stroke="#ffdd44" stroke-width="2" opacity="0.12"/>
+      <line x1="252" y1="45" x2="400" y2="290" stroke="#ffdd44" stroke-width="2" opacity="0.12"/>
+      <line x1="252" y1="45" x2="252" y2="290" stroke="#ffdd44" stroke-width="2" opacity="0.15"/>
       <!-- Dolphin -->
-      <path d="M70,85 Q90,70 120,78 Q135,82 145,75 Q138,85 120,87 Q90,93 70,85Z" fill="#6090c0"/>
-      <circle cx="85" cy="80" r="2" fill="#333"/>
-      <!-- Coral -->
-      <path d="M35,140 Q42,115 35,125 Q48,108 40,120 Q55,110 48,135" fill="none" stroke="#ff6090" stroke-width="2" opacity="0.6"/>
-      <path d="M190,145 Q198,120 190,132 Q205,112 198,128" fill="none" stroke="#ff9060" stroke-width="2" opacity="0.6"/>
-      <!-- Bubbles -->
-      <circle cx="110" cy="60" r="3" fill="none" stroke="#88ccff" stroke-width="0.7" opacity="0.4"/>
-      <circle cx="135" cy="50" r="2" fill="none" stroke="#88ccff" stroke-width="0.7" opacity="0.3"/>
-      <circle cx="120" cy="40" r="1.5" fill="none" stroke="#88ccff" stroke-width="0.7" opacity="0.3"/>
+      <path d="M140,160 Q180,135 240,150 Q270,156 290,145 Q278,160 240,165 Q180,175 140,160Z" fill="#6090c0"/>
+      <circle cx="165" cy="152" r="4" fill="#333"/>
+      <path d="M215,148 L220,122 L230,146" fill="#4a7a8d"/>
+      <path d="M70,270 Q85,235 70,250 Q95,220 82,240 Q108,225 95,260" fill="none" stroke="#ff6090" stroke-width="4" opacity="0.6"/>
+      <path d="M380,275 Q395,240 380,255 Q410,225 398,245" fill="none" stroke="#ff9060" stroke-width="4" opacity="0.6"/>
+      <circle cx="220" cy="115" r="6" fill="none" stroke="#88ccff" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="260" cy="100" r="4" fill="none" stroke="#88ccff" stroke-width="1.5" opacity="0.3"/>
     </g>
 
-    <!-- Status bar -->
-    <rect x="0" y="370" width="540" height="10" rx="0" fill="#1a1a2e"/>
+    <rect x="0" y="728" width="1080" height="12" fill="#1a1a2e"/>
   </g>
 
   <!-- Bottom text -->
-  <text x="640" y="610" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="28" font-weight="bold" fill="#00ff88" filter="url(#glow)">
+  <text x="1280" y="1140" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="52" font-weight="bold" fill="#00ff88" filter="url(#glow)">
     Built in One Day · 100% by Copilot CLI · Zero Human Code
   </text>
-  <text x="640" y="650" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="18" fill="#888">
+  <text x="1280" y="1200" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="32" fill="#888">
     226 tests · 4 visual modes · 3D scenes · procedural audio · Claude Opus 4.6
   </text>
 
-  <!-- GitHub badge -->
-  <g transform="translate(540, 670)">
-    <rect width="200" height="28" rx="14" fill="#333" stroke="#555" stroke-width="1"/>
-    <text x="100" y="19" text-anchor="middle" font-family="monospace" font-size="12" fill="#fff">github.com/kryvoff/cocopilot</text>
+  <g transform="translate(1080, 1260)">
+    <rect width="400" height="56" rx="28" fill="#333" stroke="#555" stroke-width="2"/>
+    <text x="200" y="38" text-anchor="middle" font-family="'SF Mono', monospace" font-size="24" fill="#fff">github.com/kryvoff/cocopilot</text>
   </g>
 </svg>

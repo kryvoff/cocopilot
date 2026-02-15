@@ -22,9 +22,9 @@ const emberMat = new THREE.MeshStandardMaterial({ color: '#8b2500', emissive: '#
 function Rocks(): React.JSX.Element {
   return (
     <group>
-      <mesh position={[1.8, 0.15, 1.2]} scale={[0.25, 0.15, 0.2]} castShadow geometry={rockGeo} material={rockMat1} />
-      <mesh position={[-1.5, 0.12, 1.6]} scale={[0.18, 0.1, 0.15]} castShadow geometry={rockGeo} material={rockMat2} />
-      <mesh position={[0.3, 0.1, -2.0]} scale={[0.3, 0.12, 0.22]} castShadow geometry={rockGeo} material={rockMat3} />
+      <mesh position={[1.8, 0.45, 1.2]} scale={[0.25, 0.15, 0.2]} castShadow geometry={rockGeo} material={rockMat1} />
+      <mesh position={[-1.5, 0.42, 1.6]} scale={[0.18, 0.1, 0.15]} castShadow geometry={rockGeo} material={rockMat2} />
+      <mesh position={[0.3, 0.40, -2.0]} scale={[0.3, 0.12, 0.22]} castShadow geometry={rockGeo} material={rockMat3} />
     </group>
   )
 }
@@ -34,11 +34,11 @@ function Shells(): React.JSX.Element {
   return (
     <group>
       {/* Shell 1 — spiral shape approximated as a small cone */}
-      <mesh position={[2.5, 0.02, 0.3]} rotation={[Math.PI / 2, 0, 0.4]} scale={0.08} geometry={shellGeo1} material={shellMat1} />
+      <mesh position={[2.5, 0.32, 0.3]} rotation={[Math.PI / 2, 0, 0.4]} scale={0.08} geometry={shellGeo1} material={shellMat1} />
       {/* Shell 2 */}
-      <mesh position={[-2.2, 0.02, -0.8]} rotation={[Math.PI / 2, 0, -0.6]} scale={0.06} geometry={shellGeo2} material={shellMat2} />
+      <mesh position={[-2.2, 0.32, -0.8]} rotation={[Math.PI / 2, 0, -0.6]} scale={0.06} geometry={shellGeo2} material={shellMat2} />
       {/* Starfish — flat star approximated as a flattened dodecahedron */}
-      <mesh position={[1.0, 0.02, 2.3]} scale={[0.12, 0.02, 0.12]} geometry={starfishGeo} material={starfishMat} />
+      <mesh position={[1.0, 0.32, 2.3]} scale={[0.12, 0.02, 0.12]} geometry={starfishGeo} material={starfishMat} />
     </group>
   )
 }
@@ -49,12 +49,12 @@ function Campfire(): React.JSX.Element {
   const radius = 0.25
 
   return (
-    <group position={[-0.6, 0.3, 1.2]}>
+    <group position={[-0.6, 0.60, 1.2]}>
       {/* Stone ring */}
       {stoneAngles.map((angle, i) => (
         <mesh
           key={i}
-          position={[Math.cos(angle) * radius, 0, Math.sin(angle) * radius]}
+          position={[Math.cos(angle) * radius, 0.30, Math.sin(angle) * radius]}
           scale={[0.07, 0.05, 0.07]}
           castShadow
           geometry={stoneGeo}
@@ -63,14 +63,14 @@ function Campfire(): React.JSX.Element {
       ))}
       {/* Warm glow */}
       <pointLight
-        position={[0, 0.1, 0]}
+        position={[0, 0.40, 0]}
         color="#ff8c42"
         intensity={0.6}
         distance={3}
         decay={2}
       />
       {/* Tiny ember pile */}
-      <mesh position={[0, 0.02, 0]} scale={[0.12, 0.04, 0.12]} geometry={stoneGeo} material={emberMat} />
+      <mesh position={[0, 0.32, 0]} scale={[0.12, 0.04, 0.12]} geometry={stoneGeo} material={emberMat} />
     </group>
   )
 }

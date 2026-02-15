@@ -13,6 +13,38 @@ const oceanRockGeo = new THREE.SphereGeometry(1, 4, 4)
 const shellGeo = new THREE.TorusGeometry(0.12, 0.03, 6, 8)
 const starfishGeo = new THREE.CircleGeometry(0.15, 5)
 
+// Caustic light shader for underwater sunlight patterns on the floor
+const causticVertexShader = `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`
+
+const causticFragmentShader = `
+  uniform float time;
+  varying vec2 vUv;
+
+  float caustic(vec2 p, float t) {
+    float v = 0.0;
+    v += sin(p.x * 3.0 + t * 0.8) * 0.5;
+    v += sin(p.y * 3.0 + t * 0.6) * 0.5;
+    v += sin((p.x + p.y) * 2.5 + t * 0.4) * 0.3;
+    v += sin(length(p) * 4.0 - t * 0.5) * 0.2;
+    v += sin(p.x * 5.0 - p.y * 3.0 + t * 0.7) * 0.15;
+    return clamp(v * 0.5 + 0.5, 0.0, 1.0);
+  }
+
+  void main() {
+    vec2 uv = (vUv - 0.5) * 12.0;
+    float c = caustic(uv, time);
+    c = pow(c, 2.0);
+    vec3 color = mix(vec3(0.2, 0.5, 0.7), vec3(0.9, 0.95, 1.0), c);
+    gl_FragColor = vec4(color, c * 0.25);
+  }
+`
+
 /** Tall seaweed strand with sine-wave sway */
 function Seaweed({
   position,
@@ -55,6 +87,14 @@ function Seaweed({
 
 function OceanFloor(): React.JSX.Element {
   const geometryRef = useRef<THREE.PlaneGeometry>(null)
+  const causticRef = useRef<THREE.ShaderMaterial>(null)
+
+  // Animate caustics
+  useFrame(({ clock }) => {
+    if (causticRef.current) {
+      causticRef.current.uniforms.time.value = clock.elapsedTime
+    }
+  })
 
   // Apply subtle bumps to the sand floor
   const originalPositions = useMemo(() => {
@@ -135,6 +175,20 @@ function OceanFloor(): React.JSX.Element {
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]} receiveShadow>
         <planeGeometry ref={geometryRef} args={[60, 60, 48, 48]} />
         <meshStandardMaterial color="#c2a86e" flatShading roughness={1.0} metalness={0} />
+      </mesh>
+
+      {/* Caustic sunlight patterns on the floor */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+        <planeGeometry args={[40, 40]} />
+        <shaderMaterial
+          ref={causticRef}
+          vertexShader={causticVertexShader}
+          fragmentShader={causticFragmentShader}
+          uniforms={{ time: { value: 0 } }}
+          transparent
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
       </mesh>
 
       {/* Depth variation overlay */}
