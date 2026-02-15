@@ -9,7 +9,10 @@ import ToolObjects from './ToolObjects'
 import HudOverlay from './HudOverlay'
 import DebugPanel from './DebugPanel'
 import SkyDome from './SkyDome'
+import Clouds from './Clouds'
+import IslandDecorations from './IslandDecorations'
 import { useIslandEvents } from './use-island-events'
+import ThoughtBubble from './ThoughtBubble'
 import EventEffects from './EventEffects'
 import { useCocoStore } from './coco-state'
 
@@ -44,11 +47,14 @@ function IslandMode(): React.JSX.Element {
 
         {/* Sky */}
         <SkyDome />
+        <Clouds />
 
         {/* Scene objects */}
         <Ocean activityLevel={activityLevel} />
         <Island />
+        <IslandDecorations />
         <Coco state={cocoState} position={[0.8, 0.55, 0.8]} />
+        <ThoughtBubble state={cocoState} toolName={toolActive} position={[0.8, 0.55, 0.8]} />
         <SubAgentMonkeys />
         <EventEffects />
         <ToolObjects activeTool={toolActive} />

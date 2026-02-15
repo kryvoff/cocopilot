@@ -47,10 +47,15 @@ function SkyDome(): React.JSX.Element {
         />
       </mesh>
 
-      {/* Sun */}
+      {/* Sun with glow */}
       <mesh position={[100, 100, 50]}>
-        <sphereGeometry args={[8, 16, 16]} />
-        <meshBasicMaterial color="#FFF176" />
+        <sphereGeometry args={[10, 16, 16]} />
+        <meshStandardMaterial color="#FFF176" emissive="#FFF176" emissiveIntensity={0.8} />
+      </mesh>
+      {/* Outer glow halo */}
+      <mesh position={[100, 100, 50]}>
+        <sphereGeometry args={[14, 16, 16]} />
+        <meshBasicMaterial color="#FFF9C4" transparent opacity={0.15} />
       </mesh>
     </group>
   )

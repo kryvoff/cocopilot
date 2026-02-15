@@ -1,0 +1,99 @@
+import React, { useState, useEffect } from 'react'
+import { Html } from '@react-three/drei'
+import type { CocoState } from './Coco'
+
+interface ThoughtBubbleProps {
+  state: CocoState
+  toolName: string | null
+  position: [number, number, number]
+}
+
+function getBubbleText(state: CocoState, toolName: string | null): string | null {
+  switch (state) {
+    case 'hidden':
+      return null
+    case 'entering':
+      return '🏝️ Hello!'
+    case 'idle':
+      return null
+    case 'thinking':
+      return '🤔 Thinking...'
+    case 'working': {
+      if (toolName === 'edit' || toolName === 'create') return '✏️ Editing...'
+      if (toolName === 'bash') return '🔨 Running...'
+      if (toolName === 'grep' || toolName === 'glob') return '🔍 Searching...'
+      if (toolName === 'view') return '👁️ Reading...'
+      if (toolName === 'task') return '🐒 Dispatching...'
+      return '⚙️ Working...'
+    }
+    case 'startled':
+      return '😱 Error!'
+    case 'waving':
+      return '👋 Goodbye!'
+    default:
+      return null
+  }
+}
+
+const bubbleStyle: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.92)',
+  borderRadius: 12,
+  padding: '6px 12px',
+  fontSize: 13,
+  color: '#1a1a1a',
+  fontFamily: 'system-ui, sans-serif',
+  maxWidth: 150,
+  textAlign: 'center',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+  position: 'relative',
+  whiteSpace: 'nowrap',
+  pointerEvents: 'none' as const,
+  userSelect: 'none' as const,
+  transition: 'opacity 0.3s ease',
+}
+
+const tailStyle: React.CSSProperties = {
+  position: 'absolute',
+  bottom: -8,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: 0,
+  height: 0,
+  borderLeft: '8px solid transparent',
+  borderRight: '8px solid transparent',
+  borderTop: '8px solid rgba(255, 255, 255, 0.92)',
+}
+
+function ThoughtBubble({ state, toolName, position }: ThoughtBubbleProps): React.JSX.Element | null {
+  const text = getBubbleText(state, toolName)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (text) {
+      setVisible(true)
+      return
+    }
+    // Brief delay before hiding so CSS transition can play
+    const timer = setTimeout(() => setVisible(false), 300)
+    return () => clearTimeout(timer)
+  }, [text])
+
+  if (!visible && !text) return null
+
+  return (
+    <Html
+      position={[position[0], position[1] + 2, position[2]]}
+      center
+      zIndexRange={[10, 0]}
+      style={{ pointerEvents: 'none' }}
+    >
+      <div style={{ ...bubbleStyle, opacity: text ? 1 : 0 }}>
+        {text}
+        <div style={tailStyle} />
+      </div>
+    </Html>
+  )
+}
+
+export default ThoughtBubble
+export { getBubbleText }

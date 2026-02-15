@@ -6,9 +6,10 @@ interface PalmTreeProps {
   position: [number, number, number]
   height?: number
   lean?: number
+  scale?: number
 }
 
-function PalmTree({ position, height = 3, lean = 0.3 }: PalmTreeProps): React.JSX.Element {
+function PalmTree({ position, height = 3, lean = 0.3, scale = 1 }: PalmTreeProps): React.JSX.Element {
   const leavesRef = useRef<THREE.Group>(null)
 
   // Gentle sway animation
@@ -29,7 +30,7 @@ function PalmTree({ position, height = 3, lean = 0.3 }: PalmTreeProps): React.JS
   )
 
   return (
-    <group position={position}>
+    <group position={position} scale={scale}>
       {/* Trunk — tapered cylinder leaning slightly */}
       <group rotation={[lean * 0.3, 0, lean]}>
         <mesh position={[0, height / 2, 0]} castShadow>

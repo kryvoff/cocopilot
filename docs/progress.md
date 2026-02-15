@@ -168,13 +168,19 @@
 - [x] Ocean waves respond to copilot activity: calm when idle, stormy when busy
 - [x] 131 tests pass, typecheck clean, build succeeds
 
+#### Session 13: Island Visual Polish
+- [x] Added drifting clouds (5 cloud groups at varying heights, semi-transparent white spheres, slow X-axis drift with wraparound)
+- [x] Added island decorations: scattered rocks, beach shells/starfish, campfire with warm point light glow
+- [x] Improved palm tree variety: added `scale` prop for height variation, updated instances with different scales and lean angles
+- [x] Enhanced sun: larger sphere with emissive glow + outer transparent halo
+- [x] 131 tests pass, typecheck clean, build succeeds
+
 #### Next Iteration
 - [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
 - [ ] Add thought/speech bubbles above Coco
-- [ ] Improve palm tree variety and add vegetation
+- [ ] Begin Learn Mode (v0.2.5)
 
 #### Later
-- [ ] Begin Learn Mode (v0.2.5)
 - [ ] Ocean Mode (v0.3)
 
 ---
