@@ -1,0 +1,6 @@
+this is not json
+{"type":"session.start","id":"evt-201","timestamp":"2026-02-15T10:00:00.000Z","parentId":null,"data":{"sessionId":"test-session-3","copilotVersion":"0.0.410"}}
+{"totally_wrong": true}
+{"type":"future.new_event","id":"evt-202","timestamp":"2026-02-15T10:00:01.000Z","parentId":null,"data":{"someNewField":"hello"}}
+
+{"type":"user.message","id":"evt-203","timestamp":"2026-02-15T10:00:02.000Z","parentId":"evt-201","data":{"content":"test","agentMode":"interactive","brandNewField":"surprise"}}

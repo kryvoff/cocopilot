@@ -1,0 +1,10 @@
+{"type":"session.start","id":"evt-101","timestamp":"2026-02-15T09:00:00.000Z","parentId":null,"data":{"sessionId":"test-session-2","copilotVersion":"0.0.420","startTime":1739610000000,"context":{"cwd":"/Users/test/project2","gitRoot":"/Users/test/project2","repository":"test/project2","branch":"feature"}}}
+{"type":"user.message","id":"evt-102","timestamp":"2026-02-15T09:00:05.000Z","parentId":"evt-101","data":{"content":"Refactor auth module","agentMode":"autopilot"}}
+{"type":"assistant.turn_start","id":"evt-103","timestamp":"2026-02-15T09:00:06.000Z","parentId":"evt-101","data":{"turnId":"turn-1"}}
+{"type":"subagent.started","id":"evt-104","timestamp":"2026-02-15T09:00:07.000Z","parentId":"evt-103","data":{"toolCallId":"tc-1","agentName":"task","agentDisplayName":"Task Agent","agentDescription":"Handles sub-tasks"}}
+{"type":"tool.execution_start","id":"evt-105","timestamp":"2026-02-15T09:00:08.000Z","parentId":"evt-103","data":{"toolCallId":"tc-2","toolName":"bash","arguments":{"command":"npm test"}}}
+{"type":"tool.execution_complete","id":"evt-106","timestamp":"2026-02-15T09:00:15.000Z","parentId":"evt-103","data":{"toolCallId":"tc-2","success":true,"result":"All tests passed"}}
+{"type":"tool.execution_start","id":"evt-107","timestamp":"2026-02-15T09:00:16.000Z","parentId":"evt-103","data":{"toolCallId":"tc-3","toolName":"edit","arguments":{"path":"src/auth.ts"}}}
+{"type":"tool.execution_complete","id":"evt-108","timestamp":"2026-02-15T09:00:17.000Z","parentId":"evt-103","data":{"toolCallId":"tc-3","success":false,"error":"Permission denied"}}
+{"type":"session.error","id":"evt-109","timestamp":"2026-02-15T09:00:18.000Z","parentId":"evt-101","data":{"errorType":"TOOL_ERROR","message":"Tool execution failed"}}
+{"type":"subagent.completed","id":"evt-110","timestamp":"2026-02-15T09:00:20.000Z","parentId":"evt-103","data":{"toolCallId":"tc-1","agentName":"task","agentDisplayName":"Task Agent"}}

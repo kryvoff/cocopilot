@@ -1,0 +1,31 @@
+appId: com.cocopilot.app
+productName: Cocopilot
+directories:
+  buildResources: resources
+  output: dist
+files:
+  - out/**/*
+  - '!external/**'
+  - '!docs/**'
+  - '!test/**'
+asar: true
+asarUnpack:
+  - '**/*.node'
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch:
+        - universal
+linux:
+  target:
+    - target: AppImage
+      arch:
+        - x64
+  category: Development
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+npmRebuild: true

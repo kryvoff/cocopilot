@@ -1,6 +1,12 @@
 # External reference repos (cloned for development research)
 external/
 
+# Electron-vite build output
+out/
+
+# Electron-builder output
+dist/
+
 # Logs
 logs
 *.log
