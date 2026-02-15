@@ -4,6 +4,22 @@
 
 Every change must be verifiable by automated tests AND by coding agents inspecting the running app. This is critical for iterative development with Copilot CLI, autopilot, and fleet.
 
+## Testing Priority Order
+
+Tests are prioritized by speed, reliability, and development phase:
+
+1. **Unit tests (Vitest)** — fast, deterministic, run first and most often
+2. **Integration tests (Vitest)** — IPC, SQLite, file watcher + parser chains
+3. **Debug server API tests** — `curl` against `localhost:9876` for agent verification
+4. **E2E functional tests (Playwright)** — app launches, mode switching, monitoring works
+5. **Visual regression (Playwright)** — screenshot baselines, added last when UI stabilizes
+
+Visual regression testing is deferred until the UI is stable. When added:
+- Start with one canonical environment (Linux + Chromium in CI)
+- Use `toHaveScreenshot()` with generous tolerance (1-2%)
+- Add per-OS baselines only after UI stabilizes
+- Keep screenshot test count small — most verification is text/API-based
+
 ## Testing Pyramid
 
 ```

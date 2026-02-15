@@ -208,6 +208,110 @@ interface DailySummary {
 }
 ```
 
+## Schema Resilience & CLI Evolution
+
+The Copilot CLI is evolving rapidly (beta software). Our parsing must be robust against:
+- New event types we haven't seen before
+- Changed/removed fields in existing event types
+- New fields added to existing events
+- Changes to the `events.jsonl` format
+
+### Strategy: Defensive Parsing with Zod
+
+Use **Zod** for runtime schema validation with `safeParse`:
+
+```typescript
+import { z } from 'zod';
+
+// Base event envelope — always required
+const BaseEventSchema = z.object({
+  type: z.string(),
+  id: z.string(),
+  timestamp: z.string(),
+  parentId: z.string().nullable().optional(),
+  ephemeral: z.boolean().optional(),
+  data: z.record(z.unknown()).optional().default({}),
+});
+
+// Known event types get specific schemas (validated, typed)
+const SessionStartDataSchema = z.object({
+  sessionId: z.string().optional(),
+  copilotVersion: z.string().optional(),
+  startTime: z.number().optional(),
+  context: z.object({
+    cwd: z.string().optional(),
+    gitRoot: z.string().optional(),
+    repository: z.string().optional(),
+    branch: z.string().optional(),
+  }).optional(),
+}).passthrough(); // Allow unknown extra fields
+
+// Parsing strategy:
+// 1. Parse base envelope (must succeed)
+// 2. If type is known, parse data with specific schema
+// 3. If type is unknown, store raw data + log warning
+// 4. Never crash — always store the event
+function parseEvent(line: string): ParsedEvent | null {
+  const json = JSON.parse(line); // wrapped in try/catch
+  const base = BaseEventSchema.safeParse(json);
+  if (!base.success) {
+    logger.warn('Unparseable event line', { errors: base.error });
+    return null;
+  }
+  const schema = knownSchemas.get(base.data.type);
+  if (!schema) {
+    logger.warn('Unknown event type', { type: base.data.type });
+    schemaTracker.recordUnknownType(base.data.type);
+  }
+  return { ...base.data, validated: !!schema };
+}
+```
+
+### Schema Drift Detection
+
+Track and surface schema changes to the user:
+
+```typescript
+interface SchemaCompatibility {
+  copilotVersion: string;          // e.g. "0.0.410"
+  knownEventTypes: string[];       // Types we have schemas for
+  unknownEventTypes: string[];     // Types seen but not recognized
+  deprecatedFields: string[];      // Fields we expected but are missing
+  newFields: string[];             // Fields present but not in our schema
+  lastChecked: Date;
+}
+```
+
+Exposed in the UI:
+- Status bar indicator: "✓ Schema compatible" or "⚠ 3 unknown event types"
+- Settings panel: detailed compatibility report
+- Debug server: `GET /api/schema-compatibility`
+
+### `cocopilot check` CLI Command
+
+A CLI subcommand to validate compatibility:
+
+```bash
+$ cocopilot check
+Copilot CLI version: 0.0.420
+Cocopilot version:   0.1.0
+Schema compatibility: ⚠ Partial
+
+Known event types:    40/43 (3 new types detected)
+New types:            assistant.thinking, tool.retry, session.checkpoint
+Missing types:        0 (all expected types still present)
+
+Recommendation: Update Cocopilot for full support of new event types.
+```
+
+### Design Principles
+
+1. **Never crash on unknown data** — `safeParse` + `passthrough()` everywhere
+2. **Store everything** — even unparseable events get stored as raw JSON
+3. **Warn, don't block** — unknown events show warnings, app keeps working
+4. **Version-aware** — record copilot version per session for compatibility tracking
+5. **Forward-compatible** — use `.passthrough()` so new fields flow through
+
 ## Data Flow
 
 ```

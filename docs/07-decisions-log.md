@@ -44,6 +44,17 @@ All architecture and design decisions, resolved during the planning phase.
 
 **Nivo** — React-native with SVG+Canvas support, excellent for timeline/calendar/bar visualizations. Better than D3 (too low-level), Recharts (less flexible), Victory (smaller community).
 
+## Schema Resilience & CLI Evolution
+
+| # | Decision | Choice | Rationale |
+|---|----------|--------|-----------|
+| Q19 | Schema validation | Zod with `safeParse` | Copilot CLI is evolving fast; graceful handling of unknown/changed event types |
+| Q20 | Unknown event types | Parse & store raw, log warnings | Never crash on new events; show drift warnings in UI |
+| Q21 | Copilot version tracking | Record per session from `session.start` | Enables compatibility analysis and drift detection |
+| Q22 | Compatibility check | `cocopilot check` CLI command | Checks installed copilot version, validates schema compatibility |
+| Q23 | better-sqlite3 risk | Accept, validate in CI | Cross-platform native module issues will surface in CI matrix |
+| Q24 | Visual regression testing | Defer, text/API-first | Start with unit/integration tests; add screenshot baselines later when UI stabilizes |
+
 ## Monitoring Approach
 
 **Single-CLI focus**: Monitor one copilot CLI at a time. Show count of all active CLIs. Allow switching. This keeps the UX focused and educational.

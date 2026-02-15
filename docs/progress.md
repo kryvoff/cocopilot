@@ -24,6 +24,17 @@
 - [x] Added observability (debug HTTP server) as v0.1 requirement
 - [x] Created future ideas backlog (`docs/08-future-ideas.md`)
 
+#### Session 2: Plan Review & Feedback Integration
+- [x] Reviewed feedback from Gemini 3 and GPT-5.3-Codex
+- [x] Key decision: Schema resilience via Zod `safeParse` + `passthrough()` (never crash on unknown events)
+- [x] Key decision: Schema drift detection — track unknown event types, warn in UI
+- [x] Key decision: `cocopilot check` CLI command for version/schema compatibility
+- [x] Key decision: Defer visual regression, prioritize text/API-based testing
+- [x] Key decision: Accept better-sqlite3 risk, validate in CI matrix
+- [x] Updated `docs/03-monitoring-data-model.md` with schema resilience strategy
+- [x] Updated `docs/05-testing-strategy.md` with testing priority order
+- [x] Updated `docs/07-decisions-log.md` with decisions Q19-Q24
+
 #### Next Steps
 - [ ] User reviews updated docs and plan
 - [ ] Scaffold electron-vite project with TypeScript
