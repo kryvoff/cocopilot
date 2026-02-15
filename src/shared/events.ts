@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod/v4'
 
 // Base event envelope — every event must have these fields
 export const BaseEventSchema = z.object({
@@ -7,8 +7,8 @@ export const BaseEventSchema = z.object({
   timestamp: z.string(),
   parentId: z.string().nullable().optional(),
   ephemeral: z.boolean().optional(),
-  data: z.record(z.unknown()).optional().default({})
-})
+  data: z.record(z.string(), z.unknown()).optional().default({})
+}).passthrough()
 
 export type BaseEvent = z.infer<typeof BaseEventSchema>
 
@@ -44,7 +44,7 @@ export const SessionShutdownDataSchema = z
       })
       .passthrough()
       .optional(),
-    modelMetrics: z.record(z.unknown()).optional()
+    modelMetrics: z.record(z.string(), z.unknown()).optional()
   })
   .passthrough()
 
@@ -65,7 +65,7 @@ export const AssistantUsageDataSchema = z
     cacheWriteTokens: z.number().optional(),
     cost: z.number().optional(),
     duration: z.number().optional(),
-    quotaSnapshots: z.record(z.unknown()).optional()
+    quotaSnapshots: z.record(z.string(), z.unknown()).optional()
   })
   .passthrough()
 
@@ -73,7 +73,7 @@ export const ToolExecutionStartDataSchema = z
   .object({
     toolCallId: z.string().optional(),
     toolName: z.string().optional(),
-    arguments: z.record(z.unknown()).optional(),
+    arguments: z.record(z.string(), z.unknown()).optional(),
     mcpServerName: z.string().optional()
   })
   .passthrough()
@@ -84,7 +84,7 @@ export const ToolExecutionCompleteDataSchema = z
     success: z.boolean().optional(),
     result: z.unknown().optional(),
     error: z.unknown().optional(),
-    toolTelemetry: z.record(z.unknown()).optional()
+    toolTelemetry: z.record(z.string(), z.unknown()).optional()
   })
   .passthrough()
 
@@ -113,7 +113,7 @@ export const SessionErrorDataSchema = z
   .passthrough()
 
 // Registry of known event types → their data schemas
-export const KNOWN_EVENT_SCHEMAS: Record<string, z.ZodTypeAny> = {
+export const KNOWN_EVENT_SCHEMAS: Record<string, z.ZodType> = {
   'session.start': SessionStartDataSchema,
   'session.resume': SessionStartDataSchema,
   'session.shutdown': SessionShutdownDataSchema,

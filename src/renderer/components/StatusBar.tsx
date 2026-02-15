@@ -10,7 +10,11 @@ const MODES: { id: AppMode; label: string }[] = [
   { id: 'ocean', label: '🌊 Ocean' }
 ]
 
-function StatusBar(): React.JSX.Element {
+interface StatusBarProps {
+  onSettingsClick: () => void
+}
+
+function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
   const sessions = useMonitoringStore((s) => s.sessions)
   const selectedSessionId = useMonitoringStore((s) => s.selectedSessionId)
   const mode = useAppStore((s) => s.mode)
@@ -41,6 +45,9 @@ function StatusBar(): React.JSX.Element {
             {m.label}
           </button>
         ))}
+        <button className="mode-button" onClick={onSettingsClick}>
+          ⚙️
+        </button>
       </div>
     </div>
   )

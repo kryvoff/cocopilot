@@ -1,12 +1,17 @@
-import { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppStore } from './store/app-store'
 import { useMonitoringStore } from './store/monitoring-store'
 import StatusBar from './components/StatusBar'
+import SettingsPanel from './components/SettingsPanel'
 import VanillaMode from './modes/vanilla/VanillaMode'
+import IslandMode from './modes/island/IslandMode'
+import LearnMode from './modes/learn/LearnMode'
+import OceanMode from './modes/ocean/OceanMode'
 
 function App(): React.JSX.Element {
   const mode = useAppStore((s) => s.mode)
   const { fetchSessions, subscribeToEvents } = useMonitoringStore()
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
     fetchSessions()
@@ -18,11 +23,12 @@ function App(): React.JSX.Element {
     <div className="app">
       <main className="app-main">
         {mode === 'vanilla' && <VanillaMode />}
-        {mode === 'island' && <div className="placeholder">Island Mode — Coming in v0.2</div>}
-        {mode === 'learn' && <div className="placeholder">Learn Mode — Coming in v0.2.5</div>}
-        {mode === 'ocean' && <div className="placeholder">Ocean Mode — Coming in v0.3</div>}
+        {mode === 'island' && <IslandMode />}
+        {mode === 'learn' && <LearnMode />}
+        {mode === 'ocean' && <OceanMode />}
       </main>
-      <StatusBar />
+      <StatusBar onSettingsClick={() => setSettingsOpen(true)} />
+      {settingsOpen && <SettingsPanel onClose={() => setSettingsOpen(false)} />}
     </div>
   )
 }
