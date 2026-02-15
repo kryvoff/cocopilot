@@ -13,7 +13,10 @@ and carry no licensing restrictions.
 | File | Description | Duration |
 |------|-------------|----------|
 | `ambient-island.mp3` | Tropical ambient loop (simulated waves, bird chirps, breeze) | ~30s |
+| `ambient-ocean.mp3` | Underwater ambient loop (deep rumble, bubbles, shimmer) | ~16s |
 | `monkey-call.mp3` | Excited monkey vocalization (frequency-modulated bursts) | ~1.5s |
+| `dolphin-call.mp3` | Dolphin whistle/chirp (frequency sweep with harmonics) | ~0.8s |
+| `bubble.mp3` | Rising bubble pop | ~0.2s |
 | `chime.mp3` | Soft notification chime (bell-like harmonics) | ~1.2s |
 | `typewriter.mp3` | Typewriter key clicking (noise bursts with resonance) | ~1.5s |
 | `coconut-crack.mp3` | Coconut impact (transient + hollow resonance) | ~0.8s |

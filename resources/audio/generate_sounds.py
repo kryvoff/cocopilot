@@ -51,6 +51,105 @@ def noise() -> float:
 
 # --- Sound generators ---
 
+def gen_ambient_ocean():
+    """Underwater ambient loop: deep rumble, bubbles, shimmer, ~16s."""
+    duration = 16.0
+    n = int(SAMPLE_RATE * duration)
+    samples = [0.0] * n
+    random.seed(99)
+
+    # Deep ocean rumble: low-frequency filtered noise
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        rumble_env = 0.2 + 0.1 * math.sin(2 * math.pi * t / 8.0)
+        samples[i] += noise() * rumble_env * 0.1
+
+    # Low-pass filter (running average with wide window)
+    filtered = [0.0] * n
+    window = 40
+    running = 0.0
+    for i in range(n):
+        running += samples[i]
+        if i >= window:
+            running -= samples[i - window]
+        filtered[i] = running / min(i + 1, window)
+    samples = filtered
+
+    # Bubble clusters: short rising tones at random intervals
+    bubble_times = sorted([random.uniform(0.5, 15) for _ in range(20)])
+    for bt in bubble_times:
+        bub_dur = random.uniform(0.03, 0.1)
+        freq_start = random.uniform(300, 800)
+        freq_end = freq_start * random.uniform(1.5, 2.5)
+        vol = random.uniform(0.03, 0.08)
+        si = int(bt * SAMPLE_RATE)
+        ei = min(si + int(bub_dur * SAMPLE_RATE), n)
+        for i in range(si, ei):
+            lt = (i - si) / SAMPLE_RATE
+            frac = lt / bub_dur
+            freq = freq_start + (freq_end - freq_start) * frac
+            env = math.sin(math.pi * frac)
+            samples[i] += math.sin(2 * math.pi * freq * lt) * env * vol
+
+    # High-frequency shimmer: subtle sparkle
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        shimmer = math.sin(2 * math.pi * 6000 * t) * 0.01
+        shimmer *= 0.5 + 0.5 * math.sin(2 * math.pi * t / 3.0)
+        samples[i] += shimmer
+
+    # Fade in/out for looping
+    fade = int(SAMPLE_RATE * 1.5)
+    for i in range(fade):
+        f = i / fade
+        samples[i] *= f
+        samples[n - 1 - i] *= f
+
+    return samples, duration
+
+
+def gen_bubble():
+    """Single rising bubble pop, ~0.2s."""
+    duration = 0.2
+    n = int(SAMPLE_RATE * duration)
+    samples = [0.0] * n
+
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        frac = t / duration
+        freq = 400 + 800 * frac  # rising pitch
+        env = math.sin(math.pi * frac) ** 0.5
+        val = math.sin(2 * math.pi * freq * t) * env * 0.4
+        # Add pop at the end
+        if frac > 0.8:
+            pop_frac = (frac - 0.8) / 0.2
+            val += noise() * (1 - pop_frac) * 0.3
+        samples[i] = val
+
+    return samples, duration
+
+
+def gen_dolphin_call():
+    """Dolphin whistle/chirp: frequency sweep with harmonics, ~0.8s."""
+    duration = 0.8
+    n = int(SAMPLE_RATE * duration)
+    samples = [0.0] * n
+
+    # Main whistle: ascending then descending frequency sweep
+    for i in range(n):
+        t = i / SAMPLE_RATE
+        frac = t / duration
+        # Bell-curve frequency sweep
+        freq = 2000 + 3000 * math.sin(math.pi * frac)
+        env = math.sin(math.pi * frac) ** 0.7 * 0.35
+        val = math.sin(2 * math.pi * freq * t) * env
+        # Add vibrato
+        val += math.sin(2 * math.pi * (freq * 1.01) * t) * env * 0.2
+        samples[i] = val
+
+    return samples, duration
+
+
 def gen_ambient_island():
     """Tropical ambient loop: layered noise (waves) + bird chirps, ~30s."""
     duration = 30.0
@@ -309,7 +408,10 @@ def gen_goodbye():
 def main():
     sounds = {
         "ambient-island": gen_ambient_island,
+        "ambient-ocean": gen_ambient_ocean,
         "monkey-call": gen_monkey_call,
+        "dolphin-call": gen_dolphin_call,
+        "bubble": gen_bubble,
         "chime": gen_chime,
         "typewriter": gen_typewriter,
         "coconut-crack": gen_coconut_crack,

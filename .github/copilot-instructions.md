@@ -6,10 +6,11 @@
 
 ## How We Work
 
-- **Never commit or push** unless explicitly asked
-- Make changes, let the user review, they decide when to commit
+- **NEVER commit, push, or create releases** — the user reviews, tests manually, and commits themselves
+- Make changes, then summarize what was done so the user can review
 - Keep docs and code in sync — update docs when changing features
 - Track progress in `docs/progress.md`
+- **Always update `docs/progress.md`** at the end of every turn with current status
 
 ## Iteration Workflow
 

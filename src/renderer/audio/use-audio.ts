@@ -4,9 +4,9 @@ import { AudioManager } from './audio-manager'
 
 /**
  * React hook that initializes the AudioManager, syncs it with store settings,
- * and provides imperative methods for playing sounds.
+ * and manages ambient audio per mode.
  *
- * Auto-starts ambient audio when Island mode is active and audio is enabled.
+ * Must be called exactly ONCE in App.tsx — not inside mode components.
  */
 export function useAudio(): {
   playSound: (id: string) => void
@@ -31,15 +31,32 @@ export function useAudio(): {
     mgr.setVolume(audioVolume)
   }, [audioEnabled, audioVolume])
 
-  // Auto-start/stop ambient for Island mode
+  // Auto-start/stop ambient based on mode
   useEffect(() => {
     const mgr = managerRef.current!
-    if (mode === 'island' && audioEnabled) {
-      mgr.startAmbient()
+    if (!audioEnabled) {
+      mgr.stopAmbient()
+      return undefined
+    }
+
+    if (mode === 'island') {
+      const timer = setTimeout(() => mgr.startAmbient('island'), 800)
+      return () => clearTimeout(timer)
+    } else if (mode === 'ocean') {
+      const timer = setTimeout(() => mgr.startAmbient('ocean'), 800)
+      return () => clearTimeout(timer)
     } else {
       mgr.stopAmbient()
+      return undefined
     }
   }, [mode, audioEnabled])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      managerRef.current?.stopAmbient()
+    }
+  }, [])
 
   const playSound = useCallback((id: string) => {
     managerRef.current?.play(id)

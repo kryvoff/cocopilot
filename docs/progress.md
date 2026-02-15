@@ -196,11 +196,30 @@
 - [x] 78 new tests: flipper-state (26), ocean-events (18), learn-mode (25), ocean-playback integration (9)
 - [x] 209 total tests pass, typecheck clean, build succeeds
 
-#### Next Iteration
+#### v0.4: Visual regression tests, performance optimization
 - [x] Visual regression tests with Playwright screenshots (macOS CI)
 - [x] Performance optimization for 3D scenes (geometry/material memoization, polygon reduction)
 - [x] E2E functional tests (7 tests: app launch, mode switching)
 - [x] CI: E2E job on macOS with Playwright, artifact upload on failure
+- [x] Fixed blurry screenshots — Retina 2x (2400×1536) for docs
+- [x] Created `scripts/capture-screenshots.sh` for Retina screenshot capture
+- [x] Regenerated docs/demo.gif from sharp Retina screenshots
+- [x] Removed docs/notes.md
+
+#### v0.5: Audio polish, bug fixes
+- [x] Added ocean ambient audio (ambient-ocean.mp3, bubble.mp3, dolphin-call.mp3)
+- [x] Added ocean sound generators to `generate_sounds.py` and updated LICENSES.md
+- [x] Fixed audio not stopping when navigating away from island/ocean modes
+- [x] Moved useAudio/useEventSounds to App.tsx (single global instance)
+- [x] Added 800ms startup delay for ambient to prevent sound burst
+- [x] Added AudioManager unit tests (17 tests)
+- [x] Updated copilot instructions: never commit/push, always update progress.md
+- [x] 226 total tests pass
+- [ ] Pending user review and testing
+
+#### Next Iteration
+- [ ] Additional polish and bug fixes from user testing
+- [ ] v1.0 final MVP release preparation
 
 ---
 
@@ -213,4 +232,5 @@
 | v0.2.5 | Learn Mode (tutorials + event catalog + playback) | ✅ Released |
 | v0.3 | Ocean Mode (Flipper + underwater world) | ✅ Released |
 | v0.4 | Visual regression tests, performance optimization | ✅ Complete |
-| v0.5 | Polish, bug fixes, final MVP | 📋 Planned |
+| v0.5 | Audio polish, bug fixes | 🔄 In progress |
+| v1.0 | Final MVP — polished, tested, documented | 📋 Planned |

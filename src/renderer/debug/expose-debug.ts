@@ -16,6 +16,7 @@ export interface RendererDebugState {
     volume: number
     soundCount: number
     ambientPlaying: boolean
+    activeAmbientId: string | null
   }
   coco: {
     state: string

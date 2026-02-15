@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { useMonitoringStore } from '../../store/monitoring-store'
-import { useEventSounds } from '../../audio/use-event-sounds'
-import { useAudio } from '../../audio/use-audio'
 import { useFlipperStore } from './flipper-state'
 import type { FlipperState } from './flipper-state'
 
 /**
- * Hook that connects monitoring events to Flipper's animation state and sounds.
- * Should be called once inside OceanMode.
+ * Hook that connects monitoring events to Flipper's animation state.
+ * Audio is managed globally in App.tsx via useAudio/useEventSounds.
  */
 export function useOceanEvents(): FlipperState {
   const events = useMonitoringStore((s) => s.events)
@@ -16,10 +14,6 @@ export function useOceanEvents(): FlipperState {
   const processEvent = useFlipperStore((s) => s.processEvent)
   const setFlipperState = useFlipperStore((s) => s.setState)
   const prevLengthRef = useRef(events.length)
-
-  // Activate sound hooks inside Ocean mode
-  useEventSounds()
-  useAudio()
 
   // When no session is selected, hide Flipper
   useEffect(() => {

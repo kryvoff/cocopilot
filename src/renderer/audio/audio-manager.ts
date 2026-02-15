@@ -2,8 +2,11 @@ import { Howl, Howler } from 'howler'
 
 // Import audio files as URLs via Vite's asset handling.
 // Vite resolves these to correct URLs in both dev and production.
-import ambientSrc from '../../../resources/audio/ambient-island.mp3'
+import ambientIslandSrc from '../../../resources/audio/ambient-island.mp3'
+import ambientOceanSrc from '../../../resources/audio/ambient-ocean.mp3'
 import monkeyCallSrc from '../../../resources/audio/monkey-call.mp3'
+import dolphinCallSrc from '../../../resources/audio/dolphin-call.mp3'
+import bubbleSrc from '../../../resources/audio/bubble.mp3'
 import chimeSrc from '../../../resources/audio/chime.mp3'
 import typewriterSrc from '../../../resources/audio/typewriter.mp3'
 import coconutCrackSrc from '../../../resources/audio/coconut-crack.mp3'
@@ -20,8 +23,12 @@ interface SoundDef {
 
 /** Registry of all sound IDs to their definitions */
 const SOUND_DEFS: Record<string, SoundDef> = {
-  ambient: { src: ambientSrc, loop: true, volume: 0.3 },
+  'ambient-island': { src: ambientIslandSrc, loop: true, volume: 0.3 },
+  'ambient-ocean': { src: ambientOceanSrc, loop: true, volume: 0.4 },
+  'welcome': { src: chimeSrc, volume: 0.3 },
   'session-start': { src: monkeyCallSrc },
+  'dolphin-call': { src: dolphinCallSrc },
+  'bubble': { src: bubbleSrc },
   'user-message': { src: chimeSrc },
   'tool-edit': { src: typewriterSrc },
   'tool-bash': { src: coconutCrackSrc },
@@ -38,7 +45,7 @@ export class AudioManager {
   private static instance: AudioManager | null = null
 
   private sounds = new Map<string, Howl>()
-  private ambientSound: Howl | null = null
+  private activeAmbientId: string | null = null
   private enabled = false
   private volume = 0.5
   private initialized = false
@@ -66,10 +73,6 @@ export class AudioManager {
       })
 
       this.sounds.set(id, howl)
-
-      if (id === 'ambient') {
-        this.ambientSound = howl
-      }
     }
   }
 
@@ -77,23 +80,35 @@ export class AudioManager {
   play(soundId: string): void {
     if (!this.enabled) return
     const howl = this.sounds.get(soundId)
-    if (howl && soundId !== 'ambient') {
+    if (howl && !soundId.startsWith('ambient-')) {
       howl.play()
     }
   }
 
-  /** Start the ambient loop. No-op if disabled or already playing. */
-  startAmbient(): void {
-    if (!this.enabled || !this.ambientSound) return
-    if (!this.ambientSound.playing()) {
-      this.ambientSound.play()
-    }
+  /** Start the ambient loop for the given mode. Stops any other ambient first. */
+  startAmbient(mode: 'island' | 'ocean' = 'island'): void {
+    if (!this.enabled) return
+    const ambientId = `ambient-${mode}`
+    const howl = this.sounds.get(ambientId)
+    if (!howl) return
+
+    // Already playing this ambient
+    if (this.activeAmbientId === ambientId && howl.playing()) return
+
+    // Stop any other ambient first
+    this.stopAmbient()
+    howl.play()
+    this.activeAmbientId = ambientId
   }
 
-  /** Stop the ambient loop. */
+  /** Stop the currently playing ambient loop. */
   stopAmbient(): void {
-    if (this.ambientSound?.playing()) {
-      this.ambientSound.stop()
+    if (this.activeAmbientId) {
+      const howl = this.sounds.get(this.activeAmbientId)
+      if (howl?.playing()) {
+        howl.stop()
+      }
+      this.activeAmbientId = null
     }
   }
 
@@ -128,7 +143,7 @@ export class AudioManager {
       howl.unload()
     }
     this.sounds.clear()
-    this.ambientSound = null
+    this.activeAmbientId = null
     this.initialized = false
   }
 
@@ -144,13 +159,15 @@ export class AudioManager {
     volume: number
     soundCount: number
     ambientPlaying: boolean
+    activeAmbientId: string | null
   } {
     return {
       initialized: this.initialized,
       enabled: this.enabled,
       volume: this.volume,
       soundCount: this.sounds.size,
-      ambientPlaying: this.ambientSound?.playing() ?? false
+      ambientPlaying: this.activeAmbientId !== null && (this.sounds.get(this.activeAmbientId)?.playing() ?? false),
+      activeAmbientId: this.activeAmbientId
     }
   }
 

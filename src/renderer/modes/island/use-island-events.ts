@@ -1,13 +1,11 @@
 import { useEffect, useRef } from 'react'
 import { useMonitoringStore } from '../../store/monitoring-store'
-import { useEventSounds } from '../../audio/use-event-sounds'
-import { useAudio } from '../../audio/use-audio'
 import { useCocoStore } from './coco-state'
 import type { CocoState } from './Coco'
 
 /**
- * Hook that connects monitoring events to Coco's animation state and sounds.
- * Should be called once inside IslandMode.
+ * Hook that connects monitoring events to Coco's animation state.
+ * Audio is managed globally in App.tsx via useAudio/useEventSounds.
  */
 export function useIslandEvents(): CocoState {
   const events = useMonitoringStore((s) => s.events)
@@ -16,10 +14,6 @@ export function useIslandEvents(): CocoState {
   const processEvent = useCocoStore((s) => s.processEvent)
   const setCocoState = useCocoStore((s) => s.setState)
   const prevLengthRef = useRef(events.length)
-
-  // Activate sound hooks inside Island mode
-  useEventSounds()
-  useAudio()
 
   // When no session is selected, hide Coco
   useEffect(() => {
