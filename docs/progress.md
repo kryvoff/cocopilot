@@ -197,14 +197,8 @@
 - [x] 209 total tests pass, typecheck clean, build succeeds
 
 #### Next Iteration
-- [ ] Download high-quality audio assets to replace synthesized placeholders
-- [ ] Add ocean-specific audio (underwater ambient, whale sounds, bubble pops)
-- [ ] Visual regression tests with Playwright screenshots
+- [ ] Visual regression tests with Playwright screenshots (macOS CI)
 - [ ] Performance optimization for 3D scenes (LOD, instancing)
-
-#### Later
-- [ ] v0.4: Multi-session view, session comparison
-- [ ] v0.5: Cost tracking dashboard, token budgets
 
 ---
 
@@ -213,6 +207,8 @@
 | Version | Milestone | Status |
 |---------|-----------|--------|
 | v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released |
-| v0.2 | Island Mode (Coco + 3D scene + audio) | ✅ Complete |
-| v0.2.5 | Learn Mode (tutorials + event catalog + playback) | ✅ Complete |
-| v0.3 | Ocean Mode (Flipper + underwater world) | ✅ Complete |
+| v0.2 | Island Mode (Coco + 3D scene + audio) | ✅ Released |
+| v0.2.5 | Learn Mode (tutorials + event catalog + playback) | ✅ Released |
+| v0.3 | Ocean Mode (Flipper + underwater world) | ✅ Released |
+| v0.4 | Visual regression tests, performance optimization | 📋 Planned |
+| v0.5 | Polish, bug fixes, final MVP | 📋 Planned |
