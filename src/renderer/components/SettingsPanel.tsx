@@ -10,8 +10,8 @@ const MODES: { id: AppMode; label: string; description: string }[] = [
 ]
 
 function SettingsPanel(): React.JSX.Element {
-  const mode = useAppStore((s) => s.mode)
-  const setMode = useAppStore((s) => s.setMode)
+  const defaultMode = useAppStore((s) => s.defaultMode)
+  const setDefaultMode = useAppStore((s) => s.setDefaultMode)
   const audioEnabled = useAppStore((s) => s.audioEnabled)
   const setAudioEnabled = useAppStore((s) => s.setAudioEnabled)
   const audioVolume = useAppStore((s) => s.audioVolume)
@@ -30,13 +30,13 @@ function SettingsPanel(): React.JSX.Element {
           <h3>Default Mode</h3>
           <div className="settings-modes">
             {MODES.map((m) => (
-              <label key={m.id} className={`settings-mode-option ${mode === m.id ? 'active' : ''}`}>
+              <label key={m.id} className={`settings-mode-option ${defaultMode === m.id ? 'active' : ''}`}>
                 <input
                   type="radio"
                   name="mode"
                   value={m.id}
-                  checked={mode === m.id}
-                  onChange={() => setMode(m.id)}
+                  checked={defaultMode === m.id}
+                  onChange={() => setDefaultMode(m.id)}
                 />
                 <span className="mode-label">{m.label}</span>
                 <span className="mode-desc">{m.description}</span>

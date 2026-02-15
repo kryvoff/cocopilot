@@ -270,9 +270,6 @@
 - [x] Bumped package.json version to 0.6.0
 - [x] 226 tests pass, typecheck clean
 
-#### Next Iteration
-- [ ] User testing and feedback
-
 #### Session 21: Cleanup, Docs, Scrollbars, TypeScript
 - [x] Removed unused `tool_calls` table from schema.ts, queries.test.ts, and docs/03-monitoring-data-model.md (dead code, never populated)
 - [x] Fixed dark mode scrollbars: added global `::-webkit-scrollbar` styles for Chromium/Electron (Settings, Vanilla, all pages)
@@ -282,6 +279,21 @@
 - [x] Security scanned `docs/12-copilot-terminal-log.md`: no secrets, tokens, API keys, or sensitive data found
 - [x] Note: Ghostty terminal does not store scrollback logs — no way to recover terminal output for sessions not captured in the terminal log doc
 - [x] 226 tests pass, typecheck clean (all 3 tsconfigs)
+- [x] Fixed Settings "Default Mode" selector — now only sets startup preference, does not navigate
+- [x] Added `defaultMode` to app store (persisted), kept `mode` (current view, not persisted)
+- [x] Added SVG type declarations to `src/renderer/env.d.ts`
+- [x] Created SoundsTab in Learn mode — 11 sounds with playback, waveform + spectrogram SVG visualizations
+- [x] Created `docs/13-devto-article.md` — DEV.to challenge submission article
+- [x] Created `docs/14-youtube-outline.md` — 10-minute video plan with section-by-section outline
+- [x] Generated cover images: `docs/cover-devto.png` (1000×420) and `docs/cover-youtube.png` (1280×720)
+- [x] Updated DEV.to article with learnings: spec-first dev, procedural asset generation surprise, old versions gotcha, human-agent collaboration, cross-model thoughts
+- [x] Updated YouTube outline with learnings sections and testing demo
+- [x] Fixed README: updated cost estimate (~$10), added docs 12–14 to documentation table
+
+#### Next Iteration
+- [ ] Record and publish YouTube video
+- [ ] Final manual testing pass on all modes
+- [ ] v1.0 release
 
 ---
 

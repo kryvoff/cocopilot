@@ -269,6 +269,9 @@ test/
 | [`docs/09-sounds.md`](docs/09-sounds.md)                               | Sound synthesis and audio system         |
 | [`docs/10-copilot-self-review.md`](docs/10-copilot-self-review.md)     | Project review and v1.0 recommendations  |
 | [`docs/11-dev-usage-summary.md`](docs/11-dev-usage-summary.md)        | Development session metrics and cost      |
+| [`docs/12-copilot-terminal-log.md`](docs/12-copilot-terminal-log.md) | Raw terminal output from Copilot CLI sessions |
+| [`docs/13-devto-article.md`](docs/13-devto-article.md)               | DEV.to challenge submission article       |
+| [`docs/14-youtube-outline.md`](docs/14-youtube-outline.md)           | YouTube video outline and script          |
 | [`docs/progress.md`](docs/progress.md)                                 | Development progress tracker             |
 
 ## 🤝 Contributing
@@ -283,7 +286,7 @@ This is a **vibe coding experiment** — a weekend project built entirely by AI 
 
 ## 📊 Development Stats
 
-See [`docs/11-dev-usage-summary.md`](docs/11-dev-usage-summary.md) for detailed session metrics, cost estimates (~$41 in premium requests), and development timeline.
+See [`docs/11-dev-usage-summary.md`](docs/11-dev-usage-summary.md) for detailed session metrics, cost estimates (~$10 in premium requests), and development timeline.
 
 ## 📄 License
 

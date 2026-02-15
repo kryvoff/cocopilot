@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a0a2e"/>
+      <stop offset="100%" stop-color="#1a1a4e"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00ff88" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="420" fill="url(#sky)"/>
+
+  <!-- Stars -->
+  <circle cx="50" cy="30" r="1.5" fill="#fff" opacity="0.6"/>
+  <circle cx="150" cy="60" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="280" cy="25" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="400" cy="50" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="550" cy="20" r="1.5" fill="#fff" opacity="0.6"/>
+  <circle cx="700" cy="45" r="1" fill="#fff" opacity="0.4"/>
+  <circle cx="830" cy="30" r="1.5" fill="#fff" opacity="0.5"/>
+  <circle cx="920" cy="55" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="100" cy="80" r="1" fill="#fff" opacity="0.3"/>
+  <circle cx="600" cy="70" r="1" fill="#fff" opacity="0.4"/>
+
+  <!-- LEFT SIDE: Terminal window -->
+  <g transform="translate(60, 60)">
+    <!-- Terminal frame -->
+    <rect x="0" y="0" width="340" height="300" rx="8" fill="#1e1e2e" stroke="#333" stroke-width="2"/>
+    <!-- Title bar -->
+    <rect x="0" y="0" width="340" height="28" rx="8" fill="#2a2a3e"/>
+    <rect x="0" y="14" width="340" height="14" fill="#2a2a3e"/>
+    <!-- Traffic lights -->
+    <circle cx="16" cy="14" r="5" fill="#ff5f56"/>
+    <circle cx="32" cy="14" r="5" fill="#ffbd2e"/>
+    <circle cx="48" cy="14" r="5" fill="#27c93f"/>
+    <!-- Title -->
+    <text x="170" y="18" text-anchor="middle" font-family="monospace" font-size="11" fill="#888">Terminal — copilot</text>
+
+    <!-- Terminal content -->
+    <text x="12" y="52" font-family="monospace" font-size="11" fill="#27c93f">❯ copilot</text>
+    <text x="12" y="72" font-family="monospace" font-size="10" fill="#888">Starting session...</text>
+    <text x="12" y="92" font-family="monospace" font-size="10" fill="#00ff88">✓ session.start</text>
+    <text x="12" y="112" font-family="monospace" font-size="10" fill="#58a6ff">→ user.message</text>
+    <text x="12" y="132" font-family="monospace" font-size="10" fill="#d4a0ff">⚡ tool.bash</text>
+    <text x="12" y="152" font-family="monospace" font-size="10" fill="#d4a0ff">⚡ tool.edit</text>
+    <text x="12" y="172" font-family="monospace" font-size="10" fill="#ffbd2e">⊕ subagent.started</text>
+    <text x="12" y="192" font-family="monospace" font-size="10" fill="#d4a0ff">⚡ tool.grep</text>
+    <text x="12" y="212" font-family="monospace" font-size="10" fill="#00ff88">✓ tool.complete</text>
+    <text x="12" y="232" font-family="monospace" font-size="10" fill="#58a6ff">→ assistant.turn</text>
+    <text x="12" y="252" font-family="monospace" font-size="10" fill="#888">events.jsonl ████████</text>
+    <text x="12" y="278" font-family="monospace" font-size="11" fill="#27c93f">❯ <rect x="52" y="267" width="8" height="14" fill="#27c93f" opacity="0.8"/></text>
+  </g>
+
+  <!-- ARROW connecting terminal to app -->
+  <g transform="translate(420, 180)">
+    <!-- Flowing data arrow -->
+    <line x1="0" y1="30" x2="100" y2="30" stroke="#00ff88" stroke-width="2" stroke-dasharray="6,4"/>
+    <polygon points="100,22 118,30 100,38" fill="#00ff88"/>
+    <!-- Label -->
+    <text x="59" y="18" text-anchor="middle" font-family="monospace" font-size="9" fill="#00ff88">events.jsonl</text>
+    <text x="59" y="55" text-anchor="middle" font-family="monospace" font-size="9" fill="#666">real-time</text>
+  </g>
+
+  <!-- RIGHT SIDE: App window with 4 modes -->
+  <g transform="translate(555, 60)">
+    <!-- App frame -->
+    <rect x="0" y="0" width="380" height="300" rx="8" fill="#12122a" stroke="#333" stroke-width="2"/>
+    <!-- Title bar -->
+    <rect x="0" y="0" width="380" height="28" rx="8" fill="#2a2a3e"/>
+    <rect x="0" y="14" width="380" height="14" fill="#2a2a3e"/>
+    <circle cx="16" cy="14" r="5" fill="#ff5f56"/>
+    <circle cx="32" cy="14" r="5" fill="#ffbd2e"/>
+    <circle cx="48" cy="14" r="5" fill="#27c93f"/>
+    <text x="190" y="18" text-anchor="middle" font-family="monospace" font-size="11" fill="#888">🐵 Cocopilot</text>
+
+    <!-- 2x2 grid of mode previews -->
+    <!-- Vanilla (top-left) -->
+    <g transform="translate(10, 38)">
+      <rect width="172" height="120" rx="4" fill="#1a1a2e" stroke="#333" stroke-width="1"/>
+      <text x="86" y="14" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#888">📊 Vanilla</text>
+      <!-- Mini stats cards -->
+      <rect x="6" y="22" width="36" height="20" rx="2" fill="#1e2a3a"/>
+      <text x="24" y="36" text-anchor="middle" font-family="monospace" font-size="8" fill="#58a6ff">1.2K</text>
+      <rect x="46" y="22" width="36" height="20" rx="2" fill="#1e2a3a"/>
+      <text x="64" y="36" text-anchor="middle" font-family="monospace" font-size="8" fill="#00ff88">342</text>
+      <rect x="86" y="22" width="36" height="20" rx="2" fill="#1e2a3a"/>
+      <text x="104" y="36" text-anchor="middle" font-family="monospace" font-size="8" fill="#d4a0ff">89</text>
+      <rect x="126" y="22" width="36" height="20" rx="2" fill="#1e2a3a"/>
+      <text x="144" y="36" text-anchor="middle" font-family="monospace" font-size="8" fill="#ffbd2e">12</text>
+      <!-- Mini chart -->
+      <polyline points="8,100 30,85 50,92 70,75 90,80 110,65 130,70 150,55 162,60"
+                fill="none" stroke="#00ff88" stroke-width="1.5" opacity="0.7"/>
+      <line x1="6" y1="105" x2="165" y2="105" stroke="#333" stroke-width="0.5"/>
+    </g>
+
+    <!-- Island (top-right) -->
+    <g transform="translate(192, 38)">
+      <rect width="172" height="120" rx="4" fill="#1a3a2a" stroke="#333" stroke-width="1"/>
+      <text x="86" y="14" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#888">🏝️ Island</text>
+      <!-- Simple island scene -->
+      <!-- Water -->
+      <rect x="0" y="80" width="172" height="40" rx="0" fill="#0a4a6a" opacity="0.5"/>
+      <!-- Island -->
+      <ellipse cx="86" cy="82" rx="50" ry="12" fill="#c2a060"/>
+      <!-- Palm tree -->
+      <line x1="75" y1="82" x2="75" y2="45" stroke="#8B4513" stroke-width="3"/>
+      <ellipse cx="85" cy="40" rx="20" ry="8" fill="#228B22" transform="rotate(-15, 85, 40)"/>
+      <ellipse cx="65" cy="42" rx="18" ry="7" fill="#2d9e2d" transform="rotate(15, 65, 42)"/>
+      <!-- Monkey -->
+      <circle cx="95" cy="72" r="8" fill="#8B6914"/>
+      <circle cx="95" cy="65" r="6" fill="#a0792a"/>
+      <circle cx="93" cy="64" r="1.5" fill="#333"/>
+      <circle cx="97" cy="64" r="1.5" fill="#333"/>
+      <path d="M92,67 Q95,70 98,67" fill="none" stroke="#333" stroke-width="0.8"/>
+    </g>
+
+    <!-- Learn (bottom-left) -->
+    <g transform="translate(10, 168)">
+      <rect width="172" height="120" rx="4" fill="#1a1a3a" stroke="#333" stroke-width="1"/>
+      <text x="86" y="14" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#888">📚 Learn</text>
+      <!-- Tab bar -->
+      <rect x="6" y="20" width="30" height="12" rx="2" fill="#2a2a5a"/>
+      <rect x="38" y="20" width="30" height="12" rx="2" fill="#2a2a4a"/>
+      <rect x="70" y="20" width="30" height="12" rx="2" fill="#2a2a4a"/>
+      <rect x="102" y="20" width="30" height="12" rx="2" fill="#2a2a4a"/>
+      <rect x="134" y="20" width="30" height="12" rx="2" fill="#2a2a4a"/>
+      <!-- Content lines -->
+      <rect x="6" y="40" width="120" height="6" rx="2" fill="#333"/>
+      <rect x="6" y="52" width="90" height="6" rx="2" fill="#333"/>
+      <rect x="6" y="64" width="140" height="6" rx="2" fill="#333"/>
+      <rect x="6" y="76" width="100" height="6" rx="2" fill="#333"/>
+      <!-- Waveform hint -->
+      <polyline points="6,100 20,95 30,105 40,92 50,108 60,90 70,105 80,93 90,100 100,95 110,102 120,96"
+                fill="none" stroke="#58a6ff" stroke-width="1" opacity="0.5"/>
+    </g>
+
+    <!-- Ocean (bottom-right) -->
+    <g transform="translate(192, 168)">
+      <rect width="172" height="120" rx="4" fill="#0a1a3a" stroke="#333" stroke-width="1"/>
+      <text x="86" y="14" text-anchor="middle" font-family="sans-serif" font-size="9" fill="#888">🌊 Ocean</text>
+      <!-- Water gradient -->
+      <rect x="0" y="22" width="172" height="98" rx="0" fill="#0a2a5a" opacity="0.4"/>
+      <!-- Sun rays -->
+      <line x1="86" y1="22" x2="40" y2="110" stroke="#ffdd44" stroke-width="0.5" opacity="0.15"/>
+      <line x1="86" y1="22" x2="130" y2="110" stroke="#ffdd44" stroke-width="0.5" opacity="0.15"/>
+      <line x1="86" y1="22" x2="86" y2="110" stroke="#ffdd44" stroke-width="0.5" opacity="0.2"/>
+      <!-- Dolphin -->
+      <path d="M60,65 Q75,55 95,60 Q105,62 110,58 Q105,65 95,66 Q75,70 60,65Z" fill="#6090c0"/>
+      <circle cx="72" cy="62" r="1.5" fill="#333"/>
+      <!-- Coral -->
+      <path d="M30,105 Q35,85 30,95 Q40,80 35,90 Q45,82 40,100" fill="none" stroke="#ff6090" stroke-width="1.5" opacity="0.6"/>
+      <path d="M130,108 Q135,90 130,98 Q140,85 135,95" fill="none" stroke="#ff9060" stroke-width="1.5" opacity="0.6"/>
+      <!-- Bubbles -->
+      <circle cx="80" cy="50" r="2" fill="none" stroke="#88ccff" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="100" cy="42" r="1.5" fill="none" stroke="#88ccff" stroke-width="0.5" opacity="0.3"/>
+      <circle cx="90" cy="35" r="1" fill="none" stroke="#88ccff" stroke-width="0.5" opacity="0.3"/>
+    </g>
+
+    <!-- Status bar -->
+    <rect x="0" y="292" width="380" height="8" fill="#1a1a2e"/>
+  </g>
+
+  <!-- Title text -->
+  <text x="500" y="398" text-anchor="middle" font-family="'Segoe UI', Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff">
+    🐵 Cocopilot — Monitor Your Copilot CLI Sessions
+  </text>
+</svg>

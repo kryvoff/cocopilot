@@ -3,14 +3,16 @@ import TutorialTab from './TutorialTab'
 import ArchitectureTab from './ArchitectureTab'
 import EventCatalogTab from './EventCatalogTab'
 import PlaybackTab from './PlaybackTab'
+import SoundsTab from './SoundsTab'
 
-type LearnTab = 'tutorial' | 'architecture' | 'catalog' | 'playback'
+type LearnTab = 'tutorial' | 'architecture' | 'catalog' | 'playback' | 'sounds'
 
 const TABS: { id: LearnTab; label: string; icon: string }[] = [
   { id: 'tutorial', label: 'How Copilot CLI Works', icon: '📖' },
   { id: 'architecture', label: 'How Cocopilot Works', icon: '🏗️' },
   { id: 'catalog', label: 'Event Catalog', icon: '📋' },
-  { id: 'playback', label: 'Session Playback', icon: '🎬' }
+  { id: 'playback', label: 'Session Playback', icon: '🎬' },
+  { id: 'sounds', label: 'Sounds', icon: '🔊' }
 ]
 
 const styles = {
@@ -77,6 +79,7 @@ function LearnMode(): React.JSX.Element {
         {activeTab === 'architecture' && <ArchitectureTab />}
         {activeTab === 'catalog' && <EventCatalogTab />}
         {activeTab === 'playback' && <PlaybackTab />}
+        {activeTab === 'sounds' && <SoundsTab />}
       </div>
     </div>
   )
