@@ -150,3 +150,5 @@ vite.config.ts.timestamp-*
 # Playwright
 playwright-report/
 test-results/
+# Playwright visual regression snapshots (resolution-dependent, local-only)
+test/e2e/*-snapshots/
