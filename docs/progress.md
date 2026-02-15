@@ -1,6 +1,6 @@
 # Cocopilot Progress Tracker
 
-## Current Phase: Planning & Documentation (v0.1 prep)
+## Current Phase: v0.1 Development
 
 ### 2026-02-15
 
@@ -35,19 +35,32 @@
 - [x] Updated `docs/05-testing-strategy.md` with testing priority order
 - [x] Updated `docs/07-decisions-log.md` with decisions Q19-Q24
 
-#### Next Steps
-- [x] User reviews updated docs and plan
-- [x] Scaffold electron-vite project with TypeScript
-- [x] Set up CI/CD GitHub Actions
-- [x] Implement monitoring core (file watcher, event parser)
-- [x] Implement SQLite schema and data layer
-- [x] Build Vanilla Mode dashboard
-- [x] Set up test infrastructure (Vitest, Playwright, fixtures)
-- [x] CI passes on all 3 OS (ubuntu, macos, windows): lint, typecheck, 21 unit tests, build
+#### Session 3: Scaffold, CI/CD, Full Dependency Upgrade
+- [x] Scaffolded electron-vite project with TypeScript + React 19
+- [x] Implemented monitoring core (file watcher, Zod event parser, session store)
+- [x] Implemented SQLite schema and data layer
+- [x] Set up test infrastructure (Vitest, 21 tests, 3 fixtures)
+- [x] Built Vanilla Mode dashboard shell
+- [x] Set up CI/CD GitHub Actions (all green on 3 OS)
+- [x] Created README with usage instructions and DEV.to challenge link
+- [x] Added settings panel with mode selector, audio toggle, about section
+- [x] Added mode placeholders (Island, Learn, Ocean) with feature previews
+- [x] Optimized CI (build on ubuntu-only, tests still 3 OS)
+- [x] **Full dependency upgrade to latest stable versions:**
+  - Electron 34 → 40 (Chromium 144, Node.js 24)
+  - electron-vite 3 → 5 (removed deprecated externalizeDepsPlugin)
+  - Vitest 3 → 4
+  - Zod 3 → 4 (migrated to native v4 import, z.record(key, val) API)
+  - better-sqlite3 11 → 12
+  - @vitejs/plugin-react 4 → 5
+  - TypeScript 5.7 → 5.9
+- [x] CI passes on all 3 OS: 21 tests pass, typecheck clean, build succeeds
 
 #### Upcoming
-- [ ] Create app settings panel
 - [ ] Add more dashboard components (usage charts, session info panels)
+- [ ] Connect real monitoring to UI (currently shell components)
+- [ ] Implement `cocopilot check` CLI command for schema compatibility
+- [ ] Add database persistence layer integration
 
 ---
 
@@ -55,7 +68,7 @@
 
 | Version | Milestone | Status |
 |---------|-----------|--------|
-| v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | 🔧 Planning |
+| v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | 🔧 In Progress |
 | v0.2 | Island Mode (Coco + 3D scene + audio) | 📋 Spec'd |
 | v0.2.5 | Learn Mode (tutorials + session playback) | 📋 Spec'd |
 | v0.3 | Ocean Mode (Flipper + ocean scene) | 📋 Spec'd |
