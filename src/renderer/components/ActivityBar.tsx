@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react'
 import { useMonitoringStore } from '../store/monitoring-store'
 import { useAppStore } from '../store/app-store'
+import { useCocoStore } from '../modes/island/coco-state'
+import { useFlipperStore } from '../modes/ocean/flipper-state'
 import type { ParsedEvent } from '@shared/events'
 
 type AgentState = 'active' | 'thinking' | 'tool' | 'idle' | 'error'
@@ -111,6 +113,9 @@ function ActivityBar(): React.JSX.Element {
     return () => clearInterval(id)
   }, [])
 
+  const cocoSubAgentCount = useCocoStore((s) => s.subAgentCount)
+  const flipperSubAgentCount = useFlipperStore((s) => s.subAgentCount)
+
   const agentState = useMemo(() => computeAgentState(events), [events])
   const activeToolIds = useMemo(() => computeActiveToolIds(events), [events])
   const activeSubAgentIds = useMemo(() => computeActiveSubAgentIds(events), [events])
@@ -118,6 +123,10 @@ function ActivityBar(): React.JSX.Element {
   const sessionStart = useMemo(() => findSessionStartTime(events), [events])
 
   const duration = sessionStart !== null ? formatDuration(now - sessionStart) : '--'
+
+  const subAgentCount = mode === 'island' ? cocoSubAgentCount
+    : mode === 'ocean' ? flipperSubAgentCount
+    : activeSubAgentIds.size
 
   const isCanvas = mode === 'island' || mode === 'ocean'
   const bg = isCanvas ? 'rgba(0,0,0,0.15)' : 'rgba(0,0,0,0.4)'
@@ -141,7 +150,7 @@ function ActivityBar(): React.JSX.Element {
     >
       <span>{agentState.dot} {agentState.label}</span>
       <Divider />
-      <span>🐒 {activeSubAgentIds.size} agent{activeSubAgentIds.size !== 1 ? 's' : ''}</span>
+      <span>🐒 {subAgentCount} agent{subAgentCount !== 1 ? 's' : ''}</span>
       <Divider />
       <span>⚙️ {activeToolIds.size} tool{activeToolIds.size !== 1 ? 's' : ''}</span>
       <Divider />

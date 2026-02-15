@@ -63,7 +63,7 @@ function UnderwaterSky(): React.JSX.Element {
   const uniforms = useMemo(
     () => ({
       topColor: { value: new THREE.Color('#4fc3f7') },
-      bottomColor: { value: new THREE.Color('#0288D1') },
+      bottomColor: { value: new THREE.Color('#01579B') },
       offset: { value: 20 },
       exponent: { value: 0.4 }
     }),

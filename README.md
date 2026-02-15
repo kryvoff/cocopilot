@@ -2,7 +2,7 @@
 
 > **A fun desktop companion that watches your GitHub Copilot CLI sessions and brings them to life with dashboards, 3D scenes, and sound!**
 
-[![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml)
+**v0.5** · [![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml)
 
 ![Cocopilot Demo — all four modes](docs/demo.gif)
 
@@ -43,16 +43,16 @@ A 3D tropical island where **Coco the monkey** 🐵 reacts to your coding sessio
 - Animated ocean waves respond to activity level — calm when idle, stormy when busy
 - Drifting clouds, palm trees, campfire, decorations
 - Git-like event log panel with collapsible user message groups
-- 8 sound effects with Howler.js audio system
 
 ### 📚 Learn Mode (v0.2.5)
 
 ![Learn Mode](docs/screenshots/learn-mode.png)
 
-Interactive tutorials that explain how Copilot CLI works:
-- **Tutorial** — visual session lifecycle, event format, key concepts
+Interactive tutorials that explain how Copilot CLI works — 4 tabs:
+- **Tutorial** — visual session lifecycle, autopilot/fleet/plan modes, key concepts
+- **Architecture** — how Cocopilot works: data pipeline, process monitor, debug API
 - **Event Catalog** — 18 event types with descriptions, data fields, example JSON
-- **Session Playback** — replay synthetic sessions with speed control and annotations
+- **Session Playback** — replay synthetic sessions with speed control (1x/2x/5x/10x) and annotations
 
 ### 🌊 Ocean Mode (v0.3)
 
@@ -63,11 +63,34 @@ A deep underwater world with **Flipper the dolphin** 🐬:
 - Coral reef with branching corals, brain corals, and waving anemones
 - Ocean creatures: octopus (bash), seahorse (edit), starfish (search), sea turtle (view)
 - Fish schools for sub-agents, jellyfish for errors, bubble effects
-- Swaying seaweed, scattered rocks, animated sun rays
+- Swaying seaweed, scattered rocks, animated sun rays with god ray cones
+
+### 🔊 Sound System
+
+11 procedurally generated sounds — all synthesized via Python, no external audio assets:
+
+| Sound          | Duration | Used For                              |
+|----------------|----------|---------------------------------------|
+| ambient-island | 30s loop | Island mode background (waves + bird) |
+| ambient-ocean  | 16s loop | Ocean mode background (rumble + bubbles) |
+| monkey-call    | 1.5s     | Session start (Island)                |
+| dolphin-call   | 0.8s     | Session start (Ocean)                 |
+| bubble         | 0.2s     | Bubble effects                        |
+| chime          | 1.2s     | User message / notification           |
+| typewriter     | 1.5s     | Edit/create tool execution            |
+| coconut-crack  | 0.8s     | Bash tool execution                   |
+| error          | 0.6s     | Tool execution failure                |
+| success        | 0.8s     | Tool success / turn end               |
+| goodbye        | 2.5s     | Session shutdown                      |
+
+See [`docs/09-sounds.md`](docs/09-sounds.md) for synthesis details, spectrograms, and regeneration instructions.
 
 ### 🎯 Across All Modes
-- **Activity Bar** — top overlay showing agent state, sub-agent count, tool count, event rate
-- **Session selector** — switch between copilot sessions from the status bar
+
+- **Activity Bar** — bottom bar (above Status Bar) showing agent state, sub-agent count, tool count, event rate, session duration
+- **Status Bar** — bottom bar with session selector, Events toggle (📋), Sound toggle (🔊/🔇), mode tabs, settings gear
+- **Settings page** — full-screen settings with mode selector, audio controls, monitoring info, about section
+- **Session selector** — switch between copilot sessions from the status bar dropdown
 - **Process monitoring** — tracks copilot CLI processes with CPU%, memory, threads
 - **Session playback** — replay synthetic sessions for testing and demos
 
@@ -132,27 +155,20 @@ npm run dev
 
 The installed app and dev version run independently — different Electron processes, different app data directories. They both monitor the same `~/.copilot/session-state/` (read-only), so you can have the stable version running while developing.
 
-### Run Tests
+### npm Scripts
 
-```bash
-# Unit tests (fast!)
-npm run test:unit
-
-# E2E tests (launches app, tests all modes, visual regression)
-npm run test:e2e
-
-# Update visual regression screenshots
-npm run test:e2e:update
-
-# Type checking
-npm run typecheck
-
-# Smoke test — launches app, verifies debug server responds, exits
-npm run test:smoke
-
-# Everything
-npm run typecheck && npm run test:unit && npm run build
-```
+| Script                | Description                                              |
+|-----------------------|----------------------------------------------------------|
+| `npm run dev`         | Start app in dev mode with hot reload                    |
+| `npm run build`       | Production build via electron-vite                       |
+| `npm run preview`     | Preview the production build                             |
+| `npm run typecheck`   | TypeScript type checking (node + web)                    |
+| `npm run lint`        | ESLint with auto-fix                                     |
+| `npm run test:unit`   | Unit tests with Vitest (226 tests)                       |
+| `npm run test:e2e`    | E2E tests with Playwright (launches app, visual regression) |
+| `npm run test:e2e:update` | Update visual regression screenshot baselines        |
+| `npm run test:smoke`  | Build + launch app + verify debug server responds        |
+| `npm run check`       | Scan copilot sessions for schema compatibility           |
 
 > **Note:** E2E tests use Playwright with Electron. They launch the app at a fixed 1200×800 window (1x scale factor) for deterministic screenshots. Run `npm run test:e2e:update` after visual changes to update baselines.
 
@@ -197,17 +213,19 @@ The meta-beauty: a copilot monitoring app, built by copilot, monitored by itself
 
 ## 🛠️ Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| Framework | Electron + electron-vite |
-| Language | TypeScript |
-| UI | React 19 + Zustand |
-| Schema Validation | Zod (resilient parsing) |
-| Charts | Nivo |
-| Database | SQLite (better-sqlite3) |
-| File Watching | Chokidar |
-| Testing | Vitest + Playwright |
-| CI/CD | GitHub Actions (3 OS) |
+| Component         | Technology                       |
+|-------------------|----------------------------------|
+| Framework         | Electron 40 + electron-vite 5   |
+| Language          | TypeScript 5.7                   |
+| UI                | React 19 + Zustand 5            |
+| Schema Validation | Zod 4 (resilient parsing)        |
+| Charts            | Nivo (line + bar)                |
+| 3D                | Three.js + @react-three/fiber + drei |
+| Audio             | Howler.js (11 synthesized sounds) |
+| Database          | SQLite (better-sqlite3)          |
+| File Watching     | Chokidar                         |
+| Testing           | Vitest 4 + Playwright            |
+| CI/CD             | GitHub Actions (3 OS)            |
 
 ## 📁 Project Structure
 
@@ -222,13 +240,35 @@ src/
 ├── preload/           # Secure context bridge
 ├── renderer/          # React UI
 │   ├── modes/         # Vanilla, Island, Learn, Ocean
-│   ├── store/         # Zustand stores
-│   └── components/    # StatusBar, SettingsPanel
+│   ├── audio/         # AudioManager, event-sound mapping, hooks
+│   ├── store/         # Zustand stores (app-store, monitoring-store)
+│   └── components/    # ActivityBar, StatusBar, SettingsPanel
 └── shared/            # Types, IPC channels, config
 
-scripts/
-└── smoke-test.sh      # Launch app & verify debug server responds
+docs/                  # Specifications and design docs (01–10)
+resources/audio/       # Generated MP3 sounds + Python generators
+scripts/               # smoke-test.sh, capture-screenshots.sh
+test/
+├── unit/              # 226 Vitest tests (15 test files)
+├── e2e/               # Playwright E2E + visual regression
+└── fixtures/          # JSONL event fixtures for testing
 ```
+
+## 📚 Documentation
+
+| Doc                                              | Description                              |
+|--------------------------------------------------|------------------------------------------|
+| [`docs/01-copilot-cli-internals.md`](docs/01-copilot-cli-internals.md)   | Copilot CLI event types and structure    |
+| [`docs/02-electron-app-architecture.md`](docs/02-electron-app-architecture.md) | App architecture and process model  |
+| [`docs/03-monitoring-data-model.md`](docs/03-monitoring-data-model.md)   | Data model and schema resilience         |
+| [`docs/04-visual-modes-scenes.md`](docs/04-visual-modes-scenes.md)     | Visual modes and 3D scene design         |
+| [`docs/05-testing-strategy.md`](docs/05-testing-strategy.md)           | Testing pyramid and observability        |
+| [`docs/06-ci-cd-release.md`](docs/06-ci-cd-release.md)                 | CI/CD workflows and release pipeline     |
+| [`docs/07-decisions-log.md`](docs/07-decisions-log.md)                 | Architecture decisions log               |
+| [`docs/08-future-ideas.md`](docs/08-future-ideas.md)                   | Future ideas and feature backlog         |
+| [`docs/09-sounds.md`](docs/09-sounds.md)                               | Sound synthesis and audio system         |
+| [`docs/10-review.md`](docs/10-review.md)                               | Project review and v1.0 recommendations  |
+| [`docs/progress.md`](docs/progress.md)                                 | Development progress tracker             |
 
 ## 🤝 Contributing
 

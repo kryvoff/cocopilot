@@ -41,11 +41,11 @@ watcher.on('add', (filepath) => {
 
 Poll for copilot processes using platform-specific approaches:
 
-| Platform | Method |
-|----------|--------|
-| macOS | `ps aux \| grep copilot` |
-| Linux | `/proc/<pid>/` filesystem |
-| Windows | `tasklist /FI "IMAGENAME eq copilot.exe"` |
+| Platform | Method                                    |               |
+| -------- | ----------------------------------------- | ------------- |
+| macOS    | `ps aux \                                 | grep copilot` |
+| Linux    | `/proc/<pid>/` filesystem                 |               |
+| Windows  | `tasklist /FI "IMAGENAME eq copilot.exe"` |               |
 
 Cross-platform: Use the `ps-list` npm package.
 

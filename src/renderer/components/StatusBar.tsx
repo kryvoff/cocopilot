@@ -69,7 +69,7 @@ function StatusBar(): React.JSX.Element {
           onClick={() => setHudVisible(!hudVisible)}
           title={hudVisible ? 'Hide events panel' : 'Show events panel'}
         >
-          Events
+          📋
         </button>
         <button
           className="mode-button"

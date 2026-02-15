@@ -1,4 +1,5 @@
 import React from 'react'
+import * as THREE from 'three'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import UnderwaterSky from './UnderwaterSky'
@@ -49,6 +50,20 @@ function OceanMode(): React.JSX.Element {
         <OceanFloor />
         <CoralReef />
         <OceanCreatures activeTool={toolActive} activityLevel={activityLevel} />
+
+        {/* Water surface visible from below */}
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 12, 0]}>
+          <planeGeometry args={[200, 200, 32, 32]} />
+          <meshPhongMaterial
+            color="#4fc3f7"
+            specular={new THREE.Color('#ffffff')}
+            shininess={200}
+            transparent
+            opacity={0.3}
+            side={THREE.DoubleSide}
+            flatShading
+          />
+        </mesh>
 
         {/* Flipper the dolphin — created in separate file */}
         {/* <Flipper state={flipperState} position={[0, 2, 0]} /> */}

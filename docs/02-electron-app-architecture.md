@@ -2,20 +2,20 @@
 
 ## Tech Stack (Decided)
 
-| Component | Technology | Rationale |
-|-----------|-----------|-----------|
-| Framework | Electron 34.x | Cross-platform desktop |
-| Build Tool | electron-vite | Purpose-built for Electron+Vite, fast HMR |
-| Language | TypeScript 5.x | Type safety throughout |
-| 3D Rendering | Three.js + @react-three/fiber + drei | Declarative 3D as React components |
-| Audio | Howler.js 2.x | Cross-platform audio playback |
-| UI Framework | React 19 | Component model, works with R3F |
-| State Management | Zustand | Lightweight, TypeScript-friendly, works with R3F |
-| Charting | Nivo | React-native, timeline/calendar visualizations, SVG+Canvas |
-| Database | SQLite (better-sqlite3) | Persistent analytics, aggregation queries |
-| Testing | Vitest + Playwright | Unit/integration + E2E with visual regression |
-| Packaging | electron-builder | Cross-platform builds |
-| CI/CD | GitHub Actions | Build/test/release pipeline |
+| Component        | Technology                           | Rationale                                                  |
+| ---------------- | ------------------------------------ | ---------------------------------------------------------- |
+| Framework        | Electron 34.x                        | Cross-platform desktop                                     |
+| Build Tool       | electron-vite                        | Purpose-built for Electron+Vite, fast HMR                  |
+| Language         | TypeScript 5.x                       | Type safety throughout                                     |
+| 3D Rendering     | Three.js + @react-three/fiber + drei | Declarative 3D as React components                         |
+| Audio            | Howler.js 2.x                        | Cross-platform audio playback                              |
+| UI Framework     | React 19                             | Component model, works with R3F                            |
+| State Management | Zustand                              | Lightweight, TypeScript-friendly, works with R3F           |
+| Charting         | Nivo                                 | React-native, timeline/calendar visualizations, SVG+Canvas |
+| Database         | SQLite (better-sqlite3)              | Persistent analytics, aggregation queries                  |
+| Testing          | Vitest + Playwright                  | Unit/integration + E2E with visual regression              |
+| Packaging        | electron-builder                     | Cross-platform builds                                      |
+| CI/CD            | GitHub Actions                       | Build/test/release pipeline                                |
 
 ## Design Principles
 
@@ -27,12 +27,12 @@
 
 ## App Modes
 
-| Mode | Version | Description |
-|------|---------|-------------|
-| **Vanilla** | v0.1 | Default dashboard with event timeline, stats, and charts |
-| **Island** | v0.2 | 3D tropical island with Coco (monkey) and sub-agent monkeys |
-| **Learn** | v0.2.5 | Interactive tutorials explaining Copilot CLI features |
-| **Ocean** | v0.3 | 3D ocean scene with Flipper (dolphin) and sea creatures |
+| Mode        | Version | Description                                                 |
+| ----------- | ------- | ----------------------------------------------------------- |
+| **Vanilla** | v0.1    | Default dashboard with event timeline, stats, and charts    |
+| **Island**  | v0.2    | 3D tropical island with Coco (monkey) and sub-agent monkeys |
+| **Learn**   | v0.2.5  | Interactive tutorials explaining Copilot CLI features       |
+| **Ocean**   | v0.3    | 3D ocean scene with Flipper (dolphin) and sea creatures     |
 
 ### Characters
 - **Coco** — A small monkey, main character in Island mode, represents the active copilot session

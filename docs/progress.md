@@ -1,6 +1,6 @@
 # Cocopilot Progress Tracker
 
-## Current Phase: v0.2 Development
+## Current Phase: v0.5 Release
 
 ### 2026-02-15
 
@@ -236,7 +236,26 @@
 - [x] Sound docs: `docs/09-sounds.md`, `visualize_sounds.py` generates SVG spectrograms + waveforms
 - [x] 226 tests pass, typecheck clean
 
+#### Session 18: Documentation Polish
+- [x] Formatted all markdown tables in docs/ to fixed-width aligned columns (10 files processed)
+- [x] Updated `docs/09-sounds.md` Visualizations section with generation commands and index.html reference
+
+#### Session 19: Three UI Fixes
+- [x] ActivityBar sub-agent count: uses coco-state/flipper-state stores in island/ocean modes (fixes "0 agents" when events outside 100-event window)
+- [x] StatusBar: replaced "Events" text button with 📋 icon
+- [x] Ocean mode: added translucent water surface plane at y=12, darkened UnderwaterSky bottomColor (#0288D1→#01579B) for more contrast
+- [x] 226 tests pass, typecheck clean
+
+#### Session 18: Project Review & Documentation
+- [x] Created `docs/10-review.md` — comprehensive project review covering architecture, what works, gaps, tech debt, v1.0 recommendations
+- [x] Updated `README.md` — v0.5 badge, Learn mode 4 tabs, 11 sounds table, Settings as page, ActivityBar+StatusBar at bottom, npm scripts table, docs table, aligned markdown tables, docs/09-sounds.md reference
+
 #### Next Iteration
+- [ ] Wire Settings audio controls to app store (currently uses local useState)
+- [ ] Persist user preferences (mode, audio) across restarts
+- [ ] Fix visual regression CI (compare, don't auto-update)
+- [ ] Bump package.json version to 0.5.0
+- [ ] Update docs/05-testing-strategy.md to match actual scripts/files
 - [ ] Additional polish and bug fixes from user testing
 - [ ] v1.0 final MVP release preparation
 
@@ -244,12 +263,12 @@
 
 ## Version Roadmap
 
-| Version | Milestone | Status |
-|---------|-----------|--------|
-| v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released |
-| v0.2 | Island Mode (Coco + 3D scene + audio) | ✅ Released |
-| v0.2.5 | Learn Mode (tutorials + event catalog + playback) | ✅ Released |
-| v0.3 | Ocean Mode (Flipper + underwater world) | ✅ Released |
-| v0.4 | Visual regression tests, performance optimization | ✅ Complete |
-| v0.5 | Audio polish, bug fixes | 🔄 In progress |
-| v1.0 | Final MVP — polished, tested, documented | 📋 Planned |
+| Version | Milestone                                          | Status        |
+| ------- | -------------------------------------------------- | ------------- |
+| v0.1    | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released    |
+| v0.2    | Island Mode (Coco + 3D scene + audio)              | ✅ Released    |
+| v0.2.5  | Learn Mode (tutorials + event catalog + playback)  | ✅ Released    |
+| v0.3    | Ocean Mode (Flipper + underwater world)            | ✅ Released    |
+| v0.4    | Visual regression tests, performance optimization  | ✅ Complete    |
+| v0.5    | UI polish, review, docs, session stats             | ✅ Released    |
+| v1.0    | Final MVP — polished, tested, documented           | 📋 Planned     |

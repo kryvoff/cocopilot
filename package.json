@@ -1,6 +1,6 @@
 {
   "name": "cocopilot",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "description": "Coco the copilot for copilot — monitor GitHub Copilot CLI activity with dashboards, 3D scenes, and audio",
   "author": "Christoph Deil",
   "license": "MIT",

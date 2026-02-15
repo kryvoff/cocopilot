@@ -62,64 +62,64 @@ The events.jsonl file contains one JSON object per line. Each event has:
 ### Complete Event Type Catalog
 
 #### Session Lifecycle
-| Type | Key Data Fields | Ephemeral |
-|------|----------------|-----------|
-| `session.start` | sessionId, copilotVersion, startTime, context{cwd, gitRoot, repository, branch} | No |
-| `session.resume` | resumeTime, eventCount, context | No |
-| `session.idle` | (empty) | Yes |
-| `session.error` | errorType, message, stack, statusCode | No |
-| `session.shutdown` | **totalPremiumRequests, totalApiDurationMs, codeChanges, modelMetrics** | Yes |
-| `session.info` | infoType, message | No |
-| `session.warning` | warningType, message | No |
-| `session.model_change` | previousModel, newModel | No |
-| `session.title_changed` | title | Yes |
-| `session.handoff` | handoffTime, sourceType, repository, summary | No |
-| `session.context_changed` | cwd, gitRoot, repository, branch | No |
-| `session.truncation` | tokenLimit, pre/postTruncationTokens, tokensRemoved | No |
-| `session.snapshot_rewind` | upToEventId, eventsRemoved | Yes |
-| `session.usage_info` | tokenLimit, currentTokens, messagesLength | Yes |
-| `session.compaction_start` | (empty) | No |
-| `session.compaction_complete` | success, pre/postCompactionTokens, summaryContent | No |
+| Type                          | Key Data Fields                                                                 | Ephemeral |
+| ----------------------------- | ------------------------------------------------------------------------------- | --------- |
+| `session.start`               | sessionId, copilotVersion, startTime, context{cwd, gitRoot, repository, branch} | No        |
+| `session.resume`              | resumeTime, eventCount, context                                                 | No        |
+| `session.idle`                | (empty)                                                                         | Yes       |
+| `session.error`               | errorType, message, stack, statusCode                                           | No        |
+| `session.shutdown`            | **totalPremiumRequests, totalApiDurationMs, codeChanges, modelMetrics**         | Yes       |
+| `session.info`                | infoType, message                                                               | No        |
+| `session.warning`             | warningType, message                                                            | No        |
+| `session.model_change`        | previousModel, newModel                                                         | No        |
+| `session.title_changed`       | title                                                                           | Yes       |
+| `session.handoff`             | handoffTime, sourceType, repository, summary                                    | No        |
+| `session.context_changed`     | cwd, gitRoot, repository, branch                                                | No        |
+| `session.truncation`          | tokenLimit, pre/postTruncationTokens, tokensRemoved                             | No        |
+| `session.snapshot_rewind`     | upToEventId, eventsRemoved                                                      | Yes       |
+| `session.usage_info`          | tokenLimit, currentTokens, messagesLength                                       | Yes       |
+| `session.compaction_start`    | (empty)                                                                         | No        |
+| `session.compaction_complete` | success, pre/postCompactionTokens, summaryContent                               | No        |
 
 #### User & Assistant
-| Type | Key Data Fields | Ephemeral |
-|------|----------------|-----------|
-| `user.message` | content, attachments, **agentMode** (interactive/plan/autopilot/shell) | No |
-| `assistant.turn_start` | turnId | No |
-| `assistant.turn_end` | turnId | No |
-| `assistant.intent` | intent | Yes |
-| `assistant.reasoning` | reasoningId, content | No |
-| `assistant.reasoning_delta` | reasoningId, deltaContent | Yes |
-| `assistant.message` | messageId, content, toolRequests[], reasoningText | No |
-| `assistant.message_delta` | messageId, deltaContent | Yes |
-| `assistant.usage` | **model, inputTokens, outputTokens, cacheReadTokens, cost, duration, quotaSnapshots** | Yes |
-| `pending_messages.modified` | (empty) | Yes |
-| `abort` | reason | No |
+| Type                        | Key Data Fields                                                                       | Ephemeral |
+| --------------------------- | ------------------------------------------------------------------------------------- | --------- |
+| `user.message`              | content, attachments, **agentMode** (interactive/plan/autopilot/shell)                | No        |
+| `assistant.turn_start`      | turnId                                                                                | No        |
+| `assistant.turn_end`        | turnId                                                                                | No        |
+| `assistant.intent`          | intent                                                                                | Yes       |
+| `assistant.reasoning`       | reasoningId, content                                                                  | No        |
+| `assistant.reasoning_delta` | reasoningId, deltaContent                                                             | Yes       |
+| `assistant.message`         | messageId, content, toolRequests[], reasoningText                                     | No        |
+| `assistant.message_delta`   | messageId, deltaContent                                                               | Yes       |
+| `assistant.usage`           | **model, inputTokens, outputTokens, cacheReadTokens, cost, duration, quotaSnapshots** | Yes       |
+| `pending_messages.modified` | (empty)                                                                               | Yes       |
+| `abort`                     | reason                                                                                | No        |
 
 #### Tool Execution
-| Type | Key Data Fields | Ephemeral |
-|------|----------------|-----------|
-| `tool.user_requested` | toolCallId, toolName, arguments | No |
-| `tool.execution_start` | toolCallId, toolName, arguments, mcpServerName | No |
-| `tool.execution_partial_result` | toolCallId, partialOutput | Yes |
-| `tool.execution_progress` | toolCallId, progressMessage | Yes |
-| `tool.execution_complete` | toolCallId, success, result, error, toolTelemetry | No |
+| Type                            | Key Data Fields                                   | Ephemeral |
+| ------------------------------- | ------------------------------------------------- | --------- |
+| `tool.user_requested`           | toolCallId, toolName, arguments                   | No        |
+| `tool.execution_start`          | toolCallId, toolName, arguments, mcpServerName    | No        |
+| `tool.execution_partial_result` | toolCallId, partialOutput                         | Yes       |
+| `tool.execution_progress`       | toolCallId, progressMessage                       | Yes       |
+| `tool.execution_complete`       | toolCallId, success, result, error, toolTelemetry | No        |
 
 #### Sub-agents & Fleet
-| Type | Key Data Fields | Ephemeral |
-|------|----------------|-----------|
-| `subagent.started` | toolCallId, agentName, agentDisplayName, agentDescription | No |
-| `subagent.completed` | toolCallId, agentName, agentDisplayName | No |
-| `subagent.failed` | toolCallId, agentName, error | No |
-| `subagent.selected` | agentName, agentDisplayName, tools[] | No |
+| Type                 | Key Data Fields                                           | Ephemeral |
+| -------------------- | --------------------------------------------------------- | --------- |
+| `subagent.started`   | toolCallId, agentName, agentDisplayName, agentDescription | No        |
+| `subagent.completed` | toolCallId, agentName, agentDisplayName                   | No        |
+| `subagent.failed`    | toolCallId, agentName, error                              | No        |
+| `subagent.selected`  | agentName, agentDisplayName, tools[]                      | No        |
 
 #### Skills & Hooks
-| Type | Key Data Fields | Ephemeral |
-|------|----------------|-----------|
-| `skill.invoked` | name, path, content, allowedTools | No |
-| `hook.start` | hookInvocationId, hookType, input | No |
-| `hook.end` | hookInvocationId, hookType, output, success | No |
-| `system.message` | content, role, name, metadata | No |
+| Type             | Key Data Fields                             | Ephemeral |
+| ---------------- | ------------------------------------------- | --------- |
+| `skill.invoked`  | name, path, content, allowedTools           | No        |
+| `hook.start`     | hookInvocationId, hookType, input           | No        |
+| `hook.end`       | hookInvocationId, hookType, output, success | No        |
+| `system.message` | content, role, name, metadata               | No        |
 
 ## Critical Data for Cocopilot
 

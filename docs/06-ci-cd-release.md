@@ -129,11 +129,11 @@ jobs:
 
 ## Build Targets
 
-| Platform | Format | Architecture |
-|----------|--------|-------------|
-| macOS | `.dmg` | universal (x64 + arm64) |
-| Linux | `.AppImage` | x64 |
-| Windows | `.exe` (NSIS) | x64 |
+| Platform | Format        | Architecture            |
+| -------- | ------------- | ----------------------- |
+| macOS    | `.dmg`        | universal (x64 + arm64) |
+| Linux    | `.AppImage`   | x64                     |
+| Windows  | `.exe` (NSIS) | x64                     |
 
 ## electron-builder Configuration
 
