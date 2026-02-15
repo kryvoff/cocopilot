@@ -80,40 +80,60 @@ on:
     tags: ['v*']
 
 jobs:
-  build-and-release:
+  release:
     strategy:
       matrix:
         include:
           - os: macos-latest
-            targets: dmg,zip
+            platform: mac
           - os: ubuntu-latest
-            targets: AppImage,deb
+            platform: linux
           - os: windows-latest
-            targets: nsis,portable
+            platform: win
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with:
+          node-version: 22
+          cache: npm
       - run: npm ci
       - run: npm run build
-      - name: Build Electron packages
-        run: npx electron-builder --${{ matrix.targets }}
+      - name: Build distributable
+        run: npx electron-builder --${{ matrix.platform }} --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: softprops/action-gh-release@v2
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
         with:
-          files: dist/*
+          name: dist-${{ matrix.platform }}
+          path: |
+            dist/*.dmg
+            dist/*.AppImage
+            dist/*.exe
+            dist/*.zip
+          if-no-files-found: ignore
+      - name: Create GitHub Release
+        if: matrix.platform == 'mac'
+        uses: softprops/action-gh-release@v2
+        with:
           draft: true
+          generate_release_notes: true
+          files: dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Build Targets
 
 | Platform | Format | Architecture |
 |----------|--------|-------------|
-| macOS | `.dmg`, `.zip` | x64, arm64 (universal) |
-| Linux | `.AppImage`, `.deb` | x64, arm64 |
-| Windows | `.exe` (NSIS), portable | x64 |
+| macOS | `.dmg` | universal (x64 + arm64) |
+| Linux | `.AppImage` | x64 |
+| Windows | `.exe` (NSIS) | x64 |
 
 ## electron-builder Configuration
 
@@ -122,34 +142,40 @@ jobs:
 appId: com.cocopilot.app
 productName: Cocopilot
 directories:
+  buildResources: resources
   output: dist
-  buildResources: build
 files:
   - out/**/*
   - '!external/**'
   - '!docs/**'
   - '!test/**'
+asar: true
+asarUnpack:
+  - '**/*.node'
 mac:
   category: public.app-category.developer-tools
+  identity: null
   target:
     - target: dmg
-      arch: [universal]
-    - target: zip
       arch: [universal]
 linux:
   target:
     - target: AppImage
-      arch: [x64, arm64]
-    - target: deb
-      arch: [x64, arm64]
+      arch: [x64]
   category: Development
 win:
   target:
     - target: nsis
       arch: [x64]
-    - target: portable
-      arch: [x64]
+npmRebuild: true
 ```
+
+## Code Signing
+
+No code signing is configured for now:
+- macOS: `identity: null` in electron-builder config + `CSC_IDENTITY_AUTO_DISCOVERY=false` in CI
+- Windows: No signing config
+- `forceCodeSigning: false` (default)
 
 ## Version Management
 

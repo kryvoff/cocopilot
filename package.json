@@ -2,6 +2,8 @@
   "name": "cocopilot",
   "version": "0.1.0",
   "description": "Coco the copilot for copilot — monitor GitHub Copilot CLI activity with dashboards, 3D scenes, and audio",
+  "author": "Christoph Deil",
+  "license": "MIT",
   "main": "./out/main/index.js",
   "private": true,
   "scripts": {
@@ -37,7 +39,6 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/tsconfig": "^2.0.0",
     "@electron-toolkit/utils": "^4.0.0",
-    "@electron/rebuild": "^4.0.0",
     "@types/better-sqlite3": "^7.6.12",
     "@types/node": "^22.12.0",
     "@types/react": "^19.0.8",

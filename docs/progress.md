@@ -79,6 +79,21 @@
 - [x] **README update**: Added CLI check docs, smoke test, dev vs stable instructions, updated feature list & project structure
 - [x] 53 tests pass, typecheck clean, build succeeds
 
+#### Session 6: Release Workflow
+- [x] Created `.github/workflows/release.yml` — builds macOS/Linux/Windows distributables on `v*` tag push
+- [x] Uploads artifacts per platform, creates draft GitHub Release with auto-generated notes
+- [x] `CSC_IDENTITY_AUTO_DISCOVERY=false` prevents macOS code signing in CI
+- [x] Updated `docs/06-ci-cd-release.md` to match actual workflow and electron-builder config
+
+#### Session 7: v0.1 Release — Bug Fixes, Build, Release
+- [x] **Fix stale sessions (root cause)**: New sessions from filesystem now use `events.jsonl` mtime to detect staleness — sessions with no activity >1hr are immediately marked "completed" instead of "active"
+- [x] **Fix session update propagation**: `markStaleSessions()` now emits `session-updated` events so the renderer UI updates in real-time
+- [x] **Disable code signing**: Added `mac.identity: null` + `forceCodeSigning: false` in electron-builder.yml, `CSC_IDENTITY_AUTO_DISCOVERY=false` in CI
+- [x] **Fix build warnings**: Added `author` field to package.json, removed redundant `@electron/rebuild` devDependency (bundled in electron-builder)
+- [x] **Release workflow**: Separated build (3 platforms) and release (single job downloads all artifacts, creates draft release)
+- [x] **Verified**: 53 tests pass, typecheck clean, build succeeds, smoke test passes, DMG builds (203MB universal), debug API shows 1 active / 20 completed sessions
+- [x] Committed and tagged v0.1.0
+
 #### Upcoming
 - [ ] Add tool call details view (expand tool executions inline)
 - [ ] Add session export (JSON/CSV)
@@ -90,7 +105,7 @@
 
 | Version | Milestone | Status |
 |---------|-----------|--------|
-| v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | 🔧 In Progress |
+| v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released |
 | v0.2 | Island Mode (Coco + 3D scene + audio) | 📋 Spec'd |
 | v0.2.5 | Learn Mode (tutorials + session playback) | 📋 Spec'd |
 | v0.3 | Ocean Mode (Flipper + ocean scene) | 📋 Spec'd |

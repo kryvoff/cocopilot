@@ -1,4 +1,6 @@
 import { EventEmitter } from 'events'
+import { statSync } from 'fs'
+import { join } from 'path'
 import type { ParsedEvent, SessionInfo, SchemaCompatibility } from '@shared/events'
 import { schemaTracker } from './event-parser'
 import type { Queries } from '../database/queries'
@@ -85,18 +87,41 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
       if (now - latestTime > staleThresholdMs) {
         session.status = 'completed'
         this.queries?.upsertSession(session)
+        this.emit('session-updated', session)
       }
     }
   }
 
   addSession(sessionId: string, dir: string): void {
-    if (this.sessions.has(sessionId)) return
+    if (this.sessions.has(sessionId)) {
+      // Update cwd if it was empty (loaded from DB without dir info)
+      const existing = this.sessions.get(sessionId)!
+      if (!existing.cwd && dir) {
+        existing.cwd = dir
+      }
+      return
+    }
+
+    // Use events.jsonl mtime to determine if session is fresh or stale
+    let startTime = new Date().toISOString()
+    let status: SessionInfo['status'] = 'active'
+    try {
+      const eventsFile = join(dir, 'events.jsonl')
+      const stat = statSync(eventsFile)
+      startTime = stat.birthtime.toISOString()
+      const staleThresholdMs = 60 * 60 * 1000 // 1 hour
+      if (Date.now() - stat.mtimeMs > staleThresholdMs) {
+        status = 'completed'
+      }
+    } catch {
+      // No events file yet — session just started
+    }
 
     const session: SessionInfo = {
       id: sessionId,
       cwd: dir,
-      status: 'active',
-      startTime: new Date().toISOString(),
+      status,
+      startTime,
       eventCount: 0
     }
     this.sessions.set(sessionId, session)

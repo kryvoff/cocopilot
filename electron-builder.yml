@@ -13,6 +13,7 @@ asarUnpack:
   - '**/*.node'
 mac:
   category: public.app-category.developer-tools
+  identity: null
   target:
     - target: dmg
       arch:
@@ -29,3 +30,4 @@ win:
       arch:
         - x64
 npmRebuild: true
+forceCodeSigning: false
