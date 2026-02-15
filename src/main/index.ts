@@ -4,8 +4,10 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { FileWatcher, SessionStore } from './monitoring'
 import { registerIpcHandlers } from './ipc/monitoring-ipc'
 import { startDebugServer, stopDebugServer } from './observability/debug-server'
+import { getDatabase, closeDatabase } from './database/schema'
+import { Queries } from './database/queries'
 
-const sessionStore = new SessionStore()
+let sessionStore: SessionStore
 const fileWatcher = new FileWatcher()
 
 function createWindow(): BrowserWindow {
@@ -59,6 +61,12 @@ app.whenReady().then(() => {
   app.name = 'Cocopilot'
   electronApp.setAppUserModelId('com.cocopilot.app')
 
+  // Initialize database and session store
+  const db = getDatabase()
+  const queries = new Queries(db)
+  sessionStore = new SessionStore(queries)
+  sessionStore.loadFromDatabase()
+
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
@@ -95,4 +103,5 @@ app.on('window-all-closed', () => {
 app.on('will-quit', () => {
   fileWatcher.stop()
   stopDebugServer()
+  closeDatabase()
 })

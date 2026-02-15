@@ -1,5 +1,7 @@
 import React from 'react'
 import EventTimeline from './EventTimeline'
+import StatsCards from './StatsCards'
+import EventTypeChart from './EventTypeChart'
 import { useMonitoringStore } from '../../store/monitoring-store'
 
 function VanillaMode(): React.JSX.Element {
@@ -61,6 +63,8 @@ function VanillaMode(): React.JSX.Element {
         </div>
       )}
 
+      <StatsCards />
+      <EventTypeChart />
       <EventTimeline />
     </div>
   )

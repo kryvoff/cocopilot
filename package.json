@@ -14,7 +14,8 @@
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx --fix",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
-    "test": "npm run test:unit"
+    "test": "npm run test:unit",
+    "check": "npx tsx --tsconfig tsconfig.node.json src/main/cli/check.ts"
   },
   "dependencies": {
     "@nivo/bar": "^0.99.0",

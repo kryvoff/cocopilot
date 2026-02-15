@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events'
 import type { ParsedEvent, SessionInfo, SchemaCompatibility } from '@shared/events'
 import { schemaTracker } from './event-parser'
+import type { Queries } from '../database/queries'
 
 export interface SessionStoreEvents {
   'session-updated': [session: SessionInfo]
@@ -11,6 +12,54 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
   private sessions = new Map<string, SessionInfo>()
   private events = new Map<string, ParsedEvent[]>()
   private copilotVersion: string | null = null
+  private queries: Queries | null
+
+  constructor(queries?: Queries) {
+    super()
+    this.queries = queries ?? null
+  }
+
+  /** Load persisted sessions and events from the database into memory. */
+  loadFromDatabase(): void {
+    if (!this.queries) return
+
+    const rows = this.queries.listSessions(10000) as Array<Record<string, unknown>>
+    for (const row of rows) {
+      const session: SessionInfo = {
+        id: row.id as string,
+        cwd: (row.cwd as string) ?? '',
+        gitRoot: (row.git_root as string) ?? undefined,
+        repository: (row.repository as string) ?? undefined,
+        branch: (row.branch as string) ?? undefined,
+        copilotVersion: (row.copilot_version as string) ?? undefined,
+        status: (row.status as SessionInfo['status']) ?? 'active',
+        startTime: (row.start_time as string) ?? new Date().toISOString(),
+        endTime: (row.end_time as string) ?? undefined,
+        summary: (row.summary as string) ?? undefined,
+        eventCount: 0
+      }
+      this.sessions.set(session.id, session)
+
+      const eventRows = this.queries.getEventsBySession(session.id, 100000) as Array<
+        Record<string, unknown>
+      >
+      const events: ParsedEvent[] = eventRows.map((e) => ({
+        type: e.type as string,
+        id: e.id as string,
+        timestamp: e.timestamp as string,
+        parentId: (e.parent_id as string) ?? null,
+        ephemeral: e.ephemeral === 1,
+        data: JSON.parse((e.data_json as string) ?? '{}'),
+        knownType: true
+      }))
+      this.events.set(session.id, events)
+      session.eventCount = events.length
+
+      if (session.copilotVersion) {
+        this.copilotVersion = session.copilotVersion
+      }
+    }
+  }
 
   addSession(sessionId: string, dir: string): void {
     if (this.sessions.has(sessionId)) return
@@ -24,6 +73,7 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
     }
     this.sessions.set(sessionId, session)
     this.events.set(sessionId, [])
+    this.queries?.upsertSession(session)
     this.emit('session-updated', session)
   }
 
@@ -39,14 +89,20 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
     this.events.set(sessionId, sessionEvents)
     session.eventCount = sessionEvents.length
 
+    this.queries?.insertEvent(sessionId, event)
+
     // Extract metadata from specific events
-    this.updateSessionFromEvent(session, event)
+    this.updateSessionFromEvent(session, event, sessionId)
 
     this.emit('session-updated', session)
     this.emit('event-added', sessionId, event)
   }
 
-  private updateSessionFromEvent(session: SessionInfo, event: ParsedEvent): void {
+  private updateSessionFromEvent(
+    session: SessionInfo,
+    event: ParsedEvent,
+    sessionId: string
+  ): void {
     switch (event.type) {
       case 'session.start': {
         const data = event.data
@@ -62,25 +118,45 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
           if (ctx.repository) session.repository = ctx.repository as string
           if (ctx.branch) session.branch = ctx.branch as string
         }
+        this.queries?.upsertSession(session)
         break
       }
       case 'session.shutdown':
         session.status = 'completed'
         session.endTime = event.timestamp
+        this.queries?.upsertSession(session)
         break
       case 'session.error':
         session.status = 'error'
+        this.queries?.upsertSession(session)
         break
       case 'session.idle':
         if (session.status === 'active') session.status = 'idle'
+        this.queries?.upsertSession(session)
         break
       case 'session.title_changed':
         if (event.data.title) session.summary = event.data.title as string
+        this.queries?.upsertSession(session)
         break
       case 'user.message':
       case 'assistant.turn_start':
         session.status = 'active'
+        this.queries?.upsertSession(session)
         break
+      case 'assistant.usage': {
+        const usage = event.data
+        this.queries?.insertUsageRecord(sessionId, {
+          model: usage.model as string | undefined,
+          inputTokens: usage.inputTokens as number | undefined,
+          outputTokens: usage.outputTokens as number | undefined,
+          cacheReadTokens: usage.cacheReadTokens as number | undefined,
+          cacheWriteTokens: usage.cacheWriteTokens as number | undefined,
+          cost: usage.cost as number | undefined,
+          durationMs: usage.duration as number | undefined,
+          timestamp: event.timestamp
+        })
+        break
+      }
     }
   }
 
