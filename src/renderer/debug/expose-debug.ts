@@ -1,6 +1,9 @@
 import { useAppStore } from '../store/app-store'
 import { useCocoStore } from '../modes/island/coco-state'
+import { useMonitoringStore } from '../store/monitoring-store'
 import { AudioManager } from '../audio/audio-manager'
+import { SessionPlayback } from './session-playback'
+import syntheticSession from '../../../test/fixtures/events/synthetic-session.jsonl?raw'
 
 export interface RendererDebugState {
   timestamp: string
@@ -48,4 +51,33 @@ export function exposeDebugState(): void {
 
   update()
   setInterval(update, 1000)
+
+  // Expose playback controls for debug API and DebugPanel
+  let activePlayback: SessionPlayback | null = null
+
+  const playbackApi = {
+    start: (speed?: number) => {
+      activePlayback?.stop()
+      activePlayback = new SessionPlayback({
+        speedMultiplier: speed ?? 5.0,
+        onComplete: () => {
+          console.log('[Playback] Complete')
+        }
+      })
+      useMonitoringStore.getState().playbackReset()
+      activePlayback.load(syntheticSession)
+      activePlayback.start()
+      return { status: 'started', events: activePlayback.getProgress().total }
+    },
+    stop: () => {
+      activePlayback?.stop()
+      return { status: 'stopped' }
+    },
+    status: () => ({
+      running: activePlayback?.isRunning() ?? false,
+      progress: activePlayback?.getProgress() ?? { current: 0, total: 0 }
+    })
+  }
+
+  ;(window as unknown as Record<string, unknown>).__cocopilot_playback = playbackApi
 }

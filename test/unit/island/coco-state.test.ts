@@ -25,7 +25,8 @@ describe('coco-state store', () => {
     useCocoStore.setState({
       state: 'hidden',
       toolActive: null,
-      subAgentCount: 0
+      subAgentCount: 0,
+      activeSubAgents: []
     })
   })
 
@@ -46,11 +47,12 @@ describe('coco-state store', () => {
       expect(useCocoStore.getState().state).toBe('idle')
     })
 
-    it('resets toolActive and subAgentCount', () => {
-      useCocoStore.setState({ toolActive: 'bash', subAgentCount: 3 })
+    it('resets toolActive, subAgentCount and activeSubAgents', () => {
+      useCocoStore.setState({ toolActive: 'bash', subAgentCount: 3, activeSubAgents: [{ id: 'a1', name: 'explore', startTime: 1 }] })
       useCocoStore.getState().processEvent(makeEvent('session.start'))
       expect(useCocoStore.getState().toolActive).toBeNull()
       expect(useCocoStore.getState().subAgentCount).toBe(0)
+      expect(useCocoStore.getState().activeSubAgents).toEqual([])
     })
 
     it('does not revert to idle if state changed before timeout', () => {
@@ -175,29 +177,41 @@ describe('coco-state store', () => {
   describe('subagent events', () => {
     it('increments subAgentCount on subagent.started', () => {
       useCocoStore.setState({ subAgentCount: 0 })
-      useCocoStore.getState().processEvent(makeEvent('subagent.started'))
+      useCocoStore.getState().processEvent(makeEvent('subagent.started', { agentId: 'a1', agentName: 'explore' }))
       expect(useCocoStore.getState().subAgentCount).toBe(1)
 
-      useCocoStore.getState().processEvent(makeEvent('subagent.started'))
+      useCocoStore.getState().processEvent(makeEvent('subagent.started', { agentId: 'a2', agentName: 'task' }))
       expect(useCocoStore.getState().subAgentCount).toBe(2)
     })
 
+    it('tracks activeSubAgents on subagent.started', () => {
+      useCocoStore.getState().processEvent(makeEvent('subagent.started', { agentId: 'a1', agentName: 'explore' }))
+      const agents = useCocoStore.getState().activeSubAgents
+      expect(agents).toHaveLength(1)
+      expect(agents[0].id).toBe('a1')
+      expect(agents[0].name).toBe('explore')
+    })
+
     it('decrements subAgentCount on subagent.completed', () => {
-      useCocoStore.setState({ subAgentCount: 2 })
-      useCocoStore.getState().processEvent(makeEvent('subagent.completed'))
+      useCocoStore.setState({ subAgentCount: 2, activeSubAgents: [{ id: 'a1', name: 'explore', startTime: 1 }, { id: 'a2', name: 'task', startTime: 2 }] })
+      useCocoStore.getState().processEvent(makeEvent('subagent.completed', { agentId: 'a1' }))
       expect(useCocoStore.getState().subAgentCount).toBe(1)
+      expect(useCocoStore.getState().activeSubAgents).toHaveLength(1)
+      expect(useCocoStore.getState().activeSubAgents[0].id).toBe('a2')
     })
 
     it('decrements subAgentCount on subagent.failed', () => {
-      useCocoStore.setState({ subAgentCount: 1 })
-      useCocoStore.getState().processEvent(makeEvent('subagent.failed'))
+      useCocoStore.setState({ subAgentCount: 1, activeSubAgents: [{ id: 'a1', name: 'explore', startTime: 1 }] })
+      useCocoStore.getState().processEvent(makeEvent('subagent.failed', { agentId: 'a1' }))
       expect(useCocoStore.getState().subAgentCount).toBe(0)
+      expect(useCocoStore.getState().activeSubAgents).toHaveLength(0)
     })
 
     it('does not go below zero', () => {
-      useCocoStore.setState({ subAgentCount: 0 })
-      useCocoStore.getState().processEvent(makeEvent('subagent.completed'))
+      useCocoStore.setState({ subAgentCount: 0, activeSubAgents: [] })
+      useCocoStore.getState().processEvent(makeEvent('subagent.completed', { agentId: 'nonexistent' }))
       expect(useCocoStore.getState().subAgentCount).toBe(0)
+      expect(useCocoStore.getState().activeSubAgents).toHaveLength(0)
     })
   })
 

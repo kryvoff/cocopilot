@@ -135,6 +135,51 @@ const OPENAPI_SPEC = {
           }
         }
       }
+    },
+    '/api/playback/start': {
+      post: {
+        summary: 'Start session playback',
+        operationId: 'startPlayback',
+        description: 'Replays the synthetic session JSONL into the renderer monitoring store.',
+        parameters: [
+          {
+            name: 'speed',
+            in: 'query',
+            description: 'Speed multiplier (default 5.0, use 1.0 for real-time)',
+            schema: { type: 'number', default: 5.0 }
+          }
+        ],
+        responses: {
+          '200': {
+            description: 'Playback started',
+            content: { 'application/json': { schema: { type: 'object' } } }
+          }
+        }
+      }
+    },
+    '/api/playback/stop': {
+      post: {
+        summary: 'Stop session playback',
+        operationId: 'stopPlayback',
+        responses: {
+          '200': {
+            description: 'Playback stopped',
+            content: { 'application/json': { schema: { type: 'object' } } }
+          }
+        }
+      }
+    },
+    '/api/playback/status': {
+      get: {
+        summary: 'Playback status',
+        operationId: 'getPlaybackStatus',
+        responses: {
+          '200': {
+            description: 'Current playback progress',
+            content: { 'application/json': { schema: { type: 'object' } } }
+          }
+        }
+      }
     }
   }
 }
@@ -265,6 +310,70 @@ export function startDebugServer(store: SessionStore, processMonitor?: ProcessMo
                 mainProcessInfo: { uptime: process.uptime() }
               })
             )
+          }
+          break
+        }
+
+        case '/api/playback/start': {
+          res.setHeader('Content-Type', 'application/json')
+          res.setHeader('Access-Control-Allow-Origin', '*')
+          const pbWin = BrowserWindow.getAllWindows()[0]
+          if (pbWin) {
+            const speed = parseFloat(url.searchParams.get('speed') ?? '5')
+            try {
+              const result = await pbWin.webContents.executeJavaScript(
+                `JSON.parse(JSON.stringify(window.__cocopilot_playback?.start(${speed}) || {error:'not available'}))`
+              )
+              res.end(JSON.stringify(result))
+            } catch (err) {
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: String(err) }))
+            }
+          } else {
+            res.statusCode = 503
+            res.end(JSON.stringify({ error: 'No renderer window' }))
+          }
+          break
+        }
+
+        case '/api/playback/stop': {
+          res.setHeader('Content-Type', 'application/json')
+          res.setHeader('Access-Control-Allow-Origin', '*')
+          const stopWin = BrowserWindow.getAllWindows()[0]
+          if (stopWin) {
+            try {
+              const result = await stopWin.webContents.executeJavaScript(
+                `JSON.parse(JSON.stringify(window.__cocopilot_playback?.stop() || {error:'not available'}))`
+              )
+              res.end(JSON.stringify(result))
+            } catch (err) {
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: String(err) }))
+            }
+          } else {
+            res.statusCode = 503
+            res.end(JSON.stringify({ error: 'No renderer window' }))
+          }
+          break
+        }
+
+        case '/api/playback/status': {
+          res.setHeader('Content-Type', 'application/json')
+          res.setHeader('Access-Control-Allow-Origin', '*')
+          const statusWin = BrowserWindow.getAllWindows()[0]
+          if (statusWin) {
+            try {
+              const result = await statusWin.webContents.executeJavaScript(
+                `JSON.parse(JSON.stringify(window.__cocopilot_playback?.status() || {error:'not available'}))`
+              )
+              res.end(JSON.stringify(result))
+            } catch (err) {
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: String(err) }))
+            }
+          } else {
+            res.statusCode = 503
+            res.end(JSON.stringify({ error: 'No renderer window' }))
           }
           break
         }

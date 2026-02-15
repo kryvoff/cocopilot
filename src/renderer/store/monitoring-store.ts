@@ -29,6 +29,11 @@ interface MonitoringState {
   selectSession: (id: string) => void
   setShowAllSessions: (show: boolean) => void
   subscribeToEvents: () => () => void
+
+  // Playback/testing — inject events directly without IPC
+  playbackAddEvent: (event: ParsedEvent) => void
+  playbackSetSession: (session: SessionInfo) => void
+  playbackReset: () => void
 }
 
 export const useMonitoringStore = create<MonitoringState>((set, get) => ({
@@ -65,6 +70,24 @@ export const useMonitoringStore = create<MonitoringState>((set, get) => ({
   },
 
   setShowAllSessions: (show: boolean) => set({ showAllSessions: show }),
+
+  playbackAddEvent: (event: ParsedEvent) => {
+    set((state) => ({ events: [...state.events, event] }))
+  },
+
+  playbackSetSession: (session: SessionInfo) => {
+    set((state) => {
+      const exists = state.sessions.find((s) => s.id === session.id)
+      const sessions = exists
+        ? state.sessions.map((s) => (s.id === session.id ? session : s))
+        : [...state.sessions, session]
+      return { sessions, selectedSessionId: session.id }
+    })
+  },
+
+  playbackReset: () => {
+    set({ sessions: [], selectedSessionId: null, events: [], processes: [] })
+  },
 
   subscribeToEvents: () => {
     const unsubSession = window.cocopilot.onSessionUpdate((session) => {

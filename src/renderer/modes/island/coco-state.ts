@@ -2,10 +2,17 @@ import { create } from 'zustand'
 import type { ParsedEvent } from '@shared/events'
 import type { CocoState } from './Coco'
 
+export interface SubAgent {
+  id: string
+  name: string
+  startTime: number
+}
+
 interface CocoStore {
   state: CocoState
   toolActive: string | null
   subAgentCount: number
+  activeSubAgents: SubAgent[]
   setState: (state: CocoState) => void
   processEvent: (event: ParsedEvent) => void
 }
@@ -14,6 +21,7 @@ export const useCocoStore = create<CocoStore>((set, get) => ({
   state: 'hidden',
   toolActive: null,
   subAgentCount: 0,
+  activeSubAgents: [],
 
   setState: (state: CocoState) => set({ state }),
 
@@ -22,7 +30,7 @@ export const useCocoStore = create<CocoStore>((set, get) => ({
 
     switch (event.type) {
       case 'session.start': {
-        set({ state: 'entering', toolActive: null, subAgentCount: 0 })
+        set({ state: 'entering', toolActive: null, subAgentCount: 0, activeSubAgents: [] })
         setTimeout(() => {
           if (get().state === 'entering') setState('idle')
         }, 1500)
@@ -57,13 +65,28 @@ export const useCocoStore = create<CocoStore>((set, get) => ({
       }
 
       case 'subagent.started':
-        set((s) => ({ subAgentCount: s.subAgentCount + 1 }))
+        set((s) => ({
+          subAgentCount: s.subAgentCount + 1,
+          activeSubAgents: [
+            ...s.activeSubAgents,
+            {
+              id: (event.data?.agentId as string) ?? event.id,
+              name: (event.data?.agentName as string) ?? 'sub-agent',
+              startTime: Date.now()
+            }
+          ]
+        }))
         break
 
       case 'subagent.completed':
-      case 'subagent.failed':
-        set((s) => ({ subAgentCount: Math.max(0, s.subAgentCount - 1) }))
+      case 'subagent.failed': {
+        const agentId = (event.data?.agentId as string) ?? event.id
+        set((s) => ({
+          subAgentCount: Math.max(0, s.subAgentCount - 1),
+          activeSubAgents: s.activeSubAgents.filter((a) => a.id !== agentId)
+        }))
         break
+      }
 
       case 'session.shutdown': {
         set({ state: 'waving', toolActive: null })

@@ -11,6 +11,10 @@ export function getSoundForEvent(event: {
       return 'session-start'
     case 'user.message':
       return 'user-message'
+    case 'assistant.turn_start':
+      return 'user-message'
+    case 'assistant.turn_end':
+      return 'tool-success'
     case 'tool.execution_start': {
       const toolName = (event.data?.toolName as string) ?? ''
       if (['edit', 'create'].includes(toolName)) return 'tool-edit'

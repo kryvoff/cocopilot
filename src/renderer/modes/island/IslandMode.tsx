@@ -4,12 +4,17 @@ import { Sky, OrbitControls } from '@react-three/drei'
 import Island from './Island'
 import Ocean from './Ocean'
 import Coco from './Coco'
+import SubAgentMonkeys from './SubAgentMonkeys'
+import ToolObjects from './ToolObjects'
 import HudOverlay from './HudOverlay'
 import DebugPanel from './DebugPanel'
 import { useIslandEvents } from './use-island-events'
+import EventEffects from './EventEffects'
+import { useCocoStore } from './coco-state'
 
 function IslandMode(): React.JSX.Element {
   const cocoState = useIslandEvents()
+  const toolActive = useCocoStore((s) => s.toolActive)
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -49,6 +54,9 @@ function IslandMode(): React.JSX.Element {
         <Ocean />
         <Island />
         <Coco state={cocoState} position={[0.8, 0.55, 0.8]} />
+        <SubAgentMonkeys />
+        <EventEffects />
+        <ToolObjects activeTool={toolActive} />
 
         {/* Controls */}
         <OrbitControls

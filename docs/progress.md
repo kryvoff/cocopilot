@@ -140,15 +140,29 @@
 - [x] Fixed sky: added fallback background color, tuned Sky shader (turbidity=2, rayleigh=0.5)
 - [x] 97 tests pass, build succeeds
 
+#### Session 11: Event Log, Scene Objects, Playback System
+- [x] Created synthetic test fixtures: `synthetic-session.jsonl` (27 events), `synthetic-error-session.jsonl` (8 events)
+- [x] Built full-height event log panel (left side): new events appear at bottom, old scroll up, auto-scroll, event type icons with color coding
+- [x] Added 4 tool placeholder objects on island: typewriter, coconut, binoculars, bottle — glow and scale when active tool matches
+- [x] Added sub-agent monkeys: MiniMonkey components spawn/despawn as sub-agents start/complete, pop-in animation
+- [x] Added event effects: rising particle system per event type (sparkles for success, smoke for errors, stars for messages)
+- [x] Built session playback system: `SessionPlayback` class loads JSONL, replays events with configurable speed into monitoring store
+- [x] Added playback controls to DebugPanel (▶ Play / ⏹ Stop with progress display)
+- [x] Added debug API endpoints: POST /api/playback/start, POST /api/playback/stop, GET /api/playback/status
+- [x] Added `playbackAddEvent`, `playbackSetSession`, `playbackReset` to monitoring store
+- [x] Exposed `window.__cocopilot_playback` for automated testing
+- [x] Fixed CI: removed unused `delta` parameter in PalmTree.tsx
+- [x] Integration tests: verified full pipeline (playback → monitoring store → coco state → sound mapping)
+- [x] 117+ tests pass, typecheck clean, build succeeds
+
 #### Next Iteration
 - [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
-- [ ] Add tool-specific objects on the island (typewriter, binoculars, coconut, bottle)
-- [ ] Add sub-agent monkeys spawning from jungle
+- [ ] Add thought/speech bubbles above Coco
+- [ ] Improve island aesthetics (better water shader, vegetation variety)
 
 #### Later
-- [ ] Add particle effects (sparkles for success, smoke for errors)
-- [ ] Add thought/speech bubbles
 - [ ] Begin Learn Mode (v0.2.5)
+- [ ] Ocean Mode (v0.3)
 
 ---
 

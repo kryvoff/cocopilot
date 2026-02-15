@@ -131,6 +131,35 @@ function DebugPanel(): React.JSX.Element | null {
     }
   }, [])
 
+  // Playback controls
+  const [playbackRunning, setPlaybackRunning] = useState(false)
+  const [playbackProgress, setPlaybackProgress] = useState({ current: 0, total: 0 })
+
+  const handlePlaybackToggle = useCallback(() => {
+    const api = (window as unknown as Record<string, { start: () => void; stop: () => void }>).__cocopilot_playback
+    if (!api) return
+    if (playbackRunning) {
+      api.stop()
+      setPlaybackRunning(false)
+    } else {
+      api.start()
+      setPlaybackRunning(true)
+    }
+  }, [playbackRunning])
+
+  // Poll playback progress while running
+  useEffect(() => {
+    if (!playbackRunning) return
+    const interval = setInterval(() => {
+      const api = (window as unknown as Record<string, { status: () => { running: boolean; progress: { current: number; total: number } } }>).__cocopilot_playback
+      if (!api) return
+      const s = api.status()
+      setPlaybackProgress(s.progress)
+      if (!s.running) setPlaybackRunning(false)
+    }, 200)
+    return () => clearInterval(interval)
+  }, [playbackRunning])
+
   if (!visible) return null
 
   return (
@@ -200,6 +229,20 @@ function DebugPanel(): React.JSX.Element | null {
       >
         📋 Copy Debug State
       </button>
+
+      <button
+        style={styles.copyButton}
+        onClick={handlePlaybackToggle}
+        data-testid="playback-toggle"
+      >
+        {playbackRunning ? '⏹ Stop Playback' : '▶ Playback Session'}
+      </button>
+      {playbackProgress.total > 0 && (
+        <div style={styles.hint}>
+          {playbackProgress.current}/{playbackProgress.total} events
+          {playbackRunning ? ' (playing)' : ''}
+        </div>
+      )}
 
       <div style={styles.hint}>Press D to close</div>
     </div>

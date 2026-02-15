@@ -69,8 +69,12 @@ describe('getSoundForEvent', () => {
   })
 
   describe('unknown event types', () => {
-    it('returns null for assistant.turn_start', () => {
-      expect(getSoundForEvent({ type: 'assistant.turn_start' })).toBeNull()
+    it('maps assistant.turn_start to user-message', () => {
+      expect(getSoundForEvent({ type: 'assistant.turn_start' })).toBe('user-message')
+    })
+
+    it('maps assistant.turn_end to tool-success', () => {
+      expect(getSoundForEvent({ type: 'assistant.turn_end' })).toBe('tool-success')
     })
 
     it('returns null for subagent.started', () => {

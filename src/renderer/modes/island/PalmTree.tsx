@@ -12,7 +12,7 @@ function PalmTree({ position, height = 3, lean = 0.3 }: PalmTreeProps): React.JS
   const leavesRef = useRef<THREE.Group>(null)
 
   // Gentle sway animation
-  useFrame((_, delta) => {
+  useFrame(() => {
     if (leavesRef.current) {
       leavesRef.current.rotation.z = Math.sin(Date.now() * 0.001 + position[0]) * 0.05
     }
