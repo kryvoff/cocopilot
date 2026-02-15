@@ -16,15 +16,15 @@ function SettingsPanel({ onClose }: { onClose: () => void }): React.JSX.Element 
   const [audioVolume, setAudioVolume] = useState(50)
 
   return (
-    <div className="settings-overlay" onClick={onClose}>
-      <div className="settings-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="settings-header">
-          <h2>⚙️ Settings</h2>
-          <button className="settings-close" onClick={onClose}>
-            ✕
-          </button>
-        </div>
+    <div className="settings-screen">
+      <div className="settings-header">
+        <h2>⚙️ Settings</h2>
+        <button className="settings-close" onClick={onClose}>
+          ← Back
+        </button>
+      </div>
 
+      <div className="settings-content">
         <div className="settings-section">
           <h3>Default Mode</h3>
           <div className="settings-modes">

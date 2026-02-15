@@ -56,6 +56,7 @@ function createWindow(): BrowserWindow {
 }
 
 app.whenReady().then(() => {
+  app.name = 'Cocopilot'
   electronApp.setAppUserModelId('com.cocopilot.app')
 
   app.on('browser-window-created', (_, window) => {

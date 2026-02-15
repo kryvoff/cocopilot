@@ -21,14 +21,19 @@ function App(): React.JSX.Element {
 
   return (
     <div className="app">
-      <main className="app-main">
-        {mode === 'vanilla' && <VanillaMode />}
-        {mode === 'island' && <IslandMode />}
-        {mode === 'learn' && <LearnMode />}
-        {mode === 'ocean' && <OceanMode />}
-      </main>
-      <StatusBar onSettingsClick={() => setSettingsOpen(true)} />
-      {settingsOpen && <SettingsPanel onClose={() => setSettingsOpen(false)} />}
+      {settingsOpen ? (
+        <main className="app-main">
+          <SettingsPanel onClose={() => setSettingsOpen(false)} />
+        </main>
+      ) : (
+        <main className="app-main">
+          {mode === 'vanilla' && <VanillaMode />}
+          {mode === 'island' && <IslandMode />}
+          {mode === 'learn' && <LearnMode />}
+          {mode === 'ocean' && <OceanMode />}
+        </main>
+      )}
+      <StatusBar onSettingsClick={() => setSettingsOpen(!settingsOpen)} />
     </div>
   )
 }

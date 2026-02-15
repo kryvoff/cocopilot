@@ -10,7 +10,7 @@ Cocopilot is a **Sunday vibe coding experiment** born from the pure joy of explo
 
 This project is our entry for the [GitHub Challenge on DEV.to](https://dev.to/challenges/github-2026-01-21) 🏆
 
-**The best part?** Most of this app was built *by* Copilot CLI, *about* Copilot CLI. It's copilots all the way down! 🐒
+**The best part?** This entire app — every single line — was written *by* Copilot CLI (Claude Opus 4.6 model), *about* Copilot CLI. The human wrote zero code — just guided the AI. It's copilots all the way down! 🐒
 
 ## ✨ Features
 
@@ -100,9 +100,11 @@ Cocopilot is a **read-only, local-only** Electron app that:
 - **Local-only** — zero network calls, no telemetry, no cloud
 - **Sandboxed** — Electron renderer runs with `sandbox: true` and `contextIsolation: true`
 
-## 🧪 Built With Copilot
+## 🧪 100% Built by Copilot
 
-This entire project is an experiment in using GitHub Copilot CLI to build software. We're using:
+**Every single line of code in this project was written by GitHub Copilot CLI**, primarily using the **Claude Opus 4.6** model. The human's role was providing direction, reviewing output, and clicking "accept" — zero manual coding!
+
+We're using:
 
 - **Copilot CLI interactive mode** — for regular development
 - **Autopilot mode** — for autonomous multi-file changes
@@ -152,4 +154,4 @@ MIT — go wild! 🐵
 
 ---
 
-*Made with ❤️ and way too many premium requests by humans and copilots working together.*
+*Made with ❤️ and way too many premium requests. Zero lines of human-written code — 100% Copilot CLI (Claude Opus 4.6).*
