@@ -128,7 +128,22 @@
 - [x] Added OpenAPI docs page at /docs with Scalar API reference UI
 - [x] 97 tests pass (up from 62), typecheck clean, build succeeds
 
-#### Upcoming
+#### Session 10: Island Mode Fixes
+- [x] Fixed audio loading: switched to Vite asset imports for MP3 files (was returning 404)
+- [x] Fixed canvas: removed padding from .app-main so Island scene fills full viewport
+- [x] Fixed sky: raised sun position for tropical look
+- [x] Added session selector dropdown to StatusBar (works across all modes)
+- [x] Added debug infrastructure: window.__cocopilot_debug, /api/renderer-state endpoint
+- [x] Added audio indicator in HUD overlay, copy debug state button in debug panel
+- [x] 97 tests pass, build succeeds
+
+#### Next Iteration
+- [ ] Move all Island Mode UI controls to the bottom status bar (HUD toggle, audio toggle, sound visualizer)
+- [ ] Remove floating HUD/debug buttons from the 3D viewport — keep it clean
+- [ ] Fix sky rendering — sky appears missing/dark, configure drei Sky properly for a bright tropical look
+- [ ] Make audio toggle (🔊/🔇) clickable in the status bar to enable/disable sound
+
+#### Later
 - [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
 - [ ] Add tool-specific objects on the island (typewriter, binoculars, coconut, bottle)
 - [ ] Add sub-agent monkeys spawning from jungle

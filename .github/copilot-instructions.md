@@ -11,6 +11,15 @@
 - Keep docs and code in sync — update docs when changing features
 - Track progress in `docs/progress.md`
 
+## Iteration Workflow
+
+We work in iterations. At the end of each session, update `docs/progress.md` with two sections:
+
+- **Next iteration** — Concrete fixes and improvements to do next (bugs reported, UI polish, small features). These are the immediate next steps.
+- **Later** — Larger features, ideas, and enhancements that are planned but not urgent. These move to "Next iteration" when the time comes.
+
+Always keep both sections current. When starting a new session, check "Next iteration" first.
+
 ## Key Locations
 
 | What | Where |
