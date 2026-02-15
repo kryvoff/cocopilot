@@ -2,6 +2,13 @@ import React, { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
+// Shared geometries and materials across all PalmTree instances
+const leafGeo = new THREE.ConeGeometry(0.15, 1.2, 4)
+const leafMat = new THREE.MeshStandardMaterial({ color: '#27ae60', flatShading: true })
+const coconutGeo = new THREE.SphereGeometry(0.08, 4, 4)
+const coconutMat = new THREE.MeshStandardMaterial({ color: '#8b4513', flatShading: true })
+const trunkMat = new THREE.MeshStandardMaterial({ color: '#8b6914', flatShading: true })
+
 interface PalmTreeProps {
   position: [number, number, number]
   height?: number
@@ -11,6 +18,9 @@ interface PalmTreeProps {
 
 function PalmTree({ position, height = 3, lean = 0.3, scale = 1 }: PalmTreeProps): React.JSX.Element {
   const leavesRef = useRef<THREE.Group>(null)
+
+  // Trunk geometry depends on height prop
+  const trunkGeo = useMemo(() => new THREE.CylinderGeometry(0.08, 0.15, height, 6), [height])
 
   // Gentle sway animation
   useFrame(() => {
@@ -33,10 +43,7 @@ function PalmTree({ position, height = 3, lean = 0.3, scale = 1 }: PalmTreeProps
     <group position={position} scale={scale}>
       {/* Trunk — tapered cylinder leaning slightly */}
       <group rotation={[lean * 0.3, 0, lean]}>
-        <mesh position={[0, height / 2, 0]} castShadow>
-          <cylinderGeometry args={[0.08, 0.15, height, 6]} />
-          <meshStandardMaterial color="#8b6914" flatShading />
-        </mesh>
+        <mesh position={[0, height / 2, 0]} castShadow geometry={trunkGeo} material={trunkMat} />
 
         {/* Leaves group at the top */}
         <group ref={leavesRef} position={[0, height, 0]}>
@@ -50,16 +57,12 @@ function PalmTree({ position, height = 3, lean = 0.3, scale = 1 }: PalmTreeProps
                 Math.cos(angle) * 0.8 - 0.5
               ]}
               castShadow
-            >
-              <coneGeometry args={[0.15, 1.2, 4]} />
-              <meshStandardMaterial color="#27ae60" flatShading />
-            </mesh>
+              geometry={leafGeo}
+              material={leafMat}
+            />
           ))}
           {/* Coconut cluster */}
-          <mesh position={[0, -0.15, 0]}>
-            <sphereGeometry args={[0.08, 4, 4]} />
-            <meshStandardMaterial color="#8b4513" flatShading />
-          </mesh>
+          <mesh position={[0, -0.15, 0]} geometry={coconutGeo} material={coconutMat} />
         </group>
       </group>
     </group>

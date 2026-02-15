@@ -2,6 +2,15 @@ import React, { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
+// Shared geometries and materials for seaweed
+const seaweedSegGeo = new THREE.CylinderGeometry(0.03, 0.04, 0.4, 4)
+const seaweedSegMat = new THREE.MeshStandardMaterial({ color: '#2d8a4e', flatShading: true })
+const seaweedTipGeo = new THREE.ConeGeometry(0.06, 0.3, 4)
+const seaweedTipMat = new THREE.MeshStandardMaterial({ color: '#34a853', flatShading: true })
+
+// Shared geometry for ocean floor rocks
+const oceanRockGeo = new THREE.SphereGeometry(1, 4, 4)
+
 /** Tall seaweed strand with sine-wave sway */
 function Seaweed({
   position,
@@ -33,16 +42,10 @@ function Seaweed({
     <group position={position}>
       <group ref={ref}>
         {segments.map(({ y, key }) => (
-          <mesh key={key} position={[0, y, 0]}>
-            <cylinderGeometry args={[0.03, 0.04, 0.4, 4]} />
-            <meshStandardMaterial color="#2d8a4e" flatShading />
-          </mesh>
+          <mesh key={key} position={[0, y, 0]} geometry={seaweedSegGeo} material={seaweedSegMat} />
         ))}
         {/* Leaf tip */}
-        <mesh position={[0, height, 0]}>
-          <coneGeometry args={[0.06, 0.3, 4]} />
-          <meshStandardMaterial color="#34a853" flatShading />
-        </mesh>
+        <mesh position={[0, height, 0]} geometry={seaweedTipGeo} material={seaweedTipMat} />
       </group>
     </group>
   )
@@ -121,8 +124,7 @@ function OceanFloor(): React.JSX.Element {
 
       {/* Scattered rocks */}
       {rocks.map((rock, i) => (
-        <mesh key={i} position={rock.pos} scale={rock.scale} castShadow>
-          <sphereGeometry args={[1, 5, 5]} />
+        <mesh key={i} position={rock.pos} scale={rock.scale} castShadow geometry={oceanRockGeo}>
           <meshStandardMaterial color={rock.color} flatShading roughness={0.8} />
         </mesh>
       ))}

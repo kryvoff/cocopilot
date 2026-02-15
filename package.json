@@ -18,11 +18,14 @@
     "pretest:unit": "npm rebuild better-sqlite3 --loglevel=silent",
     "test:unit:watch": "vitest",
     "test": "npm run test:unit",
+    "test:e2e": "npx playwright test",
+    "test:e2e:update": "npx playwright test --update-snapshots",
     "test:smoke": "bash scripts/smoke-test.sh",
     "check": "npx tsx --tsconfig tsconfig.node.json src/main/cli/check.ts",
     "rebuild:electron": "electron-rebuild -f",
     "predev": "electron-rebuild -f",
-    "prebuild": "electron-rebuild -f"
+    "prebuild": "electron-rebuild -f",
+    "pretest:e2e": "electron-rebuild -f && electron-vite build"
   },
   "dependencies": {
     "@nivo/bar": "^0.99.0",
@@ -43,6 +46,7 @@
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/tsconfig": "^2.0.0",
     "@electron-toolkit/utils": "^4.0.0",
+    "@playwright/test": "^1.58.2",
     "@types/better-sqlite3": "^7.6.12",
     "@types/howler": "^2.2.12",
     "@types/node": "^22.12.0",

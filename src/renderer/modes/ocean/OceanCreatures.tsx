@@ -3,6 +3,34 @@ import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useFlipperStore, type ErrorEvent, type SubAgent } from './flipper-state'
 
+// ── Shared geometries & materials ────────────────────────────────────────────────
+
+const headGeo = new THREE.SphereGeometry(0.25, 8, 8)
+const eyeGeo = new THREE.SphereGeometry(0.04, 4, 4)
+const eyeMat = new THREE.MeshStandardMaterial({ color: '#ffffff' })
+const tentacleGeo = new THREE.CylinderGeometry(0.02, 0.035, 0.35, 4)
+const seahorseBodyGeo = [
+  new THREE.SphereGeometry(0.12, 6, 6),
+  new THREE.SphereGeometry(0.1, 6, 6),
+  new THREE.SphereGeometry(0.08, 6, 6)
+]
+const seahorseTailGeo = new THREE.SphereGeometry(0.05, 4, 4)
+const seahorseSnoutGeo = new THREE.CylinderGeometry(0.02, 0.04, 0.15, 4)
+const seahorseEyeGeo = new THREE.SphereGeometry(0.02, 4, 4)
+const darkMat = new THREE.MeshStandardMaterial({ color: '#1a1a1a' })
+const starfishCenterGeo = new THREE.CylinderGeometry(0.1, 0.1, 0.04, 6)
+const starfishArmGeo = new THREE.BoxGeometry(0.06, 0.03, 0.2)
+const turtleShellGeo = new THREE.SphereGeometry(0.22, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2)
+const turtleBellyGeo = new THREE.SphereGeometry(0.2, 8, 4, 0, Math.PI * 2, 0, Math.PI / 4)
+const turtleBellyMat = new THREE.MeshStandardMaterial({ color: '#90C490', flatShading: true })
+const turtleHeadGeo = new THREE.SphereGeometry(0.08, 6, 6)
+const turtleFlipperGeo = new THREE.BoxGeometry(0.12, 0.02, 0.08)
+const fishBodyGeo = new THREE.SphereGeometry(0.06, 6, 4)
+const fishTailGeo = new THREE.ConeGeometry(0.04, 0.06, 3)
+const bubbleGeo = new THREE.SphereGeometry(1, 6, 6) // unit size, scaled per bubble
+const bubbleMat = new THREE.MeshStandardMaterial({ color: '#ffffff', transparent: true, opacity: 0.4 })
+const jellyDomeGeo = new THREE.SphereGeometry(0.15, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2)
+
 // ── Tool mapping ────────────────────────────────────────────────────────────────
 
 const TOOL_GROUPS: Record<string, string[]> = {
@@ -53,8 +81,7 @@ function Octopus({
   return (
     <group ref={ref} position={position}>
       {/* Head */}
-      <mesh position={[0, 0.3, 0]} castShadow>
-        <sphereGeometry args={[0.25, 8, 8]} />
+      <mesh position={[0, 0.3, 0]} castShadow geometry={headGeo}>
         <meshStandardMaterial
           color="#8B4583"
           flatShading
@@ -63,14 +90,8 @@ function Octopus({
         />
       </mesh>
       {/* Eyes */}
-      <mesh position={[0.1, 0.35, 0.2]}>
-        <sphereGeometry args={[0.04, 5, 5]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
-      <mesh position={[-0.1, 0.35, 0.2]}>
-        <sphereGeometry args={[0.04, 5, 5]} />
-        <meshStandardMaterial color="#ffffff" />
-      </mesh>
+      <mesh position={[0.1, 0.35, 0.2]} geometry={eyeGeo} material={eyeMat} />
+      <mesh position={[-0.1, 0.35, 0.2]} geometry={eyeGeo} material={eyeMat} />
       {/* Tentacles */}
       {tentacles.map(({ angle, phase, key }) => (
         <OctopusTentacle key={key} angle={angle} phase={phase} isActive={isActive} />
@@ -102,8 +123,7 @@ function OctopusTentacle({
   const z = Math.sin(angle) * 0.12
 
   return (
-    <mesh ref={ref} position={[x, 0, z]} castShadow>
-      <cylinderGeometry args={[0.02, 0.035, 0.35, 4]} />
+    <mesh ref={ref} position={[x, 0, z]} castShadow geometry={tentacleGeo}>
       <meshStandardMaterial
         color="#9B5593"
         flatShading
@@ -145,33 +165,25 @@ function Seahorse({
   return (
     <group ref={ref} position={position}>
       {/* Body — curved using stacked spheres */}
-      <mesh position={[0, 0.3, 0]} castShadow>
-        <sphereGeometry args={[0.12, 6, 6]} />
+      <mesh position={[0, 0.3, 0]} castShadow geometry={seahorseBodyGeo[0]}>
         {mat}
       </mesh>
-      <mesh position={[0, 0.15, 0.03]} castShadow>
-        <sphereGeometry args={[0.1, 6, 6]} />
+      <mesh position={[0, 0.15, 0.03]} castShadow geometry={seahorseBodyGeo[1]}>
         {mat}
       </mesh>
-      <mesh position={[0, 0.02, 0.06]} castShadow>
-        <sphereGeometry args={[0.08, 6, 6]} />
+      <mesh position={[0, 0.02, 0.06]} castShadow geometry={seahorseBodyGeo[2]}>
         {mat}
       </mesh>
       {/* Tail curl */}
-      <mesh position={[0, -0.08, 0.1]} castShadow>
-        <sphereGeometry args={[0.05, 5, 5]} />
+      <mesh position={[0, -0.08, 0.1]} castShadow geometry={seahorseTailGeo}>
         {mat}
       </mesh>
       {/* Head/snout */}
-      <mesh position={[0, 0.42, -0.05]} castShadow rotation={[0.3, 0, 0]}>
-        <cylinderGeometry args={[0.02, 0.04, 0.15, 4]} />
+      <mesh position={[0, 0.42, -0.05]} castShadow rotation={[0.3, 0, 0]} geometry={seahorseSnoutGeo}>
         {mat}
       </mesh>
       {/* Eye */}
-      <mesh position={[0.05, 0.36, 0.06]}>
-        <sphereGeometry args={[0.02, 4, 4]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
+      <mesh position={[0.05, 0.36, 0.06]} geometry={seahorseEyeGeo} material={darkMat} />
     </group>
   )
 }
@@ -208,8 +220,7 @@ function Starfish({
   return (
     <group ref={ref} position={position} rotation={[-Math.PI / 2, 0, 0]}>
       {/* Center */}
-      <mesh castShadow>
-        <cylinderGeometry args={[0.1, 0.1, 0.04, 8]} />
+      <mesh castShadow geometry={starfishCenterGeo}>
         <meshStandardMaterial
           color="#E86733"
           flatShading
@@ -222,8 +233,7 @@ function Starfish({
         const x = Math.cos(angle) * 0.18
         const z = Math.sin(angle) * 0.18
         return (
-          <mesh key={key} position={[x, 0, z]} rotation={[0, 0, angle]} castShadow>
-            <boxGeometry args={[0.06, 0.03, 0.2]} />
+          <mesh key={key} position={[x, 0, z]} rotation={[0, 0, angle]} castShadow geometry={starfishArmGeo}>
             <meshStandardMaterial
               color="#E86733"
               flatShading
@@ -259,8 +269,7 @@ function SeaTurtle({
   return (
     <group ref={ref} position={position}>
       {/* Shell */}
-      <mesh position={[0, 0.12, 0]} castShadow>
-        <sphereGeometry args={[0.22, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <mesh position={[0, 0.12, 0]} castShadow geometry={turtleShellGeo}>
         <meshStandardMaterial
           color="#2E8B57"
           flatShading
@@ -269,13 +278,9 @@ function SeaTurtle({
         />
       </mesh>
       {/* Belly */}
-      <mesh position={[0, 0.1, 0]} castShadow rotation={[Math.PI, 0, 0]}>
-        <sphereGeometry args={[0.2, 8, 4, 0, Math.PI * 2, 0, Math.PI / 4]} />
-        <meshStandardMaterial color="#90C490" flatShading />
-      </mesh>
+      <mesh position={[0, 0.1, 0]} castShadow rotation={[Math.PI, 0, 0]} geometry={turtleBellyGeo} material={turtleBellyMat} />
       {/* Head */}
-      <mesh position={[0, 0.12, 0.25]} castShadow>
-        <sphereGeometry args={[0.08, 6, 6]} />
+      <mesh position={[0, 0.12, 0.25]} castShadow geometry={turtleHeadGeo}>
         <meshStandardMaterial
           color="#3A9B6A"
           flatShading
@@ -284,18 +289,11 @@ function SeaTurtle({
         />
       </mesh>
       {/* Eyes */}
-      <mesh position={[0.04, 0.15, 0.3]}>
-        <sphereGeometry args={[0.02, 4, 4]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
-      <mesh position={[-0.04, 0.15, 0.3]}>
-        <sphereGeometry args={[0.02, 4, 4]} />
-        <meshStandardMaterial color="#1a1a1a" />
-      </mesh>
+      <mesh position={[0.04, 0.15, 0.3]} geometry={seahorseEyeGeo} material={darkMat} />
+      <mesh position={[-0.04, 0.15, 0.3]} geometry={seahorseEyeGeo} material={darkMat} />
       {/* Flippers */}
       {[1, -1].map((side) => (
-        <mesh key={side} position={[side * 0.2, 0.08, 0.05]} castShadow>
-          <boxGeometry args={[0.12, 0.02, 0.08]} />
+        <mesh key={side} position={[side * 0.2, 0.08, 0.05]} castShadow geometry={turtleFlipperGeo}>
           <meshStandardMaterial color="#2E8B57" flatShading />
         </mesh>
       ))}
@@ -365,13 +363,11 @@ function SingleFish({
   return (
     <group ref={ref} position={offset}>
       {/* Body */}
-      <mesh castShadow>
-        <sphereGeometry args={[0.06, 6, 4]} />
+      <mesh castShadow geometry={fishBodyGeo}>
         <meshStandardMaterial color={color} flatShading />
       </mesh>
       {/* Tail */}
-      <mesh position={[-0.08, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
-        <coneGeometry args={[0.04, 0.06, 3]} />
+      <mesh position={[-0.08, 0, 0]} rotation={[0, 0, Math.PI / 4]} geometry={fishTailGeo}>
         <meshStandardMaterial color={color} flatShading />
       </mesh>
     </group>
@@ -557,8 +553,7 @@ function Jellyfish({
   return (
     <group ref={ref} position={[startX, startY, startZ]}>
       {/* Dome */}
-      <mesh castShadow>
-        <sphereGeometry args={[0.15, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <mesh castShadow geometry={jellyDomeGeo}>
         <meshStandardMaterial
           color="#FF4444"
           flatShading
@@ -701,10 +696,7 @@ function AnimatedBubble({
   })
 
   return (
-    <mesh ref={ref} position={[bubble.x, bubble.startY, bubble.z]}>
-      <sphereGeometry args={[bubble.size, 6, 6]} />
-      <meshStandardMaterial color="#ffffff" transparent opacity={0.4} />
-    </mesh>
+    <mesh ref={ref} position={[bubble.x, bubble.startY, bubble.z]} geometry={bubbleGeo} material={bubbleMat} scale={bubble.size} />
   )
 }
 

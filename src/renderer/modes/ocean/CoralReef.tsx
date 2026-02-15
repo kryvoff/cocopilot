@@ -4,6 +4,17 @@ import * as THREE from 'three'
 
 const CORAL_COLORS = ['#e85d75', '#f0904e', '#9b59b6', '#e74c3c', '#ff69b4', '#ff8c42', '#c0392b']
 
+// Shared geometries for coral components
+const trunkGeo = new THREE.CylinderGeometry(0.06, 0.1, 0.8, 5)
+const tipGeo = new THREE.SphereGeometry(0.04, 4, 4)
+const brainGeo = new THREE.SphereGeometry(0.5, 8, 8)
+const brainRidgeGeo = new THREE.SphereGeometry(0.52, 6, 4)
+const anemoneBaseGeo = new THREE.CylinderGeometry(0.15, 0.18, 0.04, 6)
+
+// Shared materials
+const brainMat = new THREE.MeshStandardMaterial({ color: '#d4a574', flatShading: true, roughness: 0.9 })
+const brainRidgeMat = new THREE.MeshStandardMaterial({ color: '#c4956a', flatShading: true, roughness: 1, transparent: true, opacity: 0.4, wireframe: true })
+
 /** Branching coral: a trunk with angled branches */
 function BranchingCoral({
   position,
@@ -25,24 +36,29 @@ function BranchingCoral({
     })
   }, [])
 
+  // Branch geometries vary by length, memoize per-instance
+  const branchGeos = useMemo(
+    () => branches.map((b) => new THREE.CylinderGeometry(0.02, 0.04, b.len, 4)),
+    [branches]
+  )
+
+  const coralMat = useMemo(() => new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.7 }), [color])
+  const tipMat = useMemo(() => new THREE.MeshStandardMaterial({ color, emissive: color, emissiveIntensity: 0.15, flatShading: true }), [color])
+
   return (
     <group position={position} scale={scale}>
       {/* Main trunk */}
-      <mesh position={[0, 0.4, 0]} castShadow>
-        <cylinderGeometry args={[0.06, 0.1, 0.8, 5]} />
-        <meshStandardMaterial color={color} flatShading roughness={0.7} />
-      </mesh>
+      <mesh position={[0, 0.4, 0]} castShadow geometry={trunkGeo} material={coralMat} />
       {/* Branches */}
-      {branches.map(({ angle, tilt, len, yOff, key }) => (
+      {branches.map(({ angle, tilt, len: _, yOff, key }) => (
         <mesh
           key={key}
           position={[Math.cos(angle) * 0.12, yOff, Math.sin(angle) * 0.12]}
           rotation={[Math.sin(angle) * tilt, 0, Math.cos(angle) * tilt]}
           castShadow
-        >
-          <cylinderGeometry args={[0.02, 0.04, len, 4]} />
-          <meshStandardMaterial color={color} flatShading roughness={0.7} />
-        </mesh>
+          geometry={branchGeos[key]}
+          material={coralMat}
+        />
       ))}
       {/* Tips */}
       {branches.map(({ angle, tilt, len, yOff, key }) => (
@@ -53,10 +69,9 @@ function BranchingCoral({
             yOff + len * 0.4,
             Math.sin(angle) * 0.12 + Math.sin(angle) * tilt * len * 0.4
           ]}
-        >
-          <sphereGeometry args={[0.04, 4, 4]} />
-          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.15} flatShading />
-        </mesh>
+          geometry={tipGeo}
+          material={tipMat}
+        />
       ))}
     </group>
   )
@@ -72,26 +87,9 @@ function BrainCoral({
 }): React.JSX.Element {
   return (
     <group position={position} scale={scale}>
-      <mesh position={[0, 0.3, 0]} castShadow>
-        <sphereGeometry args={[0.5, 8, 8]} />
-        <meshStandardMaterial
-          color="#d4a574"
-          flatShading
-          roughness={0.9}
-        />
-      </mesh>
+      <mesh position={[0, 0.3, 0]} castShadow geometry={brainGeo} material={brainMat} />
       {/* Surface ridges approximated with a slightly larger translucent shell */}
-      <mesh position={[0, 0.3, 0]}>
-        <sphereGeometry args={[0.52, 6, 4]} />
-        <meshStandardMaterial
-          color="#c4956a"
-          flatShading
-          roughness={1}
-          transparent
-          opacity={0.4}
-          wireframe
-        />
-      </mesh>
+      <mesh position={[0, 0.3, 0]} geometry={brainRidgeGeo} material={brainRidgeMat} />
     </group>
   )
 }
@@ -121,6 +119,15 @@ function Anemone({
     })
   }, [])
 
+  // Memoize per-tentacle geometries (heights vary)
+  const tentacleGeos = useMemo(
+    () => tentacles.map((t) => new THREE.CylinderGeometry(0.012, 0.02, t.height, 3)),
+    [tentacles]
+  )
+
+  const baseMat = useMemo(() => new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.8 }), [color])
+  const tentacleMat = useMemo(() => new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.6 }), [color])
+
   useFrame(({ clock }) => {
     if (!groupRef.current) return
     const children = groupRef.current.children
@@ -136,22 +143,24 @@ function Anemone({
   return (
     <group position={position}>
       {/* Base disc */}
-      <mesh position={[0, 0.02, 0]}>
-        <cylinderGeometry args={[0.15, 0.18, 0.04, 8]} />
-        <meshStandardMaterial color={color} flatShading roughness={0.8} />
-      </mesh>
+      <mesh position={[0, 0.02, 0]} geometry={anemoneBaseGeo} material={baseMat} />
       {/* Tentacles */}
       <group ref={groupRef}>
         {tentacles.map(({ x, z, height, key }) => (
-          <mesh key={key} position={[x, height / 2 + 0.04, z]}>
-            <cylinderGeometry args={[0.012, 0.02, height, 4]} />
-            <meshStandardMaterial color={color} flatShading roughness={0.6} />
-          </mesh>
+          <mesh key={key} position={[x, height / 2 + 0.04, z]} geometry={tentacleGeos[key]} material={tentacleMat} />
         ))}
       </group>
     </group>
   )
 }
+
+// Shared geometries for stacked coral (one per unique radius)
+const stackedCoralGeos = {
+  0.25: new THREE.SphereGeometry(0.25, 6, 6),
+  0.18: new THREE.SphereGeometry(0.18, 6, 6),
+  0.12: new THREE.SphereGeometry(0.12, 6, 6),
+  0.1: new THREE.SphereGeometry(0.1, 6, 6)
+} as const
 
 /** Stacked sphere coral formation */
 function StackedCoral({
@@ -165,21 +174,20 @@ function StackedCoral({
 }): React.JSX.Element {
   const spheres = useMemo(
     () => [
-      { pos: [0, 0.15, 0] as [number, number, number], r: 0.25 },
-      { pos: [0.1, 0.45, 0.05] as [number, number, number], r: 0.18 },
-      { pos: [-0.08, 0.65, -0.03] as [number, number, number], r: 0.12 },
-      { pos: [0.15, 0.3, 0.12] as [number, number, number], r: 0.1 }
+      { pos: [0, 0.15, 0] as [number, number, number], r: 0.25 as const },
+      { pos: [0.1, 0.45, 0.05] as [number, number, number], r: 0.18 as const },
+      { pos: [-0.08, 0.65, -0.03] as [number, number, number], r: 0.12 as const },
+      { pos: [0.15, 0.3, 0.12] as [number, number, number], r: 0.1 as const }
     ],
     []
   )
 
+  const mat = useMemo(() => new THREE.MeshStandardMaterial({ color, flatShading: true, roughness: 0.7 }), [color])
+
   return (
     <group position={position} scale={scale}>
       {spheres.map(({ pos, r }, i) => (
-        <mesh key={i} position={pos} castShadow>
-          <sphereGeometry args={[r, 6, 6]} />
-          <meshStandardMaterial color={color} flatShading roughness={0.7} />
-        </mesh>
+        <mesh key={i} position={pos} castShadow geometry={stackedCoralGeos[r]} material={mat} />
       ))}
     </group>
   )

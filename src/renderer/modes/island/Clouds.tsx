@@ -1,6 +1,11 @@
-import React, { useRef } from 'react'
+import React, { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+
+// Shared geometries and materials for all clouds (reduced segments for distant objects)
+const cloudGeoLarge = new THREE.SphereGeometry(1.5, 6, 6)
+const cloudGeoMedSmall = new THREE.SphereGeometry(1, 6, 6)
+const cloudGeoMedLarge = new THREE.SphereGeometry(1.2, 6, 6)
 
 interface CloudProps {
   position: [number, number, number]
@@ -11,6 +16,10 @@ interface CloudProps {
 function Cloud({ position, speed, scale }: CloudProps): React.JSX.Element {
   const ref = useRef<THREE.Group>(null)
 
+  const matMain = useMemo(() => new THREE.MeshStandardMaterial({ color: 'white', transparent: true, opacity: 0.8 }), [])
+  const matSmall = useMemo(() => new THREE.MeshStandardMaterial({ color: 'white', transparent: true, opacity: 0.7 }), [])
+  const matMed = useMemo(() => new THREE.MeshStandardMaterial({ color: 'white', transparent: true, opacity: 0.75 }), [])
+
   useFrame(() => {
     if (!ref.current) return
     ref.current.position.x += speed
@@ -19,18 +28,9 @@ function Cloud({ position, speed, scale }: CloudProps): React.JSX.Element {
 
   return (
     <group ref={ref} position={position} scale={[scale, scale * 0.4, scale]}>
-      <mesh>
-        <sphereGeometry args={[1.5, 8, 8]} />
-        <meshStandardMaterial color="white" transparent opacity={0.8} />
-      </mesh>
-      <mesh position={[1.2, 0.2, 0]}>
-        <sphereGeometry args={[1, 8, 8]} />
-        <meshStandardMaterial color="white" transparent opacity={0.7} />
-      </mesh>
-      <mesh position={[-1, -0.1, 0.3]}>
-        <sphereGeometry args={[1.2, 8, 8]} />
-        <meshStandardMaterial color="white" transparent opacity={0.75} />
-      </mesh>
+      <mesh geometry={cloudGeoLarge} material={matMain} />
+      <mesh position={[1.2, 0.2, 0]} geometry={cloudGeoMedSmall} material={matSmall} />
+      <mesh position={[-1, -0.1, 0.3]} geometry={cloudGeoMedLarge} material={matMed} />
     </group>
   )
 }

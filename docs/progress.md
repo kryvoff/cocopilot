@@ -197,8 +197,10 @@
 - [x] 209 total tests pass, typecheck clean, build succeeds
 
 #### Next Iteration
-- [ ] Visual regression tests with Playwright screenshots (macOS CI)
-- [ ] Performance optimization for 3D scenes (LOD, instancing)
+- [x] Visual regression tests with Playwright screenshots (macOS CI)
+- [x] Performance optimization for 3D scenes (geometry/material memoization, polygon reduction)
+- [x] E2E functional tests (7 tests: app launch, mode switching)
+- [x] CI: E2E job on macOS with Playwright, artifact upload on failure
 
 ---
 
@@ -210,5 +212,5 @@
 | v0.2 | Island Mode (Coco + 3D scene + audio) | ✅ Released |
 | v0.2.5 | Learn Mode (tutorials + event catalog + playback) | ✅ Released |
 | v0.3 | Ocean Mode (Flipper + underwater world) | ✅ Released |
-| v0.4 | Visual regression tests, performance optimization | 📋 Planned |
+| v0.4 | Visual regression tests, performance optimization | ✅ Complete |
 | v0.5 | Polish, bug fixes, final MVP | 📋 Planned |
