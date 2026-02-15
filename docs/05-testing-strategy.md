@@ -1,21 +1,75 @@
-# Testing Strategy
+# Testing & Observability Strategy
+
+## Goal
+
+Every change must be verifiable by automated tests AND by coding agents inspecting the running app. This is critical for iterative development with Copilot CLI, autopilot, and fleet.
 
 ## Testing Pyramid
 
 ```
         ╱╲
-       ╱  ╲        E2E Tests (Playwright)
-      ╱    ╲       - Full app launch, mode switching
-     ╱──────╲      - Monitoring with mock data
+       ╱  ╲        E2E + Visual Regression (Playwright)
+      ╱    ╲       - App launch, mode switching, screenshots
+     ╱──────╲      - Visual regression with toHaveScreenshot()
     ╱        ╲
    ╱          ╲    Integration Tests (Vitest)
-  ╱            ╲   - IPC communication
- ╱──────────────╲  - File watcher + event parser
+  ╱            ╲   - IPC roundtrip, file watcher + parser
+ ╱──────────────╲  - SQLite queries
 ╱                ╲
-╱                  ╲  Unit Tests (Vitest)
-╱                    ╲ - Event parser, data model
-╱────────────────────╲ - Session stats computation
-                       - Mode components (shallow)
+╱  Unit Tests     ╲  (Vitest)
+╱  - Event parser  ╲ - Session stats, cost estimation
+╱  - Data model     ╲- Mode state machines
+╱────────────────────╲
+```
+
+## Observability for Coding Agents
+
+### Problem
+When a coding agent (Copilot CLI, autopilot, fleet) makes changes to the app, it needs to verify the app actually works — not just that the code compiles, but that the UI renders correctly and monitoring is functioning.
+
+### Solution: Built-in Debug Server
+
+A lightweight HTTP server on `localhost:9876` (main process) exposes:
+
+```
+GET /api/health             → { "status": "ok", "uptime": 120 }
+GET /api/state              → Full app state JSON (sessions, events, settings, mode)
+GET /api/screenshot         → PNG screenshot of current window
+GET /api/events?n=20        → Last N monitoring events
+GET /api/processes          → Detected copilot processes
+GET /api/mode               → Current mode and its state
+GET /api/metrics            → Session stats, token counts, cost
+```
+
+### Usage by Coding Agents
+
+```bash
+# Verify app is running
+curl -s http://localhost:9876/api/health | jq .status
+
+# Check if monitoring is working
+curl -s http://localhost:9876/api/state | jq '.sessions | length'
+
+# Take a screenshot to "see" the app
+curl -s http://localhost:9876/api/screenshot > /tmp/cocopilot.png
+
+# Check what events are flowing
+curl -s http://localhost:9876/api/events?n=5 | jq '.[].type'
+```
+
+### Playwright Integration
+
+For richer agent-driven testing, Playwright can be invoked:
+
+```bash
+# Run specific smoke test
+npx playwright test --grep "app launches" --reporter=list
+
+# Visual regression check
+npx playwright test --grep "vanilla mode" --update-snapshots
+
+# Take named screenshot during test
+npx playwright test --grep "screenshot"
 ```
 
 ## Unit Tests (Vitest)
@@ -23,122 +77,98 @@
 ### Monitoring Core
 ```
 test/unit/monitoring/
-├── event-parser.test.ts        # Parse events.jsonl lines
+├── event-parser.test.ts        # Parse every event type
 ├── session-store.test.ts       # Session state management
 ├── process-monitor.test.ts     # Process detection logic
-├── stats-computer.test.ts      # Aggregate session statistics
-└── source-filter.test.ts       # CLI vs VSCode vs all filtering
+├── stats-computer.test.ts      # Aggregate statistics, cost estimation
+└── source-filter.test.ts       # CLI filtering
 ```
 
-Key test scenarios:
+Key scenarios:
 - Parse every event type from the schema
-- Handle malformed/partial JSON lines
-- Handle empty events.jsonl
+- Handle malformed/partial JSON lines gracefully
 - Handle concurrent session writes
-- Compute correct statistics from event sequences
-- Filter events by monitoring source
-- Handle session resume correctly
-- Cost estimation accuracy
+- Compute correct stats from event sequences
+- Cost estimation accuracy (premium requests × multiplier)
+- Process detection on macOS, Linux, Windows
+
+### Database
+```
+test/unit/database/
+├── schema.test.ts              # Table creation, migrations
+├── queries.test.ts             # Insert/query sessions, events, usage
+└── analytics.test.ts           # Aggregation queries
+```
 
 ### UI Components
 ```
 test/unit/modes/
-├── hack/
+├── vanilla/
 │   ├── EventTimeline.test.tsx
-│   ├── SessionInfo.test.tsx
-│   └── ProcessMonitor.test.tsx
-├── coco/
-│   ├── state-machine.test.ts    # Coco state transitions
-│   └── audio-mapping.test.ts    # Event → sound mapping
-└── mode-registry.test.ts        # Mode registration
-```
-
-### Shared
-```
-test/unit/shared/
-├── types.test.ts
-└── config.test.ts
+│   └── UsageCharts.test.tsx
+├── island/
+│   └── coco-state-machine.test.ts
+└── mode-registry.test.ts
 ```
 
 ## Test Fixtures
 
-### Sample Events
-Create comprehensive fixtures from real captured data:
+Generated from real Copilot CLI sessions (sanitized):
 
 ```
 test/fixtures/
 ├── events/
-│   ├── simple-session.jsonl       # Basic: start → prompt → response → end
+│   ├── simple-session.jsonl       # start → prompt → response → end
 │   ├── multi-tool-session.jsonl   # Multiple tool calls
 │   ├── subagent-session.jsonl     # Fleet/sub-agent events
-│   ├── autopilot-session.jsonl    # Autopilot mode session
-│   ├── error-session.jsonl        # Session with errors
-│   ├── compaction-session.jsonl   # Session with compaction
-│   ├── long-session.jsonl         # Extended session (many events)
-│   └── shutdown-with-stats.jsonl  # Session with shutdown metrics
+│   ├── autopilot-session.jsonl    # Autopilot mode
+│   ├── error-session.jsonl        # With errors
+│   └── shutdown-with-stats.jsonl  # Full shutdown metrics
 ├── sessions/                      # Full session directory mocks
 │   ├── active/
 │   │   ├── workspace.yaml
 │   │   └── events.jsonl
 │   └── completed/
-│       ├── workspace.yaml
-│       └── events.jsonl
-└── workspace/
-    └── workspace.yaml
+└── workspace.yaml
 ```
 
-### Fixture Generation Script
-```typescript
-// scripts/generate-fixtures.ts
-// Reads from ~/.copilot/session-state/ (with consent)
-// Sanitizes sensitive content but preserves event structure
-// Outputs to test/fixtures/
-```
+### MockCopilot Helper
 
-## Integration Tests (Vitest)
-
-Test the interaction between components:
-
-```
-test/integration/
-├── file-watcher-parser.test.ts    # FileWatcher + EventParser together
-├── ipc-roundtrip.test.ts          # Main → Renderer IPC
-└── monitoring-pipeline.test.ts    # Full monitoring pipeline
-```
-
-### Mock File System
-Use `memfs` or `tmp` directories to simulate `~/.copilot/session-state/`:
+Simulates copilot activity for testing:
 
 ```typescript
-import { vol } from 'memfs';
+class MockCopilot {
+  constructor(private baseDir: string) {}
 
-beforeEach(() => {
-  vol.fromJSON({
-    '/mock-copilot/session-state/abc-123/events.jsonl': 
-      '{"type":"session.start","data":{"sessionId":"abc-123"},...}\n',
-    '/mock-copilot/session-state/abc-123/workspace.yaml':
-      'id: abc-123\ncwd: /home/user/project\n'
-  });
-});
+  async startSession(id: string): Promise<void> {
+    // Create session dir, write workspace.yaml + session.start event
+  }
+
+  async emitEvent(event: Partial<CopilotEvent>): Promise<void> {
+    // Append to events.jsonl with proper structure
+  }
+
+  async simulateFullSession(): Promise<void> {
+    // Emit a complete session: start → prompt → tools → response → end
+  }
+
+  async endSession(): Promise<void> {
+    // Write session.shutdown with metrics
+  }
+}
 ```
 
 ## E2E Tests (Playwright)
 
-### Setup
-Use `@playwright/test` with Electron support:
-
+### Configuration
 ```typescript
 // playwright.config.ts
-import { defineConfig } from '@playwright/test';
-
 export default defineConfig({
   testDir: './test/e2e',
   timeout: 60000,
-  use: {
-    // Launch Electron app
-    launchOptions: {
-      executablePath: electronPath,
-      args: ['.'],
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.01,  // 1% tolerance for visual regression
     }
   }
 });
@@ -147,137 +177,66 @@ export default defineConfig({
 ### Test Scenarios
 ```
 test/e2e/
-├── app-launch.spec.ts
-│   - App window opens
-│   - Default mode (Hack) is displayed
-│   - Status bar shows "No active sessions"
-│
-├── mode-switching.spec.ts
-│   - Switch between Hack, Coco, Ocean modes
-│   - Each mode renders correctly
-│   - Mode preference persists
-│
-├── hack-mode.spec.ts
-│   - Event timeline populates with mock events
-│   - Session list shows sessions
-│   - Stats panel shows correct data
-│   - Filtering by source works
-│
-├── monitoring-live.spec.ts
-│   - Detects new session appearing
-│   - Events stream in real-time
-│   - Session completion detected
-│
-├── coco-mode.spec.ts
-│   - 3D scene renders (canvas exists)
-│   - Coco appears when session active
-│   - Coco hides when no sessions
-│
-└── settings.spec.ts
-    - Audio toggle works
-    - Source filter changes
-    - Overlay toggle works
+├── app-launch.spec.ts          # Window opens, default mode, status bar
+├── vanilla-mode.spec.ts        # Event timeline, stats, charts render
+├── mode-switching.spec.ts      # Switch between modes
+├── monitoring.spec.ts          # Detects sessions, events stream
+├── process-selector.spec.ts   # Shows multiple CLIs, allows selection
+├── settings.spec.ts            # Settings panel, persistence
+├── visual-regression.spec.ts   # Screenshot comparisons for each mode
+└── debug-server.spec.ts        # Debug HTTP endpoints work
 ```
 
-### Mock Copilot for E2E
-Create a test helper that simulates copilot activity:
-
+### Visual Regression
 ```typescript
-// test/helpers/mock-copilot.ts
-export class MockCopilot {
-  private sessionDir: string;
-  
-  async startSession(sessionId: string): Promise<void> {
-    // Create session directory
-    // Write workspace.yaml
-    // Write session.start event
-  }
-  
-  async emitEvent(event: Partial<CopilotEvent>): Promise<void> {
-    // Append to events.jsonl
-  }
-  
-  async endSession(): Promise<void> {
-    // Write session.shutdown event
-  }
-  
-  async simulateFullSession(): Promise<void> {
-    await this.startSession(uuid());
-    await this.emitEvent({ type: 'user.message', ... });
-    await sleep(500);
-    await this.emitEvent({ type: 'assistant.turn_start', ... });
-    await this.emitEvent({ type: 'tool.execution_start', ... });
-    await sleep(1000);
-    await this.emitEvent({ type: 'tool.execution_complete', ... });
-    await this.emitEvent({ type: 'assistant.message', ... });
-    await this.emitEvent({ type: 'assistant.turn_end', ... });
-    await this.endSession();
-  }
-}
+test('vanilla mode matches baseline', async ({ page }) => {
+  // Feed mock events
+  // Wait for render
+  await expect(page).toHaveScreenshot('vanilla-mode.png');
+});
+
+test('island mode renders 3D scene', async ({ page }) => {
+  // Switch to island mode
+  // Verify canvas exists and renders
+  await expect(page.locator('canvas')).toBeVisible();
+  await expect(page).toHaveScreenshot('island-mode.png');
+});
 ```
 
 ## Development Workflow
 
-### Running Tests
-
+### Commands
 ```bash
-# Unit tests (fast, run frequently)
-npm run test:unit
-
-# Unit tests in watch mode
-npm run test:unit:watch
-
-# Integration tests
-npm run test:integration
-
-# E2E tests (requires app build)
-npm run test:e2e
-
-# All tests
-npm run test
-
-# Coverage report
-npm run test:coverage
+npm run dev              # Start app in dev mode with HMR
+npm run build            # Production build
+npm run test:unit        # Fast unit tests
+npm run test:unit:watch  # Watch mode
+npm run test:integration # Integration tests (SQLite, IPC)
+npm run test:e2e         # Full E2E (requires build)
+npm run test             # All tests
+npm run typecheck        # TypeScript type checking
+npm run lint             # ESLint
+npm run test:coverage    # Coverage report
 ```
 
-### CI/CD Test Matrix
+### Agent Development Loop
+When a coding agent makes changes:
+1. `npm run typecheck` — type errors?
+2. `npm run test:unit` — logic correct?
+3. `npm run build` — compiles?
+4. `npm run test:e2e -- --grep "smoke"` — app works?
+5. `curl http://localhost:9876/api/screenshot > /tmp/check.png` — looks right?
 
+### CI Matrix
 ```yaml
-# .github/workflows/ci.yml
-test:
-  strategy:
-    matrix:
-      os: [ubuntu-latest, macos-latest, windows-latest]
-      node: [20]
-  steps:
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run typecheck
-    - run: npm run test:unit
-    - run: npm run test:integration
-    - run: npm run build
-    - run: npx playwright install --with-deps
-    - run: npm run test:e2e
+strategy:
+  matrix:
+    os: [ubuntu-latest, macos-latest, windows-latest]
+steps:
+  - npm ci
+  - npm run lint && npm run typecheck
+  - npm run test:unit && npm run test:integration
+  - npm run build
+  - npx playwright install --with-deps
+  - npm run test:e2e
 ```
-
-## Debug Workflow
-
-### For Agent Development
-Copilot agents (and autopilot) can verify their changes by:
-
-1. **Type checking**: `npm run typecheck` — catches type errors
-2. **Unit tests**: `npm run test:unit` — fast feedback on logic
-3. **Build**: `npm run build` — ensures the app compiles
-4. **E2E smoke**: `npm run test:e2e -- --grep "app-launch"` — verify app starts
-
-### For Manual Testing
-1. Start the Electron app in dev mode: `npm run dev`
-2. Open a separate terminal and run `copilot`
-3. Observe events appearing in the app
-4. Switch modes and verify visualizations
-
-### For Automated Testing
-The `MockCopilot` helper lets tests simulate copilot activity without actually running copilot:
-- Write events to a temp `~/.copilot-test/session-state/` directory
-- Configure the app to watch the test directory
-- Assert UI state based on the mock events

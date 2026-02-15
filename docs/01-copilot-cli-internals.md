@@ -222,16 +222,31 @@ The `user.message.data.agentMode` field indicates the current mode:
 3. Correlate processes with sessions
 
 ### Filtering Copilot Sources
-- **copilot-cli**: Process name is literally `copilot`, events have `producer: "copilot-agent"`
-- **copilot-vscode**: Processes contain `copilot-typescript-server-plugin` or similar
-- **all**: Monitor everything
+- **copilot-cli** (default): Process name is `copilot`, events have `producer: "copilot-agent"`
+- **copilot-vscode**: Processes contain `copilot-typescript-server-plugin` (future support)
+- **all**: Monitor everything (future support)
+
+### Single-CLI Monitoring Focus
+Cocopilot monitors **one copilot CLI process at a time**. If the user has multiple copilot CLI instances running (e.g. in 2-3 terminals), the app:
+1. Detects all active copilot CLI processes and shows the count
+2. Allows the user to select which one to monitor
+3. Focuses all dashboards and scenes on that single session
+
+This keeps the app simple and educational — users learn how one copilot CLI session works in depth. Power users who want to monitor multiple sessions can open multiple Cocopilot app instances, each selecting a different CLI process.
+
+### Security Model
+Cocopilot achieves security through two simple principles:
+1. **Read-only**: We never write to `~/.copilot/` or interact with copilot processes in any way
+2. **Local-only**: We never transmit any data to the internet — no telemetry, no API calls, no cloud
+
+The app displays all session data transparently because it only runs on the user's own machine where they're already authenticated with GitHub.
 
 ### Data Architecture
 ```
-~/.copilot/session-state/ ──→ FileWatcher ──→ EventParser ──→ EventStore
-                                                                  ↓
-ps aux (copilot processes) ──→ ProcessMonitor ──→ ─────────→ AppState
-                                                                  ↓
-                                                          Scene Renderers
-                                                         (Hack/Coco/Ocean)
+~/.copilot/session-state/ ──→ FileWatcher ──→ EventParser ──→ EventStore (SQLite)
+                                                                    ↓
+ps aux (copilot processes) ──→ ProcessMonitor ──→ ──────────→ AppState
+                                                                    ↓
+                                                          Mode Renderers
+                                                    (Vanilla/Island/Ocean/Learn)
 ```
