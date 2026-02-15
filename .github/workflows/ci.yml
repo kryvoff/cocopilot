@@ -55,8 +55,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install chromium
       - run: npm run test:e2e -- --grep-invert "screenshot"
-      - name: Visual regression (smoke test)
-        run: npm run test:e2e -- --grep "screenshot" --update-snapshots
+      - name: Visual regression
+        run: npm run test:e2e -- --grep "screenshot"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

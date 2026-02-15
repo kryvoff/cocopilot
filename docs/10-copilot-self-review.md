@@ -237,7 +237,7 @@ The debug server at `:9876` serves an OpenAPI docs page with Scalar at `/docs`. 
 
 All code was written by GitHub Copilot CLI v0.0.410 (Claude Opus 4.6) in a single day.
 
-See [`docs/11-development.md`](11-development.md) for detailed session metrics, cost estimates, and column explanations.
+See [`docs/11-dev-usage-summary.md`](11-dev-usage-summary.md) for detailed session metrics, cost estimates, and column explanations.
 
 ---
 

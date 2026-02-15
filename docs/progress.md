@@ -247,7 +247,7 @@
 - [x] 226 tests pass, typecheck clean
 
 #### Session 18: Project Review & Documentation
-- [x] Created `docs/10-review.md` — comprehensive project review covering architecture, what works, gaps, tech debt, v1.0 recommendations
+- [x] Created `docs/10-copilot-self-review.md` — comprehensive project review covering architecture, what works, gaps, tech debt, v1.0 recommendations
 - [x] Updated `README.md` — v0.5 badge, Learn mode 4 tabs, 11 sounds table, Settings as page, ActivityBar+StatusBar at bottom, npm scripts table, docs table, aligned markdown tables, docs/09-sounds.md reference
 
 #### Session 20: v0.6 — UI Polish, Palm Trees, Releases, Docs
@@ -261,17 +261,17 @@
 - [x] Published v0.1.0 release on GitHub (was draft)
 - [x] Published v0.5 release on GitHub with full description (was draft with no description)
 - [x] README: clarified vibe coding experiment nature, fork-encouraged, small fixes welcome
-- [x] Created `docs/11-development.md` with session metrics, cost estimate (~$41), column explanations
-- [x] Moved dev session stats from `docs/10-review.md` to `docs/11-development.md`
+- [x] Created `docs/11-dev-usage-summary.md` with correct cost analysis (premium requests, Actions costs, $9.40 total)
+- [x] Renamed `docs/10-review.md` → `docs/10-copilot-self-review.md`
+- [x] Renamed `docs/11-development.md` → `docs/11-dev-usage-summary.md`
+- [x] Persisted user preferences via Zustand `persist` middleware (mode, audio, HUD, sessions)
+- [x] Fixed visual regression CI: removed `--update-snapshots` so CI actually catches regressions
+- [x] Updated `docs/05-testing-strategy.md` to match actual test files and scripts
 - [x] Bumped package.json version to 0.6.0
 - [x] 226 tests pass, typecheck clean
 
 #### Next Iteration
-- [ ] Persist user preferences (mode, audio, showCompletedSessions) across restarts
-- [ ] Fix visual regression CI (compare, don't auto-update)
-- [ ] Update docs/05-testing-strategy.md to match actual scripts/files
-- [ ] Additional polish and bug fixes from user testing
-- [ ] v1.0 final MVP release preparation
+- [ ] User testing and feedback
 
 ---
 

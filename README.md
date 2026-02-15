@@ -267,8 +267,8 @@ test/
 | [`docs/07-decisions-log.md`](docs/07-decisions-log.md)                 | Architecture decisions log               |
 | [`docs/08-future-ideas.md`](docs/08-future-ideas.md)                   | Future ideas and feature backlog         |
 | [`docs/09-sounds.md`](docs/09-sounds.md)                               | Sound synthesis and audio system         |
-| [`docs/10-review.md`](docs/10-review.md)                               | Project review and v1.0 recommendations  |
-| [`docs/11-development.md`](docs/11-development.md)                     | Development session metrics and cost      |
+| [`docs/10-copilot-self-review.md`](docs/10-copilot-self-review.md)     | Project review and v1.0 recommendations  |
+| [`docs/11-dev-usage-summary.md`](docs/11-dev-usage-summary.md)        | Development session metrics and cost      |
 | [`docs/progress.md`](docs/progress.md)                                 | Development progress tracker             |
 
 ## 🤝 Contributing
@@ -283,7 +283,7 @@ This is a **vibe coding experiment** — a weekend project built entirely by AI 
 
 ## 📊 Development Stats
 
-See [`docs/11-development.md`](docs/11-development.md) for detailed session metrics, cost estimates (~$41 in premium requests), and development timeline.
+See [`docs/11-dev-usage-summary.md`](docs/11-dev-usage-summary.md) for detailed session metrics, cost estimates (~$41 in premium requests), and development timeline.
 
 ## 📄 License
 
