@@ -178,7 +178,7 @@
 #### Next Iteration
 - [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
 - [ ] Add thought/speech bubbles above Coco
-- [ ] Begin Learn Mode (v0.2.5)
+- [x] Learn Mode (v0.2.5) — 3-tab layout: Tutorial, Event Catalog, Session Playback
 
 #### Later
 - [ ] Ocean Mode (v0.3)
@@ -191,5 +191,5 @@
 |---------|-----------|--------|
 | v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released |
 | v0.2 | Island Mode (Coco + 3D scene + audio) | 🚧 In Progress |
-| v0.2.5 | Learn Mode (tutorials + session playback) | 📋 Spec'd |
+| v0.2.5 | Learn Mode (tutorials + session playback) | ✅ Done |
 | v0.3 | Ocean Mode (Flipper + ocean scene) | 📋 Spec'd |
