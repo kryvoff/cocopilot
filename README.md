@@ -17,8 +17,14 @@ This project is our entry for the [GitHub Challenge on DEV.to](https://dev.to/ch
 ### 📊 Vanilla Mode (v0.1 — Available Now!)
 - **Live event timeline** — watch every Copilot CLI event as it happens
 - **Session info** — repository, branch, model, version at a glance
+- **Stats cards** — requests, turns, tool calls, errors, sub-agents, duration
+- **Activity chart** — Nivo line chart showing event activity over time
+- **Event type distribution** — bar chart of event types
+- **Session filtering** — active sessions shown by default, toggle to see all history
+- **SQLite persistence** — sessions and events persist across restarts
 - **Schema resilience** — gracefully handles unknown event types as Copilot evolves
 - **Debug API** — `localhost:9876` endpoint for agent-driven verification
+- **CLI check** — `npm run check` validates schema compatibility
 
 ### 🏝️ Island Mode (v0.2 — Coming Soon!)
 A 3D tropical island where **Coco the monkey** 🐵 reacts to your coding session. Tool calls make coconuts fall, sub-agents spawn baby monkeys, and errors cause dramatic thunder!
@@ -51,6 +57,15 @@ npm run dev
 
 That's it! 🎉 The app will start monitoring your `~/.copilot/session-state/` directory. Open a terminal, start a Copilot CLI session (`copilot`), and watch Cocopilot light up!
 
+### Check Schema Compatibility
+
+```bash
+# Scan your copilot sessions and check for unknown event types
+npm run check
+```
+
+This runs the standalone `cocopilot check` CLI that inspects your `~/.copilot/session-state/`, parses all events, and reports whether the schemas are compatible.
+
 ### Build for Production
 
 ```bash
@@ -59,7 +74,27 @@ npm run build
 
 # Preview the production build
 npm run preview
+
+# Package as a distributable (.dmg / .exe / .AppImage)
+npm run build && npx electron-builder
 ```
+
+### Install Stable + Dev Side-by-Side
+
+You can run both a stable installed version and a dev version simultaneously:
+
+```bash
+# Build and install a stable version
+npm run build && npx electron-builder
+# Install the .dmg (macOS) / .exe (Windows) / .AppImage (Linux)
+# The installed app uses its own data directory
+
+# Run the dev version alongside it
+npm run dev
+# Dev uses the same ~/.copilot/ monitoring but separate app data
+```
+
+The installed app and dev version run independently — different Electron processes, different app data directories. They both monitor the same `~/.copilot/session-state/` (read-only), so you can have the stable version running while developing.
 
 ### Run Tests
 
@@ -70,9 +105,14 @@ npm run test:unit
 # Type checking
 npm run typecheck
 
+# Smoke test — launches app, verifies debug server responds, exits
+npm run test:smoke
+
 # Everything
 npm run typecheck && npm run test:unit && npm run build
 ```
+
+> **Note:** The smoke test (`test:smoke`) builds the app, launches Electron, waits for the debug server at `localhost:9876` to respond, then exits. This catches runtime errors (like native module mismatches) that unit tests miss.
 
 ## 🏗️ How It Works
 
@@ -134,6 +174,7 @@ src/
 ├── main/              # Electron main process
 │   ├── monitoring/    # File watcher, event parser, session store
 │   ├── database/      # SQLite schema and queries
+│   ├── cli/           # Standalone CLI commands (cocopilot check)
 │   ├── ipc/           # IPC handlers
 │   └── observability/ # Debug HTTP server (:9876)
 ├── preload/           # Secure context bridge
@@ -142,6 +183,9 @@ src/
 │   ├── store/         # Zustand stores
 │   └── components/    # StatusBar, SettingsPanel
 └── shared/            # Types, IPC channels, config
+
+scripts/
+└── smoke-test.sh      # Launch app & verify debug server responds
 ```
 
 ## 🤝 Contributing

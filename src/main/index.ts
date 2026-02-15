@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { FileWatcher, SessionStore } from './monitoring'
@@ -61,6 +61,39 @@ app.whenReady().then(() => {
   app.name = 'Cocopilot'
   electronApp.setAppUserModelId('com.cocopilot.app')
 
+  if (process.platform === 'darwin') {
+    const template: Electron.MenuItemConstructorOptions[] = [
+      {
+        label: 'Cocopilot',
+        submenu: [
+          { role: 'about' },
+          { type: 'separator' },
+          { role: 'services' },
+          { type: 'separator' },
+          { role: 'hide' },
+          { role: 'hideOthers' },
+          { role: 'unhide' },
+          { type: 'separator' },
+          { role: 'quit' }
+        ]
+      },
+      { role: 'fileMenu' },
+      { role: 'editMenu' },
+      { role: 'viewMenu' },
+      { role: 'windowMenu' },
+      {
+        role: 'help',
+        submenu: [
+          {
+            label: 'Debug API',
+            click: () => shell.openExternal('http://localhost:9876/api/health')
+          }
+        ]
+      }
+    ]
+    Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+  }
+
   // Initialize database and session store
   const db = getDatabase()
   const queries = new Queries(db)
@@ -86,6 +119,11 @@ app.whenReady().then(() => {
   fileWatcher.start().catch((err) => {
     console.error('[Main] Failed to start file watcher:', err)
   })
+
+  // After initial file scan, mark stale sessions (give chokidar time to discover all sessions)
+  setTimeout(() => {
+    sessionStore.markStaleSessions()
+  }, 3000)
 
   createWindow()
 

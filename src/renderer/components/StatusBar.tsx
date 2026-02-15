@@ -6,8 +6,8 @@ import type { AppMode } from '@shared/events'
 const MODES: { id: AppMode; label: string }[] = [
   { id: 'vanilla', label: '📊 Vanilla' },
   { id: 'island', label: '🏝️ Island' },
-  { id: 'learn', label: '📚 Learn' },
-  { id: 'ocean', label: '🌊 Ocean' }
+  { id: 'ocean', label: '🌊 Ocean' },
+  { id: 'learn', label: '📚 Learn' }
 ]
 
 interface StatusBarProps {

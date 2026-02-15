@@ -105,6 +105,22 @@ body {
   font-weight: 600;
 }
 
+.vanilla-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.show-all-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 .session-selector {
   background: var(--bg-secondary);
   color: var(--text-primary);
@@ -171,6 +187,27 @@ body {
   text-transform: uppercase;
   color: var(--text-secondary);
   letter-spacing: 0.5px;
+}
+
+/* Activity Chart */
+.activity-chart {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+}
+
+.activity-chart h3 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+}
+
+.activity-chart.empty {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-secondary);
 }
 
 /* Event Type Chart */

@@ -13,9 +13,14 @@
     "typecheck": "npm run typecheck:node && npm run typecheck:web",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx --fix",
     "test:unit": "vitest run",
+    "pretest:unit": "npm rebuild better-sqlite3 --loglevel=silent",
     "test:unit:watch": "vitest",
     "test": "npm run test:unit",
-    "check": "npx tsx --tsconfig tsconfig.node.json src/main/cli/check.ts"
+    "test:smoke": "bash scripts/smoke-test.sh",
+    "check": "npx tsx --tsconfig tsconfig.node.json src/main/cli/check.ts",
+    "rebuild:electron": "electron-rebuild -f",
+    "predev": "electron-rebuild -f",
+    "prebuild": "electron-rebuild -f"
   },
   "dependencies": {
     "@nivo/bar": "^0.99.0",

@@ -56,11 +56,33 @@
   - TypeScript 5.7 → 5.9
 - [x] CI passes on all 3 OS: 21 tests pass, typecheck clean, build succeeds
 
+#### Session 4: Dashboard, Database Persistence, CLI, Tests
+- [x] **Database persistence**: Wired SQLite into SessionStore — sessions, events, and usage records now persist to `cocopilot.db` across restarts
+- [x] SessionStore constructor accepts optional Queries (backward-compatible)
+- [x] Added `loadFromDatabase()` to hydrate in-memory state on startup
+- [x] `assistant.usage` events automatically create usage_records in DB
+- [x] **Dashboard StatsCards**: Shows requests, turns, tool calls, errors, sub-agents, duration — computed from live events
+- [x] **Dashboard EventTypeChart**: Pure CSS horizontal bar chart showing event type distribution sorted by count
+- [x] **Dashboard ActivityChart**: Nivo line chart with area fill showing event activity over time, adaptive time bucketing (5s–5min), dark theme with tooltips
+- [x] **`cocopilot check` CLI**: Standalone schema compatibility checker (`npm run check`) — scans all sessions, reports copilot versions, known/unknown event types, verdict
+- [x] **Database tests**: 9 tests covering schema creation, upsert, insert, duplicate handling, listing, filtering, limits
+- [x] **Dashboard logic tests**: 23 tests covering stats computation, duration formatting, event type grouping, time bucketing algorithms
+- [x] All 53 tests pass, typecheck clean, build succeeds
+- [x] **Fix**: Use `predev`/`prebuild` scripts for electron-rebuild (not postinstall, to avoid breaking unit tests)
+
+#### Session 5: UX Polish, Session Filtering, Smoke Test
+- [x] **Session status fix**: Stale sessions (no events in last hour) auto-marked as "completed" on startup
+- [x] **Session filtering**: "Show all" toggle in Vanilla Mode, only active/idle sessions shown by default
+- [x] **macOS menu fix**: Menu bar now shows "Cocopilot" instead of "Electron" (custom Menu template)
+- [x] **StatusBar reorder**: Learn mode button moved next to settings gear (Vanilla | Island | Ocean | Learn | ⚙️)
+- [x] **Smoke test**: `npm run test:smoke` — builds app, launches Electron, verifies debug server at :9876 responds
+- [x] **README update**: Added CLI check docs, smoke test, dev vs stable instructions, updated feature list & project structure
+- [x] 53 tests pass, typecheck clean, build succeeds
+
 #### Upcoming
-- [ ] Add more dashboard components (usage charts, session info panels)
-- [ ] Connect real monitoring to UI (currently shell components)
-- [ ] Implement `cocopilot check` CLI command for schema compatibility
-- [ ] Add database persistence layer integration
+- [ ] Add tool call details view (expand tool executions inline)
+- [ ] Add session export (JSON/CSV)
+- [ ] Begin Island Mode (v0.2) — 3D scene with Coco the monkey
 
 ---
 

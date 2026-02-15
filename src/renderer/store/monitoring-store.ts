@@ -20,9 +20,11 @@ interface MonitoringState {
   sessions: SessionInfo[]
   selectedSessionId: string | null
   events: ParsedEvent[]
+  showAllSessions: boolean
 
   fetchSessions: () => Promise<void>
   selectSession: (id: string) => void
+  setShowAllSessions: (show: boolean) => void
   subscribeToEvents: () => () => void
 }
 
@@ -30,6 +32,7 @@ export const useMonitoringStore = create<MonitoringState>((set, get) => ({
   sessions: [],
   selectedSessionId: null,
   events: [],
+  showAllSessions: false,
 
   fetchSessions: async () => {
     try {
@@ -56,6 +59,8 @@ export const useMonitoringStore = create<MonitoringState>((set, get) => ({
       .then((events) => set({ events: events as ParsedEvent[] }))
       .catch(() => {})
   },
+
+  setShowAllSessions: (show: boolean) => set({ showAllSessions: show }),
 
   subscribeToEvents: () => {
     const unsubSession = window.cocopilot.onSessionUpdate((session) => {

@@ -59,6 +59,34 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
         this.copilotVersion = session.copilotVersion
       }
     }
+
+    // Mark stale sessions as completed
+    this.markStaleSessions()
+  }
+
+  /**
+   * Mark sessions as "completed" if they appear active/idle but have no recent
+   * events and no running copilot process. Called on startup to fix sessions
+   * that were active when the app last closed or that never got session.shutdown.
+   */
+  markStaleSessions(): void {
+    const staleThresholdMs = 60 * 60 * 1000 // 1 hour
+    const now = Date.now()
+
+    for (const session of this.sessions.values()) {
+      if (session.status !== 'active' && session.status !== 'idle') continue
+
+      const events = this.events.get(session.id) ?? []
+      const lastEvent = events.length > 0 ? events[events.length - 1] : null
+      const lastEventTime = lastEvent ? new Date(lastEvent.timestamp).getTime() : 0
+      const sessionStartTime = new Date(session.startTime).getTime()
+      const latestTime = Math.max(lastEventTime, sessionStartTime)
+
+      if (now - latestTime > staleThresholdMs) {
+        session.status = 'completed'
+        this.queries?.upsertSession(session)
+      }
+    }
   }
 
   addSession(sessionId: string, dir: string): void {
