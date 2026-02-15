@@ -4,6 +4,8 @@
 
 [![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml)
 
+![Cocopilot Demo — all four modes](docs/demo.gif)
+
 ## 🎉 What is this?
 
 Cocopilot is a **Sunday vibe coding experiment** born from the pure joy of exploring [GitHub Copilot CLI](https://docs.github.com/en/copilot/copilot-cli) features — especially **autopilot mode** and **fleet (sub-agents)**! We wanted to understand how Copilot CLI actually works under the hood, and what better way than to build a fun monitoring app that visualizes every event, tool call, and token in real time?
@@ -15,6 +17,9 @@ This project is our entry for the [GitHub Challenge on DEV.to](https://dev.to/ch
 ## ✨ Features
 
 ### 📊 Vanilla Mode (v0.1)
+
+![Vanilla Mode](docs/screenshots/vanilla-mode.png)
+
 - **Live event timeline** — watch every Copilot CLI event as it happens
 - **Session info** — repository, branch, model, version at a glance
 - **Stats cards** — requests, turns, tool calls, errors, sub-agents, duration
@@ -27,6 +32,9 @@ This project is our entry for the [GitHub Challenge on DEV.to](https://dev.to/ch
 - **CLI check** — `npm run check` validates schema compatibility
 
 ### 🏝️ Island Mode (v0.2)
+
+![Island Mode](docs/screenshots/island-mode.png)
+
 A 3D tropical island where **Coco the monkey** 🐵 reacts to your coding session:
 - Procedural low-poly monkey with 7 animation states
 - Speech bubbles showing current activity (✏️ Editing..., 🔍 Searching...)
@@ -38,12 +46,18 @@ A 3D tropical island where **Coco the monkey** 🐵 reacts to your coding sessio
 - 8 sound effects with Howler.js audio system
 
 ### 📚 Learn Mode (v0.2.5)
+
+![Learn Mode](docs/screenshots/learn-mode.png)
+
 Interactive tutorials that explain how Copilot CLI works:
 - **Tutorial** — visual session lifecycle, event format, key concepts
 - **Event Catalog** — 18 event types with descriptions, data fields, example JSON
 - **Session Playback** — replay synthetic sessions with speed control and annotations
 
 ### 🌊 Ocean Mode (v0.3)
+
+![Ocean Mode](docs/screenshots/ocean-mode.png)
+
 A deep underwater world with **Flipper the dolphin** 🐬:
 - Procedural dolphin with 8 animation states (swimming, diving, jumping...)
 - Coral reef with branching corals, brain corals, and waving anemones
@@ -124,6 +138,12 @@ The installed app and dev version run independently — different Electron proce
 # Unit tests (fast!)
 npm run test:unit
 
+# E2E tests (launches app, tests all modes, visual regression)
+npm run test:e2e
+
+# Update visual regression screenshots
+npm run test:e2e:update
+
 # Type checking
 npm run typecheck
 
@@ -134,7 +154,7 @@ npm run test:smoke
 npm run typecheck && npm run test:unit && npm run build
 ```
 
-> **Note:** The smoke test (`test:smoke`) builds the app, launches Electron, waits for the debug server at `localhost:9876` to respond, then exits. This catches runtime errors (like native module mismatches) that unit tests miss.
+> **Note:** E2E tests use Playwright with Electron. They launch the app at a fixed 1200×800 window (1x scale factor) for deterministic screenshots. Run `npm run test:e2e:update` after visual changes to update baselines.
 
 ## 🏗️ How It Works
 
@@ -186,7 +206,7 @@ The meta-beauty: a copilot monitoring app, built by copilot, monitored by itself
 | Charts | Nivo |
 | Database | SQLite (better-sqlite3) |
 | File Watching | Chokidar |
-| Testing | Vitest |
+| Testing | Vitest + Playwright |
 | CI/CD | GitHub Actions (3 OS) |
 
 ## 📁 Project Structure

@@ -151,4 +151,4 @@ vite.config.ts.timestamp-*
 playwright-report/
 test-results/
 # Playwright visual regression snapshots (resolution-dependent, local-only)
-test/e2e/*-snapshots/
+# Committed snapshots use fixed 1200x800 window size for consistency
