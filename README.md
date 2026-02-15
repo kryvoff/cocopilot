@@ -14,7 +14,7 @@ This project is our entry for the [GitHub Challenge on DEV.to](https://dev.to/ch
 
 ## ✨ Features
 
-### 📊 Vanilla Mode (v0.1 — Available Now!)
+### 📊 Vanilla Mode (v0.1)
 - **Live event timeline** — watch every Copilot CLI event as it happens
 - **Session info** — repository, branch, model, version at a glance
 - **Stats cards** — requests, turns, tool calls, errors, sub-agents, duration
@@ -26,14 +26,36 @@ This project is our entry for the [GitHub Challenge on DEV.to](https://dev.to/ch
 - **Debug API** — `localhost:9876` endpoint for agent-driven verification
 - **CLI check** — `npm run check` validates schema compatibility
 
-### 🏝️ Island Mode (v0.2 — Coming Soon!)
-A 3D tropical island where **Coco the monkey** 🐵 reacts to your coding session. Tool calls make coconuts fall, sub-agents spawn baby monkeys, and errors cause dramatic thunder!
+### 🏝️ Island Mode (v0.2)
+A 3D tropical island where **Coco the monkey** 🐵 reacts to your coding session:
+- Procedural low-poly monkey with 7 animation states
+- Speech bubbles showing current activity (✏️ Editing..., 🔍 Searching...)
+- Sub-agent monkeys jump in from the left, exit to the right
+- Tool objects (typewriter, binoculars, coconut, bottle) glow when active
+- Animated ocean waves respond to activity level — calm when idle, stormy when busy
+- Drifting clouds, palm trees, campfire, decorations
+- Git-like event log panel with collapsible user message groups
+- 8 sound effects with Howler.js audio system
 
-### 📚 Learn Mode (v0.2.5 — Coming Soon!)
-Interactive tutorials that explain how Copilot CLI works — event types, agent modes, tool execution, and more. Learn by watching your own sessions!
+### 📚 Learn Mode (v0.2.5)
+Interactive tutorials that explain how Copilot CLI works:
+- **Tutorial** — visual session lifecycle, event format, key concepts
+- **Event Catalog** — 18 event types with descriptions, data fields, example JSON
+- **Session Playback** — replay synthetic sessions with speed control and annotations
 
-### 🌊 Ocean Mode (v0.3 — Coming Soon!)
-A serene 3D ocean with **Flipper the dolphin** 🐬 swimming through your code events. Calm waves for idle time, jumps for completions!
+### 🌊 Ocean Mode (v0.3)
+A deep underwater world with **Flipper the dolphin** 🐬:
+- Procedural dolphin with 8 animation states (swimming, diving, jumping...)
+- Coral reef with branching corals, brain corals, and waving anemones
+- Ocean creatures: octopus (bash), seahorse (edit), starfish (search), sea turtle (view)
+- Fish schools for sub-agents, jellyfish for errors, bubble effects
+- Swaying seaweed, scattered rocks, animated sun rays
+
+### 🎯 Across All Modes
+- **Activity Bar** — top overlay showing agent state, sub-agent count, tool count, event rate
+- **Session selector** — switch between copilot sessions from the status bar
+- **Process monitoring** — tracks copilot CLI processes with CPU%, memory, threads
+- **Session playback** — replay synthetic sessions for testing and demos
 
 ## 🚀 Quick Start
 

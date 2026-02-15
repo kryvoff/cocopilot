@@ -168,20 +168,43 @@
 - [x] Ocean waves respond to copilot activity: calm when idle, stormy when busy
 - [x] 131 tests pass, typecheck clean, build succeeds
 
-#### Session 13: Island Visual Polish
+#### Session 13: Island Visual Polish + Speech Bubbles
+- [x] Added ThoughtBubble: comic-style speech bubble above Coco showing contextual activity text with fade transitions
 - [x] Added drifting clouds (5 cloud groups at varying heights, semi-transparent white spheres, slow X-axis drift with wraparound)
 - [x] Added island decorations: scattered rocks, beach shells/starfish, campfire with warm point light glow
 - [x] Improved palm tree variety: added `scale` prop for height variation, updated instances with different scales and lean angles
 - [x] Enhanced sun: larger sphere with emissive glow + outer transparent halo
 - [x] 131 tests pass, typecheck clean, build succeeds
 
+#### Session 14: Learn Mode v0.2.5
+- [x] Tutorial tab: explains Copilot CLI lifecycle with visual session timeline (7 steps with arrows) and 6 concept cards
+- [x] Event Catalog tab: 18 event types grouped by category (Session, User, Assistant, Tool, SubAgent) with descriptions, data fields, example JSON
+- [x] Playback tab: play/pause/reset synthetic sessions with speed control (1x/2x/5x/10x), event timeline, contextual annotations
+- [x] Tab-based layout with dark theme and #4ecca3 accent
+- [x] 131 tests pass, typecheck clean, build succeeds
+
+#### Session 15: Ocean Mode v0.3
+- [x] Flipper the dolphin: procedural low-poly character with 8 animation states (idle/swimming/diving/jumping/startled), body undulation, tail sway
+- [x] FlipperBubble: ocean-themed thought bubble (🫧 Diving deep..., 🐬 Jumping!)
+- [x] UnderwaterSky: gradient dome (dark→medium blue) with 4 swaying translucent sun ray cones
+- [x] OceanFloor: sandy plane with vertex-displaced bumps, 8 swaying seaweed strands, 5 scattered rocks
+- [x] CoralReef: 3 branching corals, 2 stacked sphere corals, 2 brain corals, 3 anemones with waving tentacles
+- [x] OceanCreatures: octopus (bash), seahorse (edit), starfish (search), sea turtle (view), fish schools for sub-agents, jellyfish for errors, bubble effects scaling with activity
+- [x] flipper-state: Zustand store mapping events to dolphin states + error tracking + activity level
+- [x] use-ocean-events: event hook wiring monitoring store to Flipper + audio
+- [x] HudOverlay: mode-aware emoji (🌊 for ocean, 🏝️ for island)
+- [x] 78 new tests: flipper-state (26), ocean-events (18), learn-mode (25), ocean-playback integration (9)
+- [x] 209 total tests pass, typecheck clean, build succeeds
+
 #### Next Iteration
-- [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
-- [ ] Add thought/speech bubbles above Coco
-- [x] Learn Mode (v0.2.5) — 3-tab layout: Tutorial, Event Catalog, Session Playback
+- [ ] Download high-quality audio assets to replace synthesized placeholders
+- [ ] Add ocean-specific audio (underwater ambient, whale sounds, bubble pops)
+- [ ] Visual regression tests with Playwright screenshots
+- [ ] Performance optimization for 3D scenes (LOD, instancing)
 
 #### Later
-- [ ] Ocean Mode (v0.3)
+- [ ] v0.4: Multi-session view, session comparison
+- [ ] v0.5: Cost tracking dashboard, token budgets
 
 ---
 
@@ -190,6 +213,6 @@
 | Version | Milestone | Status |
 |---------|-----------|--------|
 | v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released |
-| v0.2 | Island Mode (Coco + 3D scene + audio) | 🚧 In Progress |
-| v0.2.5 | Learn Mode (tutorials + session playback) | ✅ Done |
-| v0.3 | Ocean Mode (Flipper + ocean scene) | 📋 Spec'd |
+| v0.2 | Island Mode (Coco + 3D scene + audio) | ✅ Complete |
+| v0.2.5 | Learn Mode (tutorials + event catalog + playback) | ✅ Complete |
+| v0.3 | Ocean Mode (Flipper + underwater world) | ✅ Complete |
