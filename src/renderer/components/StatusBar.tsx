@@ -68,6 +68,20 @@ function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
         )}
       </div>
       <div className="status-bar-right">
+        <button
+          className={`mode-button ${hudVisible ? 'active' : ''}`}
+          onClick={() => setHudVisible(!hudVisible)}
+          title={hudVisible ? 'Hide events panel' : 'Show events panel'}
+        >
+          Events
+        </button>
+        <button
+          className="mode-button"
+          onClick={() => setAudioEnabled(!audioEnabled)}
+          title={audioEnabled ? 'Mute audio' : 'Enable audio'}
+        >
+          {audioEnabled ? '🔊' : '🔇'}
+        </button>
         {MODES.map((m) => (
           <button
             key={m.id}
@@ -77,22 +91,6 @@ function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
             {m.label}
           </button>
         ))}
-        {(mode === 'island' || mode === 'ocean') && (
-          <button
-            className={`mode-button ${hudVisible ? 'active' : ''}`}
-            onClick={() => setHudVisible(!hudVisible)}
-            title={hudVisible ? 'Hide HUD overlay' : 'Show HUD overlay'}
-          >
-            HUD
-          </button>
-        )}
-        <button
-          className="mode-button"
-          onClick={() => setAudioEnabled(!audioEnabled)}
-          title={audioEnabled ? 'Mute audio' : 'Enable audio'}
-        >
-          {audioEnabled ? '🔊' : '🔇'}
-        </button>
         <button className="mode-button" onClick={onSettingsClick}>
           ⚙️
         </button>

@@ -21,14 +21,14 @@ function OceanMode(): React.JSX.Element {
         shadows
         camera={{ position: [6, 4, 8], fov: 55, near: 0.1, far: 500 }}
       >
-        <color attach="background" args={['#0a1628']} />
+        <color attach="background" args={['#87CEEB']} />
 
         {/* Lighting — blue-tinted ambient + sun from above filtered through water */}
-        <ambientLight intensity={0.4 + activityLevel * 0.15} color="#4a8ec2" />
+        <ambientLight intensity={0.8 + activityLevel * 0.15} color="#87CEEB" />
         <directionalLight
           position={[2, 15, 3]}
-          intensity={0.8}
-          color="#6aafe6"
+          intensity={1.2}
+          color="#ffe4b5"
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
@@ -40,7 +40,7 @@ function OceanMode(): React.JSX.Element {
           shadow-camera-bottom={-12}
         />
         {/* Secondary fill light from below for underwater feel */}
-        <pointLight position={[0, -2, 0]} intensity={0.15} color="#1e4d7b" distance={20} />
+        <pointLight position={[0, -2, 0]} intensity={0.3} color="#4fc3f7" distance={20} />
 
         {/* Underwater sky dome + sun rays */}
         <UnderwaterSky />

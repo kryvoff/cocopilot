@@ -125,10 +125,6 @@ function ActivityBar(): React.JSX.Element {
   return (
     <div
       style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
         height: 28,
         background: bg,
         backdropFilter: 'blur(8px)',
@@ -140,8 +136,6 @@ function ActivityBar(): React.JSX.Element {
         fontFamily: "'SF Mono', 'Fira Code', monospace",
         fontSize: 11,
         color: '#fff',
-        zIndex: 1000,
-        pointerEvents: 'none',
         userSelect: 'none'
       }}
     >

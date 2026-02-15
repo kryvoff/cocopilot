@@ -217,6 +217,14 @@
 - [x] 226 total tests pass
 - [ ] Pending user review and testing
 
+#### Session 16: UI/UX Polish
+- [x] Moved ActivityBar from absolute-positioned top overlay to flex child at bottom (above StatusBar)
+- [x] Renamed "HUD" button to "Events" for clarity
+- [x] Stabilized toolbar layout: moved Events + Sound buttons to left of mode tabs (always visible, no layout shift)
+- [x] Brightened ocean scene: sky blue background, bright cyan sky dome, warm sunlight, golden sun rays
+- [x] Fixed useEventSounds: skip sounds for bulk-loaded/historic events (only play for real-time incremental events ≤5)
+- [x] 226 tests pass, typecheck clean
+
 #### Next Iteration
 - [ ] Additional polish and bug fixes from user testing
 - [ ] v1.0 final MVP release preparation

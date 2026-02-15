@@ -44,9 +44,9 @@ function SunRay({
     <mesh ref={ref} position={position}>
       <coneGeometry args={[1.5, 40, 8, 1, true]} />
       <meshBasicMaterial
-        color="#4a90d9"
+        color="#FFE082"
         transparent
-        opacity={0.06}
+        opacity={0.1}
         side={THREE.DoubleSide}
         depthWrite={false}
       />
@@ -57,8 +57,8 @@ function SunRay({
 function UnderwaterSky(): React.JSX.Element {
   const uniforms = useMemo(
     () => ({
-      topColor: { value: new THREE.Color('#1e4d7b') },
-      bottomColor: { value: new THREE.Color('#0a1628') },
+      topColor: { value: new THREE.Color('#4fc3f7') },
+      bottomColor: { value: new THREE.Color('#0288D1') },
       offset: { value: 20 },
       exponent: { value: 0.4 }
     }),
@@ -92,7 +92,7 @@ function UnderwaterSky(): React.JSX.Element {
       {/* Diffuse sun glow at the surface */}
       <mesh position={[0, 35, 0]}>
         <sphereGeometry args={[12, 16, 16]} />
-        <meshBasicMaterial color="#2a6fa8" transparent opacity={0.12} />
+        <meshBasicMaterial color="#FFF9C4" transparent opacity={0.25} />
       </mesh>
 
       {/* Sun ray cones */}

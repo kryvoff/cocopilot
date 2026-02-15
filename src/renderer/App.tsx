@@ -28,7 +28,6 @@ function App(): React.JSX.Element {
 
   return (
     <div className="app">
-      <ActivityBar />
       {settingsOpen ? (
         <main className="app-main">
           <SettingsPanel onClose={() => setSettingsOpen(false)} />
@@ -41,6 +40,7 @@ function App(): React.JSX.Element {
           {mode === 'ocean' && <OceanMode />}
         </main>
       )}
+      <ActivityBar />
       <StatusBar onSettingsClick={() => setSettingsOpen(!settingsOpen)} />
     </div>
   )
