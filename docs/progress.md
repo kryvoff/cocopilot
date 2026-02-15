@@ -36,14 +36,18 @@
 - [x] Updated `docs/07-decisions-log.md` with decisions Q19-Q24
 
 #### Next Steps
-- [ ] User reviews updated docs and plan
-- [ ] Scaffold electron-vite project with TypeScript
-- [ ] Set up CI/CD GitHub Actions
-- [ ] Implement monitoring core (file watcher, event parser)
-- [ ] Implement SQLite schema and data layer
-- [ ] Build Vanilla Mode dashboard
-- [ ] Set up test infrastructure (Vitest, Playwright, fixtures)
+- [x] User reviews updated docs and plan
+- [x] Scaffold electron-vite project with TypeScript
+- [x] Set up CI/CD GitHub Actions
+- [x] Implement monitoring core (file watcher, event parser)
+- [x] Implement SQLite schema and data layer
+- [x] Build Vanilla Mode dashboard
+- [x] Set up test infrastructure (Vitest, Playwright, fixtures)
+- [x] CI passes on all 3 OS (ubuntu, macos, windows): lint, typecheck, 21 unit tests, build
+
+#### Upcoming
 - [ ] Create app settings panel
+- [ ] Add more dashboard components (usage charts, session info panels)
 
 ---
 
