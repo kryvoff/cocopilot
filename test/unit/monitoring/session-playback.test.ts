@@ -11,9 +11,9 @@ const mockState = {
   playbackAddEvent: vi.fn((event: { type: string; id: string }) => {
     mockState.events.push(event)
   }),
-  playbackSetSession: vi.fn((session: { id: string }) => {
-    mockState.sessions = [session]
-    mockState.selectedSessionId = session.id
+  playbackSetSession: vi.fn((session: Record<string, unknown>) => {
+    mockState.sessions = [session as { id: string }]
+    mockState.selectedSessionId = session.id as string
   }),
   playbackReset: vi.fn(() => {
     mockState.events = []
@@ -74,7 +74,7 @@ describe('SessionPlayback', () => {
     playback.start()
 
     expect(mockState.playbackSetSession).toHaveBeenCalledOnce()
-    const sessionArg = mockState.playbackSetSession.mock.calls[0][0]
+    const sessionArg = mockState.playbackSetSession.mock.calls[0][0] as Record<string, unknown>
     expect(sessionArg.id).toBe('syn-test-001')
     expect(sessionArg.status).toBe('active')
     expect(sessionArg.repository).toBe('acme/widget-api')

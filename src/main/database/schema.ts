@@ -33,16 +33,6 @@ CREATE TABLE IF NOT EXISTS events (
   ephemeral INTEGER DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS tool_calls (
-  tool_call_id TEXT PRIMARY KEY,
-  session_id TEXT REFERENCES sessions(id),
-  tool_name TEXT NOT NULL,
-  start_time TEXT,
-  end_time TEXT,
-  success INTEGER,
-  duration_ms INTEGER
-);
-
 CREATE TABLE IF NOT EXISTS usage_records (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   session_id TEXT REFERENCES sessions(id),
@@ -58,7 +48,6 @@ CREATE TABLE IF NOT EXISTS usage_records (
 
 CREATE INDEX IF NOT EXISTS idx_events_session ON events(session_id);
 CREATE INDEX IF NOT EXISTS idx_events_type ON events(type);
-CREATE INDEX IF NOT EXISTS idx_tool_calls_session ON tool_calls(session_id);
 CREATE INDEX IF NOT EXISTS idx_sessions_start ON sessions(start_time);
 `
 

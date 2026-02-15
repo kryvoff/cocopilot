@@ -273,6 +273,16 @@
 #### Next Iteration
 - [ ] User testing and feedback
 
+#### Session 21: Cleanup, Docs, Scrollbars, TypeScript
+- [x] Removed unused `tool_calls` table from schema.ts, queries.test.ts, and docs/03-monitoring-data-model.md (dead code, never populated)
+- [x] Fixed dark mode scrollbars: added global `::-webkit-scrollbar` styles for Chromium/Electron (Settings, Vanilla, all pages)
+- [x] Fixed TypeScript path aliases in test files: created `tsconfig.test.json` so VS Code resolves `@shared/*` imports in test files
+- [x] Fixed pre-existing type error in session-playback.test.ts (mock type mismatch)
+- [x] Updated `docs/11-dev-usage-summary.md`: corrected session metrics from events.jsonl (b05e65df was 1,296 events not 910), added 3 new sessions (a7011e76, 24069c42, f4a9250d), added Model & Token Usage section from terminal log data, updated cost estimates
+- [x] Security scanned `docs/12-copilot-terminal-log.md`: no secrets, tokens, API keys, or sensitive data found
+- [x] Note: Ghostty terminal does not store scrollback logs — no way to recover terminal output for sessions not captured in the terminal log doc
+- [x] 226 tests pass, typecheck clean (all 3 tsconfigs)
+
 ---
 
 ## Version Roadmap
