@@ -9,7 +9,7 @@ const MODES: { id: AppMode; label: string; description: string }[] = [
   { id: 'ocean', label: '🌊 Ocean', description: '3D ocean with Flipper the dolphin' }
 ]
 
-function SettingsPanel({ onClose }: { onClose: () => void }): React.JSX.Element {
+function SettingsPanel(): React.JSX.Element {
   const mode = useAppStore((s) => s.mode)
   const setMode = useAppStore((s) => s.setMode)
   const [audioEnabled, setAudioEnabled] = useState(false)
@@ -19,9 +19,6 @@ function SettingsPanel({ onClose }: { onClose: () => void }): React.JSX.Element 
     <div className="settings-screen">
       <div className="settings-header">
         <h2>⚙️ Settings</h2>
-        <button className="settings-close" onClick={onClose}>
-          ← Back
-        </button>
       </div>
 
       <div className="settings-content">

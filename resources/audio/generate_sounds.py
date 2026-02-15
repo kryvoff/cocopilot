@@ -79,8 +79,8 @@ def gen_ambient_ocean():
     bubble_times = sorted([random.uniform(0.5, 15) for _ in range(20)])
     for bt in bubble_times:
         bub_dur = random.uniform(0.03, 0.1)
-        freq_start = random.uniform(300, 800)
-        freq_end = freq_start * random.uniform(1.5, 2.5)
+        freq_start = random.uniform(200, 500)
+        freq_end = freq_start * random.uniform(1.3, 1.8)
         vol = random.uniform(0.03, 0.08)
         si = int(bt * SAMPLE_RATE)
         ei = min(si + int(bub_dur * SAMPLE_RATE), n)
@@ -91,12 +91,13 @@ def gen_ambient_ocean():
             env = math.sin(math.pi * frac)
             samples[i] += math.sin(2 * math.pi * freq * lt) * env * vol
 
-    # High-frequency shimmer: subtle sparkle
+    # Gentle water movement: low-frequency swells
     for i in range(n):
         t = i / SAMPLE_RATE
-        shimmer = math.sin(2 * math.pi * 6000 * t) * 0.01
-        shimmer *= 0.5 + 0.5 * math.sin(2 * math.pi * t / 3.0)
-        samples[i] += shimmer
+        # Slow deep swells instead of high-pitched shimmer
+        swell = math.sin(2 * math.pi * 80 * t) * 0.015
+        swell *= 0.5 + 0.5 * math.sin(2 * math.pi * t / 5.0)
+        samples[i] += swell
 
     # Fade in/out for looping
     fade = int(SAMPLE_RATE * 1.5)

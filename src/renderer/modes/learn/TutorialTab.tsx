@@ -40,6 +40,36 @@ const CONCEPTS = [
     title: 'Checkpoints & Rewind',
     icon: '⏪',
     text: 'The CLI periodically saves snapshots so it can rewind to earlier states. Truncation events fire when the context window fills up.'
+  },
+  {
+    title: 'Autopilot Mode',
+    icon: '🚀',
+    text: 'In autopilot mode, Copilot CLI runs fully autonomously — accepting all tool calls without confirmation. Ideal for well-defined tasks like "fix all lint errors" or "add tests for this module".'
+  },
+  {
+    title: 'Fleet Mode',
+    icon: '🚢',
+    text: 'Fleet mode dispatches multiple sub-agents in parallel to work on independent tasks simultaneously. A coordinator agent decomposes work into todos and assigns them to specialized workers.'
+  },
+  {
+    title: 'Plan Mode',
+    icon: '📋',
+    text: 'Plan mode creates a structured plan before implementing. The agent writes a plan.md file, breaks work into todos with dependencies, and only starts coding when instructed.'
+  },
+  {
+    title: 'Background Agents',
+    icon: '🔄',
+    text: 'Sub-agents can run in the background while the main agent continues working. Use read_agent to check status and retrieve results. Enables true parallel execution.'
+  },
+  {
+    title: 'Context Windows',
+    icon: '🪟',
+    text: 'Each agent has a limited context window (tokens). When it fills up, the CLI creates checkpoints and truncates older context. The agent can still access history via summaries.'
+  },
+  {
+    title: 'Model Selection',
+    icon: '🤖',
+    text: 'Different agent types use different models: explore agents use fast/cheap models (Haiku), while general-purpose agents use premium models (Sonnet, Opus). You can override with the model parameter.'
   }
 ]
 
@@ -152,9 +182,10 @@ function TutorialTab(): React.JSX.Element {
       <div style={styles.section}>
         <h3 style={styles.sectionTitle}>What is Copilot CLI?</h3>
         <p style={styles.introText}>
-          GitHub Copilot CLI is a terminal-based AI coding assistant. It runs as a single process,
-          communicates with LLM providers via HTTPS, and records all activity as JSON events.
-          Cocopilot monitors these events in real-time to visualize what the agent is doing.
+          GitHub Copilot CLI is a terminal-based AI coding assistant that runs as an autonomous agent.
+          It supports interactive, plan, autopilot, and fleet modes — from simple Q&amp;A to fully
+          autonomous multi-agent task execution. All activity is recorded as JSON events that
+          Cocopilot monitors in real-time.
         </p>
         <p style={styles.introText}>
           Each session creates a directory at <code style={{ color: '#4ecca3' }}>~/.copilot/session-state/&lt;uuid&gt;/</code> containing
@@ -214,6 +245,52 @@ function TutorialTab(): React.JSX.Element {
               <div style={styles.conceptText}>{c.text}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Agent Architecture */}
+      <div style={styles.section}>
+        <h3 style={styles.sectionTitle}>Agent Architecture</h3>
+        <p style={styles.introText}>
+          Copilot CLI uses a hierarchical agent system. The main agent coordinates work
+          and can spawn specialized sub-agents for specific tasks.
+        </p>
+        <div style={styles.conceptGrid}>
+          <div style={{...styles.conceptCard, borderLeft: '3px solid #4ecca3'}}>
+            <div style={styles.conceptTitle}>🎯 Main Agent</div>
+            <div style={styles.conceptText}>
+              The primary agent that receives user messages and coordinates work.
+              Has access to all tools and can dispatch sub-agents.
+            </div>
+          </div>
+          <div style={{...styles.conceptCard, borderLeft: '3px solid #5b9bd5'}}>
+            <div style={styles.conceptTitle}>🔍 Explore Agent</div>
+            <div style={styles.conceptText}>
+              Fast, lightweight agent for searching and reading code. Uses Haiku model.
+              Can run in parallel. Returns focused answers under 300 words.
+            </div>
+          </div>
+          <div style={{...styles.conceptCard, borderLeft: '3px solid #e8a838'}}>
+            <div style={styles.conceptTitle}>⚡ Task Agent</div>
+            <div style={styles.conceptText}>
+              Executes commands (tests, builds, lints). Returns brief summary on success,
+              full output on failure. Keeps main context clean.
+            </div>
+          </div>
+          <div style={{...styles.conceptCard, borderLeft: '3px solid #c07ef0'}}>
+            <div style={styles.conceptTitle}>🧠 General-Purpose Agent</div>
+            <div style={styles.conceptText}>
+              Full-capability agent with complete toolset and premium model (Sonnet).
+              Runs in a separate context window for complex multi-step tasks.
+            </div>
+          </div>
+          <div style={{...styles.conceptCard, borderLeft: '3px solid #e94560'}}>
+            <div style={styles.conceptTitle}>👀 Code Review Agent</div>
+            <div style={styles.conceptText}>
+              Reviews code changes with high signal-to-noise ratio. Only surfaces genuine
+              bugs, security issues, and logic errors. Never comments on style.
+            </div>
+          </div>
         </div>
       </div>
     </div>

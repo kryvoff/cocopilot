@@ -14,18 +14,9 @@ function formatMemory(rssKb: number): string {
 function VanillaMode(): React.JSX.Element {
   const sessions = useMonitoringStore((s) => s.sessions)
   const selectedSessionId = useMonitoringStore((s) => s.selectedSessionId)
-  const selectSession = useMonitoringStore((s) => s.selectSession)
-  const showAllSessions = useMonitoringStore((s) => s.showAllSessions)
-  const setShowAllSessions = useMonitoringStore((s) => s.setShowAllSessions)
   const processes = useMonitoringStore((s) => s.processes)
 
-  const filteredSessions = showAllSessions
-    ? sessions
-    : sessions.filter((s) => s.status === 'active' || s.status === 'idle')
   const selected = sessions.find((s) => s.id === selectedSessionId)
-  const completedCount = sessions.filter(
-    (s) => s.status === 'completed' || s.status === 'error'
-  ).length
 
   // Find the process for the selected session
   const selectedProcess = selected?.pid
@@ -36,40 +27,6 @@ function VanillaMode(): React.JSX.Element {
     <div className="vanilla-mode">
       <div className="vanilla-header">
         <h2>🐵 Cocopilot — Vanilla Mode</h2>
-        <div className="vanilla-header-controls">
-          <select
-            value={selectedSessionId ?? ''}
-            onChange={(e) => selectSession(e.target.value)}
-            className="session-selector"
-          >
-            {filteredSessions.length === 0 && (
-              <option value="">No sessions</option>
-            )}
-            {filteredSessions.map((s) => {
-              const proc = processes.find((p) => p.sessionId === s.id)
-              const label = s.repository ?? s.id.slice(0, 8)
-              const statusIcon = proc ? '🟢' : s.status === 'active' ? '🟡' : '⚪'
-              return (
-                <option key={s.id} value={s.id}>
-                  {statusIcon} {label} ({s.status})
-                </option>
-              )
-            })}
-          </select>
-          <span className="process-count" title="Running copilot CLI processes">
-            {processes.length} process{processes.length !== 1 ? 'es' : ''}
-          </span>
-          {completedCount > 0 && (
-            <label className="show-all-toggle">
-              <input
-                type="checkbox"
-                checked={showAllSessions}
-                onChange={(e) => setShowAllSessions(e.target.checked)}
-              />
-              Show all ({sessions.length})
-            </label>
-          )}
-        </div>
       </div>
 
       {selected && (

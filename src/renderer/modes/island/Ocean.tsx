@@ -43,11 +43,11 @@ function Ocean({ activityLevel = 0.2 }: OceanProps): React.JSX.Element {
     <mesh ref={meshRef} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.15, 0]} receiveShadow>
       <planeGeometry ref={geometryRef} args={[100, 100, 48, 48]} />
       <meshPhongMaterial
-        color="#1a8faa"
-        specular={new THREE.Color('#4fc3f7')}
-        shininess={100}
+        color="#0e7490"
+        specular={new THREE.Color('#e0f7fa')}
+        shininess={150}
         transparent
-        opacity={0.85}
+        opacity={0.8}
         flatShading
       />
     </mesh>

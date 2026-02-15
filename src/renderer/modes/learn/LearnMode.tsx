@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import TutorialTab from './TutorialTab'
+import ArchitectureTab from './ArchitectureTab'
 import EventCatalogTab from './EventCatalogTab'
 import PlaybackTab from './PlaybackTab'
 
-type LearnTab = 'tutorial' | 'catalog' | 'playback'
+type LearnTab = 'tutorial' | 'architecture' | 'catalog' | 'playback'
 
 const TABS: { id: LearnTab; label: string; icon: string }[] = [
   { id: 'tutorial', label: 'How Copilot CLI Works', icon: '📖' },
+  { id: 'architecture', label: 'How Cocopilot Works', icon: '🏗️' },
   { id: 'catalog', label: 'Event Catalog', icon: '📋' },
   { id: 'playback', label: 'Session Playback', icon: '🎬' }
 ]
@@ -72,6 +74,7 @@ function LearnMode(): React.JSX.Element {
       </div>
       <div style={styles.content}>
         {activeTab === 'tutorial' && <TutorialTab />}
+        {activeTab === 'architecture' && <ArchitectureTab />}
         {activeTab === 'catalog' && <EventCatalogTab />}
         {activeTab === 'playback' && <PlaybackTab />}
       </div>

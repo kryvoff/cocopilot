@@ -218,11 +218,22 @@
 - [ ] Pending user review and testing
 
 #### Session 16: UI/UX Polish
-- [x] Moved ActivityBar from absolute-positioned top overlay to flex child at bottom (above StatusBar)
-- [x] Renamed "HUD" button to "Events" for clarity
-- [x] Stabilized toolbar layout: moved Events + Sound buttons to left of mode tabs (always visible, no layout shift)
-- [x] Brightened ocean scene: sky blue background, bright cyan sky dome, warm sunlight, golden sun rays
-- [x] Fixed useEventSounds: skip sounds for bulk-loaded/historic events (only play for real-time incremental events ≤5)
+- [x] Moved ActivityBar from top overlay to bottom (above StatusBar)
+- [x] Renamed "HUD" → "Events", stabilized toolbar layout (Events + Sound always visible, left of mode tabs)
+- [x] Brightened ocean scene: sky blue background, bright cyan dome, warm sunlight
+- [x] Fixed useEventSounds: skip bulk-loaded/historic events (only play real-time ≤5)
+
+#### Session 17: UI Cleanup, Visuals, Learn Mode, Sound Docs
+- [x] Settings is now a normal page (mode), not an overlay with "← Back" button
+- [x] Removed duplicate session selector from VanillaMode header (already in StatusBar)
+- [x] Removed duplicate status header from HudOverlay, fixed dark scrollbar styling
+- [x] Ocean floor: larger bumps, 10 rocks, 6 shells/starfish, depth variation overlay
+- [x] Island ocean: darker base (#0e7490), brighter specular (#e0f7fa), shininess 150
+- [x] Ocean sun: single sun disk with 7 god rays of varying size/color/sway (replaced 4 identical cones)
+- [x] Learn mode: new "How Cocopilot Works" tab with architecture diagram, data pipeline, process monitor, debug API
+- [x] Learn mode: extended tutorial with autopilot, fleet, plan modes + 5 agent type cards
+- [x] Ocean sound: replaced 6kHz shimmer with 80Hz swells, calmer bubbles (200-500Hz)
+- [x] Sound docs: `docs/09-sounds.md`, `visualize_sounds.py` generates SVG spectrograms + waveforms
 - [x] 226 tests pass, typecheck clean
 
 #### Next Iteration

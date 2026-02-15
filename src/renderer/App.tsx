@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useAppStore } from './store/app-store'
 import { useMonitoringStore } from './store/monitoring-store'
 import { useAudio } from './audio/use-audio'
@@ -14,7 +14,6 @@ import OceanMode from './modes/ocean/OceanMode'
 function App(): React.JSX.Element {
   const mode = useAppStore((s) => s.mode)
   const { fetchSessions, subscribeToEvents } = useMonitoringStore()
-  const [settingsOpen, setSettingsOpen] = useState(false)
 
   // Global audio management — called once, manages ambient per mode
   useAudio()
@@ -28,20 +27,15 @@ function App(): React.JSX.Element {
 
   return (
     <div className="app">
-      {settingsOpen ? (
-        <main className="app-main">
-          <SettingsPanel onClose={() => setSettingsOpen(false)} />
-        </main>
-      ) : (
-        <main className="app-main">
-          {mode === 'vanilla' && <VanillaMode />}
-          {mode === 'island' && <IslandMode />}
-          {mode === 'learn' && <LearnMode />}
-          {mode === 'ocean' && <OceanMode />}
-        </main>
-      )}
+      <main className="app-main">
+        {mode === 'vanilla' && <VanillaMode />}
+        {mode === 'island' && <IslandMode />}
+        {mode === 'learn' && <LearnMode />}
+        {mode === 'ocean' && <OceanMode />}
+        {mode === 'settings' && <SettingsPanel />}
+      </main>
       <ActivityBar />
-      <StatusBar onSettingsClick={() => setSettingsOpen(!settingsOpen)} />
+      <StatusBar />
     </div>
   )
 }

@@ -17,13 +17,6 @@ const TOOL_ICONS: Record<string, string> = {
   task: '🐒'
 }
 
-const STATUS_ICONS: Record<string, string> = {
-  active: '🟢',
-  idle: '⚪',
-  completed: '⏹️',
-  error: '🔴'
-}
-
 /** A user-message turn: the user.message event plus all child events until the next user.message */
 interface TurnGroup {
   userEvent: ParsedEvent
@@ -192,28 +185,13 @@ const styles = {
     flexDirection: 'column' as const,
     overflow: 'hidden' as const
   },
-  header: {
-    padding: '8px 10px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-    flexShrink: 0,
-    display: 'flex' as const,
-    alignItems: 'center' as const,
-    gap: 6,
-    fontSize: 11
-  },
-  headerStatus: {
-    color: '#a0a0a0',
-    fontSize: 10
-  },
+
   eventList: {
     flex: 1,
     overflowY: 'auto' as const,
-    padding: '2px 0'
-  },
-  noSession: {
-    color: '#a0a0a0',
-    fontStyle: 'italic' as const,
-    padding: '10px 10px'
+    padding: '2px 0',
+    scrollbarWidth: 'thin' as const,
+    scrollbarColor: '#555 #1a1a2e'
   },
   preambleEvent: {
     padding: '2px 10px',
@@ -316,15 +294,8 @@ function TurnSection({
 
 function HudOverlay(): React.JSX.Element | null {
   const hudVisible = useAppStore((s) => s.hudVisible)
-  const mode = useAppStore((s) => s.mode)
-  const modeEmoji = mode === 'ocean' ? '🌊' : '🏝️'
-  const { sessions, selectedSessionId, events } = useMonitoringStore()
+  const { events } = useMonitoringStore()
   const scrollRef = useRef<HTMLDivElement>(null)
-
-  const session = useMemo(
-    () => sessions.find((s) => s.id === selectedSessionId) ?? null,
-    [sessions, selectedSessionId]
-  )
 
   const { preamble, turns } = useMemo(() => groupEventsByTurn(events), [events])
 
@@ -340,18 +311,6 @@ function HudOverlay(): React.JSX.Element | null {
 
   return (
     <div style={styles.panel}>
-      {/* Simplified session header */}
-      <div style={styles.header}>
-        <span>{modeEmoji}</span>
-        {session ? (
-          <span style={styles.headerStatus}>
-            {STATUS_ICONS[session.status] ?? '❓'} {session.status} · {session.eventCount} events
-          </span>
-        ) : (
-          <span style={styles.noSession}>No active session</span>
-        )}
-      </div>
-
       <div ref={scrollRef} style={styles.eventList}>
         {/* Preamble: session.start etc. before first user message */}
         {preamble.events.map((event) => (

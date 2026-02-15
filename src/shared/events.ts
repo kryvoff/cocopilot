@@ -178,7 +178,7 @@ export interface ParsedEvent {
 }
 
 // App-level types
-export type AppMode = 'vanilla' | 'island' | 'learn' | 'ocean'
+export type AppMode = 'vanilla' | 'island' | 'learn' | 'ocean' | 'settings'
 
 export interface AppSettings {
   defaultMode: AppMode

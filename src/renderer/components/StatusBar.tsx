@@ -10,11 +10,7 @@ const MODES: { id: AppMode; label: string }[] = [
   { id: 'learn', label: '📚 Learn' }
 ]
 
-interface StatusBarProps {
-  onSettingsClick: () => void
-}
-
-function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
+function StatusBar(): React.JSX.Element {
   const sessions = useMonitoringStore((s) => s.sessions)
   const selectedSessionId = useMonitoringStore((s) => s.selectedSessionId)
   const selectSession = useMonitoringStore((s) => s.selectSession)
@@ -91,7 +87,10 @@ function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
             {m.label}
           </button>
         ))}
-        <button className="mode-button" onClick={onSettingsClick}>
+        <button
+          className={`mode-button ${mode === 'settings' ? 'active' : ''}`}
+          onClick={() => setMode('settings')}
+        >
           ⚙️
         </button>
       </div>

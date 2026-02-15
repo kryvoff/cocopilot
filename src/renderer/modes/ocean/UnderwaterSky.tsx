@@ -23,30 +23,35 @@ const fragmentShader = `
   }
 `
 
-/** Single sun ray cone that sways gently */
-function SunRay({
-  position,
-  swayOffset
-}: {
-  position: [number, number, number]
-  swayOffset: number
-}): React.JSX.Element {
+interface GodRayProps {
+  pos: [number, number, number]
+  angle: [number, number, number]
+  height: number
+  radius: number
+  opacity: number
+  speed: number
+  phase: number
+  color: string
+}
+
+/** Volumetric god ray cone emanating from the sun */
+function GodRay({ pos, angle, height, radius, opacity, speed, phase, color }: GodRayProps): React.JSX.Element {
   const ref = useRef<THREE.Mesh>(null)
 
   useFrame(({ clock }) => {
     if (!ref.current) return
     const t = clock.elapsedTime
-    ref.current.rotation.x = Math.sin(t * 0.3 + swayOffset) * 0.08
-    ref.current.rotation.z = Math.cos(t * 0.25 + swayOffset * 1.3) * 0.06
+    ref.current.rotation.x = angle[0] + Math.sin(t * speed + phase) * 0.06
+    ref.current.rotation.z = angle[2] + Math.cos(t * speed * 0.8 + phase * 1.3) * 0.05
   })
 
   return (
-    <mesh ref={ref} position={position}>
-      <coneGeometry args={[1.5, 40, 8, 1, true]} />
+    <mesh ref={ref} position={pos} rotation={[angle[0], angle[1], angle[2]]}>
+      <coneGeometry args={[radius, height, 8, 1, true]} />
       <meshBasicMaterial
-        color="#FFE082"
+        color={color}
         transparent
-        opacity={0.1}
+        opacity={opacity}
         side={THREE.DoubleSide}
         depthWrite={false}
       />
@@ -65,12 +70,15 @@ function UnderwaterSky(): React.JSX.Element {
     []
   )
 
-  const rays = useMemo(
+  const godRays = useMemo<GodRayProps[]>(
     () => [
-      { position: [-4, 20, -2] as [number, number, number], swayOffset: 0 },
-      { position: [2, 22, -5] as [number, number, number], swayOffset: 1.5 },
-      { position: [6, 19, 1] as [number, number, number], swayOffset: 3.0 },
-      { position: [-1, 21, 4] as [number, number, number], swayOffset: 4.5 }
+      { pos: [0, 38, 0], angle: [-0.1, 0, -0.15], height: 35, radius: 2.0, opacity: 0.08, speed: 0.2, phase: 0, color: '#FFE082' },
+      { pos: [2, 38, -1], angle: [-0.05, 0, 0.1], height: 30, radius: 1.5, opacity: 0.06, speed: 0.25, phase: 1.2, color: '#80D8FF' },
+      { pos: [-3, 38, 1], angle: [0.08, 0, -0.08], height: 32, radius: 1.8, opacity: 0.07, speed: 0.18, phase: 2.5, color: '#FFE082' },
+      { pos: [1, 38, 2], angle: [-0.12, 0, 0.05], height: 28, radius: 1.2, opacity: 0.05, speed: 0.3, phase: 3.8, color: '#80D8FF' },
+      { pos: [-1, 38, -2], angle: [0.06, 0, 0.12], height: 33, radius: 2.2, opacity: 0.09, speed: 0.15, phase: 5.0, color: '#FFE082' },
+      { pos: [3, 38, 1], angle: [-0.03, 0, -0.1], height: 26, radius: 1.0, opacity: 0.04, speed: 0.28, phase: 0.6, color: '#80D8FF' },
+      { pos: [-2, 38, -1], angle: [0.1, 0, 0.03], height: 38, radius: 2.5, opacity: 0.1, speed: 0.22, phase: 4.2, color: '#FFE082' }
     ],
     []
   )
@@ -89,15 +97,15 @@ function UnderwaterSky(): React.JSX.Element {
         />
       </mesh>
 
-      {/* Diffuse sun glow at the surface */}
-      <mesh position={[0, 35, 0]}>
-        <sphereGeometry args={[12, 16, 16]} />
-        <meshBasicMaterial color="#FFF9C4" transparent opacity={0.25} />
+      {/* Sun disk at water surface */}
+      <mesh position={[0, 40, 0]}>
+        <sphereGeometry args={[15, 24, 24]} />
+        <meshBasicMaterial color="#FFECB3" transparent opacity={0.35} />
       </mesh>
 
-      {/* Sun ray cones */}
-      {rays.map((ray, i) => (
-        <SunRay key={i} position={ray.position} swayOffset={ray.swayOffset} />
+      {/* God rays from the sun */}
+      {godRays.map((ray, i) => (
+        <GodRay key={i} {...ray} />
       ))}
     </group>
   )
