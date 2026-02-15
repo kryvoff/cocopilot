@@ -191,8 +191,8 @@ export interface AppSettings {
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
-  defaultMode: 'vanilla',
-  audioEnabled: false,
+  defaultMode: 'island',
+  audioEnabled: true,
   audioVolume: 0.5,
   copilotConfigDir: '~/.copilot',
   showOverlay: true,

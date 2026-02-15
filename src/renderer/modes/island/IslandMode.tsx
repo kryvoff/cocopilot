@@ -1,23 +1,65 @@
 import React from 'react'
+import { Canvas } from '@react-three/fiber'
+import { Sky, OrbitControls } from '@react-three/drei'
+import Island from './Island'
+import Ocean from './Ocean'
+import Coco from './Coco'
+import HudOverlay from './HudOverlay'
+import DebugPanel from './DebugPanel'
+import { useIslandEvents } from './use-island-events'
 
 function IslandMode(): React.JSX.Element {
+  const cocoState = useIslandEvents()
+
   return (
-    <div className="mode-placeholder island-placeholder">
-      <div className="placeholder-icon">🏝️</div>
-      <h2>Island Mode</h2>
-      <p className="placeholder-subtitle">Coming in v0.2!</p>
-      <div className="placeholder-description">
-        <p>
-          A 3D tropical island where <strong>Coco the monkey</strong> 🐵 reacts to your Copilot CLI
-          session in real time!
-        </p>
-        <ul>
-          <li>🥥 Tool calls make coconuts fall from palm trees</li>
-          <li>🐒 Sub-agents spawn as baby monkeys</li>
-          <li>⛈️ Errors cause dramatic thunder storms</li>
-          <li>🌅 Session completion triggers a beautiful sunset</li>
-        </ul>
-      </div>
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <Canvas
+        shadows
+        camera={{ position: [8, 5, 8], fov: 50 }}
+        style={{ background: '#87ceeb' }}
+      >
+        {/* Lighting */}
+        <ambientLight intensity={0.4} />
+        <directionalLight
+          position={[10, 10, 5]}
+          intensity={1.2}
+          castShadow
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
+          shadow-camera-near={0.5}
+          shadow-camera-far={50}
+          shadow-camera-left={-10}
+          shadow-camera-right={10}
+          shadow-camera-top={10}
+          shadow-camera-bottom={-10}
+        />
+
+        {/* Sky */}
+        <Sky
+          sunPosition={[100, 20, 100]}
+          turbidity={8}
+          rayleigh={2}
+          mieCoefficient={0.005}
+          mieDirectionalG={0.8}
+        />
+
+        {/* Scene objects */}
+        <Ocean />
+        <Island />
+        <Coco state={cocoState} position={[0.8, 0.55, 0.8]} />
+
+        {/* Controls */}
+        <OrbitControls
+          autoRotate
+          autoRotateSpeed={0.5}
+          maxPolarAngle={Math.PI / 2.2}
+          minDistance={5}
+          maxDistance={20}
+          target={[0, 1, 0]}
+        />
+      </Canvas>
+      <HudOverlay />
+      <DebugPanel />
     </div>
   )
 }

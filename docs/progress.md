@@ -1,6 +1,6 @@
 # Cocopilot Progress Tracker
 
-## Current Phase: v0.1 Development
+## Current Phase: v0.2 Development
 
 ### 2026-02-15
 
@@ -109,10 +109,32 @@
 - [x] **Tests**: 9 new tests for ProcessMonitor (polling, events, structure) and SessionStore.updateProcesses. 62 tests pass
 - [x] Typecheck clean, build succeeds, smoke test passes
 
+#### Session 9: Island Mode v0.2
+- [x] Installed 3D dependencies: three, @react-three/fiber, @react-three/drei
+- [x] Installed audio dependencies: howler, @types/howler
+- [x] Generated synthesized placeholder audio assets (8 sounds: ambient island loop, monkey call, chime, typewriter, coconut crack, error, success, goodbye) in resources/audio/
+- [x] Built procedural 3D island scene: Canvas with Sky, ocean plane, sandy island platform, 5 palm trees with coconut clusters, sway animations
+- [x] Created Coco the monkey as procedural low-poly character: sphere-based head/body/limbs, face details (eyes, ears, muzzle), 7 animation states (hidden, idle, entering, thinking, working, startled, waving)
+- [x] Created Howler.js AudioManager singleton: loads 8 sounds, ambient loop, enable/disable/volume controls
+- [x] Created useAudio and useEventSounds hooks: auto-start ambient in island mode, map events to sounds
+- [x] Extracted event-sound mapping to pure function for testability
+- [x] Created Coco state store (Zustand): maps monitoring events to animation states with auto-reverting timeouts
+- [x] Created useIslandEvents hook: wires monitoring store → coco state + audio
+- [x] Built HUD overlay: semi-transparent panel showing session status, event count, duration, recent events list
+- [x] Built DebugPanel: toggle with 'D' key, shows FPS, Coco state, event queue, audio status
+- [x] Changed default mode from vanilla to island, audio enabled by default
+- [x] Added 35 new unit tests: 20 for coco-state store (all state transitions, timeouts, sub-agents), 15 for event-sound mapping
+- [x] Fixed "Object has been destroyed" error: guarded IPC sends against destroyed window, cleanup listeners on window close
+- [x] Added OpenAPI docs page at /docs with Scalar API reference UI
+- [x] 97 tests pass (up from 62), typecheck clean, build succeeds
+
 #### Upcoming
-- [ ] Add tool call details view (expand tool executions inline)
-- [ ] Add session export (JSON/CSV)
-- [ ] Begin Island Mode (v0.2) — 3D scene with Coco the monkey
+- [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
+- [ ] Add tool-specific objects on the island (typewriter, binoculars, coconut, bottle)
+- [ ] Add sub-agent monkeys spawning from jungle
+- [ ] Add particle effects (sparkles for success, smoke for errors)
+- [ ] Add thought/speech bubbles
+- [ ] Begin Learn Mode (v0.2.5)
 
 ---
 
@@ -121,6 +143,6 @@
 | Version | Milestone | Status |
 |---------|-----------|--------|
 | v0.1 | Vanilla Mode + Monitoring + SQLite + Tests + CI/CD | ✅ Released |
-| v0.2 | Island Mode (Coco + 3D scene + audio) | 📋 Spec'd |
+| v0.2 | Island Mode (Coco + 3D scene + audio) | 🚧 In Progress |
 | v0.2.5 | Learn Mode (tutorials + session playback) | 📋 Spec'd |
 | v0.3 | Ocean Mode (Flipper + ocean scene) | 📋 Spec'd |
