@@ -75,6 +75,10 @@ export const useFlipperStore = create<FlipperStore>((set, get) => ({
 
       case 'assistant.turn_start':
         set({ state: 'swimming' })
+        // Return to idle if no further events within 30s (stale session)
+        setTimeout(() => {
+          if (get().state === 'swimming') setState('idle')
+        }, 30_000)
         break
 
       case 'tool.execution_start': {

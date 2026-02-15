@@ -378,3 +378,4 @@ function PlaybackTab(): React.JSX.Element {
 }
 
 export default PlaybackTab
+export { getEventSummary, getAnnotation, formatTime, EVENT_ANNOTATIONS }

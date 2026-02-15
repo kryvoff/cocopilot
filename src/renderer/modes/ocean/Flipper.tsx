@@ -20,7 +20,7 @@ interface FlipperProps {
 const BODY = '#5f8fa3'
 const BELLY = '#b8d8e8'
 const DARK = '#4a7a8d'
-const SNOUT = '#6a9ab0'
+const SNOUT = '#7ab0c4'
 const WHITE = '#ffffff'
 const BLACK = '#1a1a1a'
 
@@ -129,15 +129,12 @@ function Flipper({ state, position = [0, 0, 0] }: FlipperProps): React.JSX.Eleme
       const elapsed = t - a.jumpStart
       const jumpDuration = 2.0
       const progress = Math.min(elapsed / jumpDuration, 1)
-      // Parabolic: sin gives a nice arc
       groupRef.current.position.y = position[1] + Math.sin(progress * Math.PI) * 2.5
-      // Forward rotation (dolphin flip)
       groupRef.current.rotation.x = -progress * Math.PI * 0.6
       groupRef.current.position.x = position[0]
       if (tailRef.current) {
         tailRef.current.rotation.y = Math.sin(t * 10) * 0.2
       }
-      // Reset jump when cycle completes
       if (progress >= 1) {
         a.jumpStart = t
       }
@@ -191,79 +188,95 @@ function Flipper({ state, position = [0, 0, 0] }: FlipperProps): React.JSX.Eleme
   return (
     <group ref={groupRef} position={position} scale={state === 'hidden' ? [0, 0, 0] : [1, 1, 1]}>
       <group ref={bodyRef}>
-        {/* Body — elongated ellipsoid */}
-        <mesh castShadow scale={[1.8, 1, 1]}>
-          <sphereGeometry args={[0.5, 12, 10]} />
+        {/* Body — sleek elongated dolphin shape */}
+        <mesh castShadow scale={[2.4, 0.6, 0.7]}>
+          <sphereGeometry args={[0.5, 14, 10]} />
           <meshStandardMaterial color={BODY} flatShading />
         </mesh>
 
-        {/* Belly */}
-        <mesh position={[0, -0.15, 0]} scale={[1.6, 0.7, 0.8]}>
+        {/* Belly — lighter underside */}
+        <mesh position={[0.1, -0.12, 0]} scale={[2.2, 0.4, 0.55]}>
           <sphereGeometry args={[0.4, 10, 8]} />
           <meshStandardMaterial color={BELLY} flatShading />
         </mesh>
 
-        {/* Head */}
-        <mesh castShadow position={[0.8, 0.1, 0]}>
-          <sphereGeometry args={[0.35, 10, 8]} />
+        {/* Head — tapers forward, slightly smaller */}
+        <mesh castShadow position={[0.9, 0.05, 0]} scale={[1, 0.85, 0.85]}>
+          <sphereGeometry args={[0.3, 10, 8]} />
           <meshStandardMaterial color={BODY} flatShading />
         </mesh>
 
-        {/* Snout/beak */}
-        <mesh position={[1.2, 0.05, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <coneGeometry args={[0.15, 0.4, 8]} />
+        {/* Rostrum/snout — long pointed beak, signature dolphin feature */}
+        <mesh position={[1.35, -0.02, 0]} rotation={[0, 0, -Math.PI / 2]} scale={[0.8, 1, 0.7]}>
+          <coneGeometry args={[0.08, 0.6, 8]} />
           <meshStandardMaterial color={SNOUT} flatShading />
         </mesh>
 
-        {/* Dorsal fin */}
-        <mesh castShadow position={[0, 0.5, 0]} rotation={[0, 0, -0.3]}>
-          <coneGeometry args={[0.2, 0.6, 4]} />
+        {/* Melon (forehead bump) */}
+        <mesh position={[1.0, 0.15, 0]} scale={[0.7, 0.6, 0.65]}>
+          <sphereGeometry args={[0.18, 8, 6]} />
+          <meshStandardMaterial color={BODY} flatShading />
+        </mesh>
+
+        {/* Dorsal fin — tall, curved back */}
+        <mesh castShadow position={[-0.1, 0.35, 0]} rotation={[0, 0, -0.25]}>
+          <coneGeometry args={[0.15, 0.55, 4]} />
           <meshStandardMaterial color={DARK} flatShading />
         </mesh>
 
-        {/* Side fins */}
-        <mesh position={[0.3, -0.2, 0.4]} rotation={[0.5, 0, 0.3]} scale={[0.6, 0.1, 0.3]}>
+        {/* Left pectoral fin — swept back */}
+        <mesh position={[0.4, -0.18, 0.35]} rotation={[0.6, 0.2, 0.4]} scale={[0.7, 0.08, 0.35]}>
           <sphereGeometry args={[0.3, 6, 6]} />
           <meshStandardMaterial color={BODY} flatShading />
         </mesh>
-        <mesh position={[0.3, -0.2, -0.4]} rotation={[-0.5, 0, 0.3]} scale={[0.6, 0.1, 0.3]}>
+        {/* Right pectoral fin */}
+        <mesh position={[0.4, -0.18, -0.35]} rotation={[-0.6, -0.2, 0.4]} scale={[0.7, 0.08, 0.35]}>
           <sphereGeometry args={[0.3, 6, 6]} />
           <meshStandardMaterial color={BODY} flatShading />
         </mesh>
 
-        {/* Eyes */}
-        <mesh position={[0.85, 0.2, 0.25]}>
+        {/* Left eye — white sclera */}
+        <mesh position={[0.95, 0.1, 0.22]}>
           <sphereGeometry args={[0.06, 6, 6]} />
           <meshStandardMaterial color={WHITE} />
         </mesh>
-        <mesh position={[0.87, 0.22, 0.28]}>
-          <sphereGeometry args={[0.03, 5, 5]} />
+        {/* Left eye — pupil */}
+        <mesh position={[0.97, 0.11, 0.26]}>
+          <sphereGeometry args={[0.035, 5, 5]} />
           <meshStandardMaterial color={BLACK} />
         </mesh>
-        <mesh position={[0.85, 0.2, -0.25]}>
+        {/* Right eye — white sclera */}
+        <mesh position={[0.95, 0.1, -0.22]}>
           <sphereGeometry args={[0.06, 6, 6]} />
           <meshStandardMaterial color={WHITE} />
         </mesh>
-        <mesh position={[0.87, 0.22, -0.28]}>
-          <sphereGeometry args={[0.03, 5, 5]} />
+        {/* Right eye — pupil */}
+        <mesh position={[0.97, 0.11, -0.26]}>
+          <sphereGeometry args={[0.035, 5, 5]} />
           <meshStandardMaterial color={BLACK} />
+        </mesh>
+
+        {/* Mouth line — small dark mark */}
+        <mesh position={[1.25, -0.06, 0]} rotation={[0, 0, 0]} scale={[0.3, 0.02, 0.08]}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color={DARK} />
         </mesh>
       </group>
 
-      {/* Tail group */}
-      <group ref={tailRef} position={[-0.9, 0, 0]}>
-        {/* Tail base */}
-        <mesh rotation={[0, 0, Math.PI / 2]}>
-          <coneGeometry args={[0.2, 0.5, 6]} />
+      {/* Tail group — peduncle + flukes */}
+      <group ref={tailRef} position={[-1.1, 0, 0]}>
+        {/* Tail peduncle (narrow section before flukes) */}
+        <mesh rotation={[0, 0, Math.PI / 2]} scale={[1, 0.7, 0.6]}>
+          <coneGeometry args={[0.14, 0.5, 6]} />
           <meshStandardMaterial color={BODY} flatShading />
         </mesh>
-        {/* Left fluke */}
-        <mesh position={[-0.3, 0, 0.2]} rotation={[0.3, 0, 0]} scale={[0.8, 0.15, 0.5]}>
+        {/* Left fluke — horizontal (dolphins have horizontal tail flukes) */}
+        <mesh position={[-0.3, 0, 0.18]} rotation={[0.2, 0, 0]} scale={[0.9, 0.08, 0.5]}>
           <sphereGeometry args={[0.3, 6, 6]} />
           <meshStandardMaterial color={DARK} flatShading />
         </mesh>
         {/* Right fluke */}
-        <mesh position={[-0.3, 0, -0.2]} rotation={[-0.3, 0, 0]} scale={[0.8, 0.15, 0.5]}>
+        <mesh position={[-0.3, 0, -0.18]} rotation={[-0.2, 0, 0]} scale={[0.9, 0.08, 0.5]}>
           <sphereGeometry args={[0.3, 6, 6]} />
           <meshStandardMaterial color={DARK} flatShading />
         </mesh>

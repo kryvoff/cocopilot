@@ -55,6 +55,10 @@ export const useCocoStore = create<CocoStore>((set, get) => ({
 
       case 'assistant.turn_start':
         set({ state: 'thinking' })
+        // Return to idle if no further events within 30s (stale session)
+        setTimeout(() => {
+          if (get().state === 'thinking') setState('idle')
+        }, 30_000)
         break
 
       case 'tool.execution_start': {

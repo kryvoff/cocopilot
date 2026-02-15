@@ -292,7 +292,32 @@ function ArchitectureTab(): React.JSX.Element {
         </p>
 
         <div style={styles.diagramOuter}>
-          {/* Electron App container */}
+          {/* 1. Copilot CLI at the top — source of all data */}
+          <div style={styles.externalBox(colors.red)}>
+            <div style={styles.archBoxTitle(colors.red)}>GitHub Copilot CLI</div>
+            <div style={styles.archItem}>copilot agent</div>
+          </div>
+
+          {/* Arrow: writes events */}
+          <div style={styles.arrowBetween}>
+            <div style={{ fontSize: 18, color: colors.green }}>▼</div>
+            <div style={styles.arrowLabel}>writes events to disk</div>
+          </div>
+
+          {/* 2. File system — event log */}
+          <div style={styles.externalBox(colors.gray)}>
+            <div style={styles.archBoxTitle(colors.gray)}>~/.copilot/</div>
+            <div style={styles.archItem}>session-state/&lt;uuid&gt;/</div>
+            <div style={styles.archItem}>events.jsonl &nbsp; session.db</div>
+          </div>
+
+          {/* Arrow: watches files */}
+          <div style={styles.arrowBetween}>
+            <div style={{ fontSize: 18, color: colors.green }}>▼</div>
+            <div style={styles.arrowLabel}>Cocopilot watches files</div>
+          </div>
+
+          {/* 3. Electron App container */}
           <div style={styles.electronBox}>
             <div style={styles.electronLabel}>Cocopilot Electron App</div>
 
@@ -336,33 +361,6 @@ function ArchitectureTab(): React.JSX.Element {
                 <div style={styles.archItem}>/api/state &nbsp;/api/events</div>
               </div>
             </div>
-          </div>
-
-          {/* Arrow: watches files */}
-          <div style={styles.arrowBetween}>
-            <div style={{ fontSize: 18, color: colors.green }}>▲</div>
-            <div style={styles.arrowLabel}>watches files</div>
-            <div style={{ fontSize: 18, color: colors.green }}>▼</div>
-          </div>
-
-          {/* File system */}
-          <div style={styles.externalBox(colors.gray)}>
-            <div style={styles.archBoxTitle(colors.gray)}>~/.copilot/</div>
-            <div style={styles.archItem}>session-state/&lt;uuid&gt;/</div>
-            <div style={styles.archItem}>events.jsonl &nbsp; session.db</div>
-          </div>
-
-          {/* Arrow: writes events */}
-          <div style={styles.arrowBetween}>
-            <div style={{ fontSize: 18, color: colors.green }}>▲</div>
-            <div style={styles.arrowLabel}>writes events</div>
-            <div style={{ fontSize: 18, color: colors.green }}>▼</div>
-          </div>
-
-          {/* Copilot CLI */}
-          <div style={styles.externalBox(colors.red)}>
-            <div style={styles.archBoxTitle(colors.red)}>GitHub Copilot CLI</div>
-            <div style={styles.archItem}>copilot agent</div>
           </div>
         </div>
       </div>

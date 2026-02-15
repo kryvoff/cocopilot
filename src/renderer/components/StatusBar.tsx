@@ -26,12 +26,13 @@ function StatusBar(): React.JSX.Element {
   const activeSessions = sessions.filter((s) => s.status === 'active' || s.status === 'idle')
   const completedSessions = sessions.filter((s) => s.status !== 'active' && s.status !== 'idle')
   const completedCount = completedSessions.length
+  const processCount = processes.length
 
   return (
     <div className="status-bar">
       <div className="status-bar-left">
-        <span className="status-indicator">
-          {activeSessions.length > 0 ? '🟢' : '⚪'} {activeSessions.length} active
+        <span className="status-indicator" title={`${processCount} Copilot CLI process${processCount !== 1 ? 'es' : ''} running, ${activeSessions.length} session${activeSessions.length !== 1 ? 's' : ''} with recent activity`}>
+          {processCount > 0 ? '🟢' : '⚪'} {activeSessions.length} session{activeSessions.length !== 1 ? 's' : ''}
         </span>
         {sessions.length > 0 && (
           <select
@@ -42,10 +43,11 @@ function StatusBar(): React.JSX.Element {
             {activeSessions.map((s) => {
               const proc = processes.find((p) => p.sessionId === s.id)
               const label = s.repository ?? s.id.slice(0, 8)
-              const statusIcon = proc ? '🟢' : s.status === 'active' ? '🟡' : '⚪'
+              const statusIcon = proc ? '🟢' : '🟡'
+              const statusLabel = proc ? 'running' : 'idle'
               return (
                 <option key={s.id} value={s.id}>
-                  {statusIcon} {label} ({s.status}) • {s.eventCount} events
+                  {statusIcon} {label} ({statusLabel}) • {s.eventCount} events
                 </option>
               )
             })}
@@ -57,7 +59,7 @@ function StatusBar(): React.JSX.Element {
                 const label = s.repository ?? s.id.slice(0, 8)
                 return (
                   <option key={s.id} value={s.id}>
-                    ⚪ {label} ({s.status}) • {s.eventCount} events
+                    ⚪ {label} (ended) • {s.eventCount} events
                   </option>
                 )
               })}

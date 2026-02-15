@@ -308,10 +308,24 @@
 - [x] Added Retina/HiDPI screenshot guidelines to `.github/copilot-instructions.md`
 - [x] All 226 unit tests pass, 11 E2E tests pass, typecheck clean
 
+#### Session 23: UI/UX Polish — Dolphin, Coco, Status Bar, Learn Mode
+- [x] Redesigned Flipper dolphin: slimmer body (2.4x elongated), longer rostrum/snout, visible eyes with pupils, melon forehead, mouth line, horizontal tail flukes — much more dolphin-like
+- [x] Lowered dolphin position from y=4 to y=2.5 so it's visible in default camera view
+- [x] Clamped ocean camera: maxPolarAngle=PI/2.2 prevents going below ocean floor, target raised to y=2
+- [x] Ocean ActivityBar: monkey emoji 🐒 → fish emoji 🐟 when in ocean mode
+- [x] Fixed Coco head gap: moved head from y=0.55 to y=0.38 (closer to body), added feet (TAN spheres)
+- [x] Fixed stale "Thinking..." bubble: added 30s timeout on thinking/swimming states so Coco/Flipper return to idle when session is stale. Changed bubble text from "🤔 Thinking..." to "💭 Agent thinking..." to clarify it's the agent, not Coco
+- [x] Status bar clarity: changed "2 active" → "2 sessions", session dropdown now shows "running"/"idle"/"ended" instead of raw status, green dot tied to process detection
+- [x] ActivityBar labels: added tooltips explaining "events in last 60 seconds", "session duration", "active sub-agents", "agent state"
+- [x] Sounds tab: waveform + spectrogram shown side by side (replaced toggle), compact 60px height, playback marker sweeps across both visualizations
+- [x] Architecture diagram: reordered to Copilot CLI → file system → Cocopilot (top to bottom), one-way arrows instead of bidirectional
+- [x] Added 11 PlaybackTab helper tests (getEventSummary, getAnnotation, formatTime, EVENT_ANNOTATIONS coverage)
+- [x] 228 tests pass (excluding pre-existing better-sqlite3 module mismatch), typecheck clean
+
 #### Next Iteration
 - [ ] Record and publish YouTube video
 - [ ] Final manual testing pass on all modes
-- [ ] Commit, push, CI green, v0.7 release
+- [ ] Commit, push, CI green, v0.8 release
 - [ ] v1.0 release
 
 ---
@@ -328,4 +342,5 @@
 | v0.5    | UI polish, review, docs, session stats             | ✅ Released    |
 | v0.6    | Palm trees, button UX, releases, dev docs           | ✅ Released    |
 | v0.7    | 3D polish, dolphin, caustics, sounds marker, covers  | ✅ Complete    |
+| v0.8    | Dolphin redesign, UX polish, status bar, learn mode  | ✅ Complete    |
 | v1.0    | Final MVP — polished, tested, documented           | 📋 Planned     |

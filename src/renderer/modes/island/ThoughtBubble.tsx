@@ -17,7 +17,7 @@ function getBubbleText(state: CocoState, toolName: string | null): string | null
     case 'idle':
       return null
     case 'thinking':
-      return '🤔 Thinking...'
+      return '💭 Agent thinking...'
     case 'working': {
       if (toolName === 'edit' || toolName === 'create') return '✏️ Editing...'
       if (toolName === 'bash') return '🔨 Running...'

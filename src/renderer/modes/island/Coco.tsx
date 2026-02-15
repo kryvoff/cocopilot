@@ -88,7 +88,7 @@ function Coco({ state, position = [0, 0, 0] }: CocoProps): React.JSX.Element {
         bodyRef.current.position.y = Math.sin(t * 2) * 0.03
       }
       if (headRef.current) {
-        headRef.current.position.y = 0.55 + Math.sin(t * 2) * 0.03
+        headRef.current.position.y = 0.38 + Math.sin(t * 2) * 0.03
         headRef.current.rotation.z = THREE.MathUtils.lerp(headRef.current.rotation.z, 0, delta * 4)
       }
       if (tailRef.current) {
@@ -160,7 +160,7 @@ function Coco({ state, position = [0, 0, 0] }: CocoProps): React.JSX.Element {
       }
       if (headRef.current) {
         headRef.current.rotation.z = THREE.MathUtils.lerp(headRef.current.rotation.z, 0, delta * 4)
-        headRef.current.position.y = 0.55 + Math.sin(t * 6) * 0.02
+        headRef.current.position.y = 0.38 + Math.sin(t * 6) * 0.02
       }
       if (tailRef.current) {
         tailRef.current.rotation.z = Math.sin(t * 4) * 0.15
@@ -189,7 +189,7 @@ function Coco({ state, position = [0, 0, 0] }: CocoProps): React.JSX.Element {
       }
       if (headRef.current) {
         headRef.current.rotation.z = 0
-        headRef.current.position.y = 0.6
+        headRef.current.position.y = 0.43
       }
     } else {
       groupRef.current.position.z = THREE.MathUtils.lerp(
@@ -213,7 +213,7 @@ function Coco({ state, position = [0, 0, 0] }: CocoProps): React.JSX.Element {
       }
       if (headRef.current) {
         headRef.current.rotation.z = Math.sin(t * 5) * 0.1
-        headRef.current.position.y = 0.55
+        headRef.current.position.y = 0.38
       }
       if (bodyRef.current) {
         bodyRef.current.position.y = Math.sin(t * 2) * 0.02
@@ -270,11 +270,21 @@ function Coco({ state, position = [0, 0, 0] }: CocoProps): React.JSX.Element {
           <cylinderGeometry args={[0.045, 0.04, 0.2, 5]} />
           <meshStandardMaterial color={BROWN} flatShading />
         </mesh>
+        {/* Left foot */}
+        <mesh position={[0.1, -0.42, 0.04]} castShadow>
+          <sphereGeometry args={[0.05, 5, 4]} />
+          <meshStandardMaterial color={TAN} flatShading />
+        </mesh>
 
         {/* Right leg */}
         <mesh position={[-0.1, -0.3, 0]} castShadow>
           <cylinderGeometry args={[0.045, 0.04, 0.2, 5]} />
           <meshStandardMaterial color={BROWN} flatShading />
+        </mesh>
+        {/* Right foot */}
+        <mesh position={[-0.1, -0.42, 0.04]} castShadow>
+          <sphereGeometry args={[0.05, 5, 4]} />
+          <meshStandardMaterial color={TAN} flatShading />
         </mesh>
 
         {/* Tail */}
@@ -288,8 +298,8 @@ function Coco({ state, position = [0, 0, 0] }: CocoProps): React.JSX.Element {
         </group>
       </group>
 
-      {/* Head group */}
-      <group ref={headRef} position={[0, 0.55, 0]}>
+      {/* Head group — closer to body */}
+      <group ref={headRef} position={[0, 0.38, 0]}>
         {/* Head sphere */}
         <mesh castShadow>
           <sphereGeometry args={[0.25, 6, 5]} />

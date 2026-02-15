@@ -119,8 +119,6 @@ const SOUNDS: SoundEntry[] = [
   }
 ]
 
-type VizMode = 'waveform' | 'spectrogram'
-
 const styles = {
   container: {
     padding: 20,
@@ -132,24 +130,6 @@ const styles = {
     lineHeight: 1.6,
     marginBottom: 24,
     fontSize: 14
-  } as React.CSSProperties,
-  vizToggle: {
-    display: 'flex',
-    gap: 0,
-    marginBottom: 20
-  } as React.CSSProperties,
-  vizButton: {
-    padding: '6px 16px',
-    fontSize: 13,
-    cursor: 'pointer',
-    border: '1px solid #2a2a4a',
-    background: 'transparent',
-    color: '#a0a0a0'
-  } as React.CSSProperties,
-  vizButtonActive: {
-    background: '#4ecca3',
-    color: '#1a1a2e',
-    borderColor: '#4ecca3'
   } as React.CSSProperties,
   soundCard: {
     background: '#16213e',
@@ -197,11 +177,28 @@ const styles = {
     marginBottom: 8,
     lineHeight: 1.5
   } as React.CSSProperties,
+  vizRow: {
+    display: 'flex',
+    gap: 8,
+    marginTop: 8
+  } as React.CSSProperties,
+  vizHalf: {
+    flex: 1,
+    position: 'relative' as const
+  } as React.CSSProperties,
+  vizLabel: {
+    fontSize: 10,
+    color: '#666',
+    textTransform: 'uppercase' as const,
+    letterSpacing: 1,
+    marginBottom: 2,
+    fontFamily: "'SF Mono', 'Fira Code', monospace"
+  } as React.CSSProperties,
   vizImage: {
     width: '100%',
-    height: 'auto',
-    borderRadius: 4,
-    marginTop: 8
+    height: 60,
+    objectFit: 'cover' as const,
+    borderRadius: 4
   } as React.CSSProperties,
   techniqueRow: {
     fontSize: 12,
@@ -211,7 +208,6 @@ const styles = {
 }
 
 function SoundsTab(): React.JSX.Element {
-  const [vizMode, setVizMode] = useState<VizMode>('waveform')
   const [playingId, setPlayingId] = useState<string | null>(null)
   const [currentHowl, setCurrentHowl] = useState<Howl | null>(null)
   const [playbackProgress, setPlaybackProgress] = useState(0)
@@ -267,21 +263,6 @@ function SoundsTab(): React.JSX.Element {
         Click any sound to play it.
       </p>
 
-      <div style={styles.vizToggle}>
-        <button
-          style={{ ...styles.vizButton, borderRadius: '4px 0 0 4px', ...(vizMode === 'waveform' ? styles.vizButtonActive : {}) }}
-          onClick={() => setVizMode('waveform')}
-        >
-          Waveform
-        </button>
-        <button
-          style={{ ...styles.vizButton, borderRadius: '0 4px 4px 0', ...(vizMode === 'spectrogram' ? styles.vizButtonActive : {}) }}
-          onClick={() => setVizMode('spectrogram')}
-        >
-          Spectrogram
-        </button>
-      </div>
-
       {SOUNDS.map((sound) => (
         <div
           key={sound.id}
@@ -301,25 +282,53 @@ function SoundsTab(): React.JSX.Element {
           </div>
           <div style={styles.soundMeta}>{sound.usedFor}</div>
           <div style={styles.techniqueRow}>Synthesis: {sound.technique}</div>
-          <div style={{ position: 'relative' }}>
-            <img
-              src={vizMode === 'waveform' ? sound.waveform : sound.spectrogram}
-              alt={`${sound.name} ${vizMode}`}
-              style={styles.vizImage}
-            />
-            {playingId === sound.id && (
-              <div style={{
-                position: 'absolute',
-                top: 8,
-                bottom: 0,
-                left: `${playbackProgress * 100}%`,
-                width: 2,
-                background: '#4ecca3',
-                boxShadow: '0 0 6px #4ecca3',
-                pointerEvents: 'none',
-                transition: 'left 0.05s linear'
-              }} />
-            )}
+          <div style={styles.vizRow}>
+            <div style={styles.vizHalf}>
+              <div style={styles.vizLabel}>Waveform</div>
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={sound.waveform}
+                  alt={`${sound.name} waveform`}
+                  style={styles.vizImage}
+                />
+                {playingId === sound.id && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: `${playbackProgress * 100}%`,
+                    width: 2,
+                    background: '#4ecca3',
+                    boxShadow: '0 0 6px #4ecca3',
+                    pointerEvents: 'none',
+                    transition: 'left 0.05s linear'
+                  }} />
+                )}
+              </div>
+            </div>
+            <div style={styles.vizHalf}>
+              <div style={styles.vizLabel}>Spectrogram</div>
+              <div style={{ position: 'relative' }}>
+                <img
+                  src={sound.spectrogram}
+                  alt={`${sound.name} spectrogram`}
+                  style={styles.vizImage}
+                />
+                {playingId === sound.id && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: `${playbackProgress * 100}%`,
+                    width: 2,
+                    background: '#4ecca3',
+                    boxShadow: '0 0 6px #4ecca3',
+                    pointerEvents: 'none',
+                    transition: 'left 0.05s linear'
+                  }} />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       ))}

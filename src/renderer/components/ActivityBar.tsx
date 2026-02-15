@@ -148,15 +148,15 @@ function ActivityBar(): React.JSX.Element {
         userSelect: 'none'
       }}
     >
-      <span>{agentState.dot} {agentState.label}</span>
+      <span title="Current agent state based on latest events">{agentState.dot} {agentState.label}</span>
       <Divider />
-      <span>🐒 {subAgentCount} agent{subAgentCount !== 1 ? 's' : ''}</span>
+      <span title="Active sub-agents spawned by the main agent">{mode === 'ocean' ? '🐟' : '🐒'} {subAgentCount} agent{subAgentCount !== 1 ? 's' : ''}</span>
       <Divider />
-      <span>⚙️ {activeToolIds.size} tool{activeToolIds.size !== 1 ? 's' : ''}</span>
+      <span title="Tools currently being executed">{activeToolIds.size > 0 ? '⚙️' : '⚙️'} {activeToolIds.size} tool{activeToolIds.size !== 1 ? 's' : ''}</span>
       <Divider />
-      <span>📊 {eventRate} events/min</span>
+      <span title="Events received in the last 60 seconds">📊 {eventRate} events/min</span>
       <Divider />
-      <span>⏱️ {duration}</span>
+      <span title="Time since session started">⏱️ Session: {duration}</span>
     </div>
   )
 }

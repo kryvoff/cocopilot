@@ -68,18 +68,18 @@ function OceanMode(): React.JSX.Element {
         </mesh>
 
         {/* Flipper the dolphin */}
-        <Flipper state={flipperState} position={[0, 4, 0]} />
-        <FlipperBubble state={flipperState} toolName={toolActive} position={[0, 4, 0]} />
+        <Flipper state={flipperState} position={[0, 2.5, 0]} />
+        <FlipperBubble state={flipperState} toolName={toolActive} position={[0, 2.5, 0]} />
 
-        {/* Controls — allow more vertical movement for underwater exploration */}
+        {/* Controls — camera stays above ocean floor, dolphin always visible */}
         <OrbitControls
           autoRotate
           autoRotateSpeed={0.3}
-          maxPolarAngle={Math.PI / 1.5}
+          maxPolarAngle={Math.PI / 2.2}
           minPolarAngle={Math.PI / 6}
           minDistance={4}
-          maxDistance={25}
-          target={[0, 1, 0]}
+          maxDistance={20}
+          target={[0, 2, 0]}
         />
       </Canvas>
 
