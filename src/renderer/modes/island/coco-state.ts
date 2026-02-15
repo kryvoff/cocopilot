@@ -13,6 +13,8 @@ interface CocoStore {
   toolActive: string | null
   subAgentCount: number
   activeSubAgents: SubAgent[]
+  activityLevel: number
+  recentEventTimestamps: number[]
   setState: (state: CocoState) => void
   processEvent: (event: ParsedEvent) => void
 }
@@ -22,11 +24,21 @@ export const useCocoStore = create<CocoStore>((set, get) => ({
   toolActive: null,
   subAgentCount: 0,
   activeSubAgents: [],
+  activityLevel: 0,
+  recentEventTimestamps: [],
 
   setState: (state: CocoState) => set({ state }),
 
   processEvent: (event: ParsedEvent) => {
     const { setState } = get()
+
+    // Update activity level based on recent event frequency
+    const now = Date.now()
+    const windowMs = 30_000 // 30-second window
+    const maxEventsForFullActivity = 20
+    const recent = [...get().recentEventTimestamps, now].filter((t) => now - t < windowMs)
+    const activityLevel = Math.min(1, recent.length / maxEventsForFullActivity)
+    set({ recentEventTimestamps: recent, activityLevel })
 
     switch (event.type) {
       case 'session.start': {

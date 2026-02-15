@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useAppStore } from './store/app-store'
 import { useMonitoringStore } from './store/monitoring-store'
 import StatusBar from './components/StatusBar'
+import ActivityBar from './components/ActivityBar'
 import SettingsPanel from './components/SettingsPanel'
 import VanillaMode from './modes/vanilla/VanillaMode'
 import IslandMode from './modes/island/IslandMode'
@@ -21,6 +22,7 @@ function App(): React.JSX.Element {
 
   return (
     <div className="app">
+      <ActivityBar />
       {settingsOpen ? (
         <main className="app-main">
           <SettingsPanel onClose={() => setSettingsOpen(false)} />

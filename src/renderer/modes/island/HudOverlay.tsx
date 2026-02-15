@@ -1,35 +1,9 @@
-import React, { useMemo, useRef, useEffect } from 'react'
+import React, { useMemo, useRef, useEffect, useState, useCallback } from 'react'
 import { useMonitoringStore } from '../../store/monitoring-store'
 import { useAppStore } from '../../store/app-store'
 import type { ParsedEvent } from '@shared/events'
 
-function formatDuration(startTime: string): string {
-  const ms = Date.now() - new Date(startTime).getTime()
-  if (ms < 0) return '0s'
-  const totalSeconds = Math.floor(ms / 1000)
-  const m = Math.floor(totalSeconds / 60)
-  const s = totalSeconds % 60
-  if (m === 0) return `${s}s`
-  return `${m}m${s.toString().padStart(2, '0')}s`
-}
-
-function formatTimestamp(ts: string): string {
-  const d = new Date(ts)
-  return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
-}
-
-const EVENT_ICONS: Record<string, string> = {
-  'session.start': '🚀',
-  'session.shutdown': '👋',
-  'user.message': '💬',
-  'assistant.turn_start': '🤔',
-  'assistant.turn_end': '✅',
-  'assistant.message': '🤖',
-  'tool.execution_start': '⚙️',
-  'tool.execution_complete': '✓',
-  'subagent.started': '🐒',
-  'subagent.completed': '🐒'
-}
+// --- Helpers ---
 
 const TOOL_ICONS: Record<string, string> = {
   grep: '🔍',
@@ -50,47 +24,153 @@ const STATUS_ICONS: Record<string, string> = {
   error: '🔴'
 }
 
-function getEventIcon(event: ParsedEvent): string {
-  const toolName = event.data?.toolName as string | undefined
-  if (
-    toolName &&
-    (event.type === 'tool.execution_start' || event.type === 'tool.execution_complete')
-  ) {
-    return TOOL_ICONS[toolName] ?? '⚙️'
-  }
-  return EVENT_ICONS[event.type] ?? '•'
+/** A user-message turn: the user.message event plus all child events until the next user.message */
+interface TurnGroup {
+  userEvent: ParsedEvent
+  children: ParsedEvent[]
+  /** Extracted user prompt text (truncated) */
+  prompt: string
 }
 
-function getEventLabel(event: ParsedEvent): string {
-  if (event.type === 'tool.execution_start' || event.type === 'tool.execution_complete') {
-    const toolName = event.data?.toolName as string | undefined
-    if (toolName) return toolName
-  }
-  if (event.type === 'subagent.started' || event.type === 'subagent.completed') {
-    const name = (event.data?.agentDisplayName ?? event.data?.agentName) as string | undefined
-    if (name) return name
-  }
-  return event.type
+/** Events that appear before the first user.message (session.start, etc.) */
+interface PreambleGroup {
+  events: ParsedEvent[]
 }
 
-function getEventDetail(event: ParsedEvent, allEvents: ParsedEvent[]): string | null {
-  if (event.type === 'tool.execution_complete') {
-    const toolCallId = event.data?.toolCallId as string | undefined
-    const success = event.data?.success !== false
-    let duration = ''
-    if (toolCallId) {
-      const start = allEvents.find(
-        (e) => e.type === 'tool.execution_start' && e.data?.toolCallId === toolCallId
-      )
-      if (start) {
-        const ms = new Date(event.timestamp).getTime() - new Date(start.timestamp).getTime()
-        duration = ms >= 1000 ? `${(ms / 1000).toFixed(1)}s` : `${ms}ms`
+// Event types we actually render as children inside a turn
+const RENDERED_CHILD_TYPES = new Set([
+  'assistant.turn_start',
+  'assistant.turn_end',
+  'assistant.message',
+  'tool.execution_start',
+  'tool.execution_complete',
+  'subagent.started',
+  'subagent.completed',
+  'session.shutdown'
+])
+
+function groupEventsByTurn(events: ParsedEvent[]): { preamble: PreambleGroup; turns: TurnGroup[] } {
+  const preamble: PreambleGroup = { events: [] }
+  const turns: TurnGroup[] = []
+
+  for (const event of events) {
+    if (event.type === 'user.message') {
+      const content = (event.data?.content as string) ?? ''
+      const prompt = content.length > 60 ? content.slice(0, 57) + '…' : content
+      turns.push({ userEvent: event, children: [], prompt })
+    } else if (turns.length === 0) {
+      preamble.events.push(event)
+    } else {
+      const current = turns[turns.length - 1]
+      if (RENDERED_CHILD_TYPES.has(event.type)) {
+        current.children.push(event)
       }
     }
-    const indicator = success ? '✓' : '✗'
-    return duration ? `${duration} ${indicator}` : indicator
   }
-  return null
+
+  return { preamble, turns }
+}
+
+function getToolDuration(event: ParsedEvent, allEvents: ParsedEvent[]): string | null {
+  if (event.type !== 'tool.execution_complete') return null
+  const toolCallId = event.data?.toolCallId as string | undefined
+  if (!toolCallId) return null
+  const start = allEvents.find(
+    (e) => e.type === 'tool.execution_start' && e.data?.toolCallId === toolCallId
+  )
+  if (!start) return null
+  const ms = new Date(event.timestamp).getTime() - new Date(start.timestamp).getTime()
+  return ms >= 1000 ? `${(ms / 1000).toFixed(1)}s` : `${ms}ms`
+}
+
+function renderChildEvent(event: ParsedEvent, allEvents: ParsedEvent[]): React.JSX.Element | null {
+  const toolName = (event.data?.toolName as string) ?? ''
+  const toolIcon = TOOL_ICONS[toolName] ?? '⚙️'
+
+  switch (event.type) {
+    case 'assistant.turn_start':
+      return <span style={childStyles.assistantText}>🤖 Working...</span>
+    case 'assistant.turn_end':
+      return <span style={childStyles.doneText}>✅ Done</span>
+    case 'assistant.message':
+      return <span style={childStyles.assistantText}>🤖 Response</span>
+    case 'tool.execution_start':
+      return (
+        <span style={childStyles.toolText}>
+          {toolIcon} {toolName || 'tool'}{' '}
+          <span style={childStyles.statusRunning}>→ running…</span>
+        </span>
+      )
+    case 'tool.execution_complete': {
+      // Find matching start to get the tool name
+      const callId = event.data?.toolCallId as string | undefined
+      let name = toolName
+      if (!name && callId) {
+        const start = allEvents.find(
+          (e) => e.type === 'tool.execution_start' && e.data?.toolCallId === callId
+        )
+        name = (start?.data?.toolName as string) ?? ''
+      }
+      const icon = TOOL_ICONS[name] ?? '⚙️'
+      const success = event.data?.success !== false
+      const dur = getToolDuration(event, allEvents)
+      return (
+        <span style={childStyles.toolText}>
+          {icon} {name || 'tool'} →{' '}
+          <span style={success ? childStyles.statusOk : childStyles.statusFail}>
+            {success ? '✓' : '✗'}
+          </span>
+          {dur && <span style={childStyles.duration}> {dur}</span>}
+        </span>
+      )
+    }
+    case 'subagent.started': {
+      const agentName =
+        (event.data?.agentDisplayName as string) ?? (event.data?.agentName as string) ?? 'agent'
+      return (
+        <span style={childStyles.subagentText}>
+          🐒 {agentName} <span style={childStyles.statusRunning}>→ running…</span>
+        </span>
+      )
+    }
+    case 'subagent.completed':
+      return (
+        <span style={childStyles.subagentText}>
+          🐒 agent → <span style={childStyles.statusOk}>✓</span>
+        </span>
+      )
+    case 'session.shutdown':
+      return <span style={childStyles.sessionText}>👋 Session ended</span>
+    default:
+      return null
+  }
+}
+
+// Deduplicate: when we see tool.execution_complete, skip the matching tool.execution_start
+function deduplicateChildren(children: ParsedEvent[]): ParsedEvent[] {
+  const completedCallIds = new Set<string>()
+  for (const e of children) {
+    if (e.type === 'tool.execution_complete') {
+      const id = e.data?.toolCallId as string | undefined
+      if (id) completedCallIds.add(id)
+    }
+  }
+  return children.filter((e) => {
+    if (e.type === 'tool.execution_start') {
+      const id = e.data?.toolCallId as string | undefined
+      if (id && completedCallIds.has(id)) return false
+    }
+    return true
+  })
+}
+
+// --- Styles ---
+
+const BORDER_COLORS = {
+  user: '#4ecca3',
+  assistant: '#5b9bd5',
+  tool: '#e8a838',
+  subagent: '#c07ef0'
 }
 
 const styles = {
@@ -99,9 +179,9 @@ const styles = {
     top: 0,
     left: 0,
     bottom: 0,
-    width: 200,
+    width: 220,
     pointerEvents: 'auto' as const,
-    background: 'rgba(0, 0, 0, 0.5)',
+    background: 'rgba(0, 0, 0, 0.55)',
     backdropFilter: 'blur(8px)',
     borderRight: '1px solid rgba(255, 255, 255, 0.1)',
     fontFamily: "'SF Mono', 'Fira Code', monospace",
@@ -113,48 +193,125 @@ const styles = {
     overflow: 'hidden' as const
   },
   header: {
-    padding: '10px 12px',
+    padding: '8px 10px',
     borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-    flexShrink: 0
+    flexShrink: 0,
+    display: 'flex' as const,
+    alignItems: 'center' as const,
+    gap: 6,
+    fontSize: 11
   },
-  title: {
-    fontSize: 13,
-    fontWeight: 600,
-    color: '#ffffff',
-    marginBottom: 4
-  },
-  headerDetail: {
+  headerStatus: {
     color: '#a0a0a0',
     fontSize: 10
   },
   eventList: {
     flex: 1,
     overflowY: 'auto' as const,
-    padding: '4px 0'
-  },
-  eventEntry: {
-    padding: '4px 12px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.05)'
-  },
-  eventTimestamp: {
-    color: '#707070',
-    fontSize: 10
-  },
-  eventLabel: {
-    color: '#4ecca3',
-    overflow: 'hidden' as const,
-    textOverflow: 'ellipsis' as const,
-    whiteSpace: 'nowrap' as const
-  },
-  eventDetail: {
-    color: '#a0a0a0',
-    fontSize: 10
+    padding: '2px 0'
   },
   noSession: {
     color: '#a0a0a0',
     fontStyle: 'italic' as const,
-    padding: '10px 12px'
+    padding: '10px 10px'
+  },
+  preambleEvent: {
+    padding: '2px 10px',
+    color: '#707070',
+    fontSize: 10
+  },
+  // Turn group
+  turnGroup: {
+    borderBottom: '1px solid rgba(255, 255, 255, 0.04)'
+  },
+  turnHeader: {
+    padding: '5px 10px',
+    cursor: 'pointer' as const,
+    display: 'flex' as const,
+    alignItems: 'flex-start' as const,
+    gap: 4,
+    borderLeft: `2px solid ${BORDER_COLORS.user}`,
+    userSelect: 'none' as const
+  },
+  turnToggle: {
+    color: '#707070',
+    fontSize: 9,
+    flexShrink: 0,
+    marginTop: 2,
+    width: 10
+  },
+  turnPrompt: {
+    color: '#ffffff',
+    fontWeight: 600,
+    fontSize: 11,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
+    display: '-webkit-box' as const,
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical' as const,
+    lineHeight: 1.3
+  },
+  childrenContainer: {
+    paddingLeft: 10,
+    borderLeft: `2px solid ${BORDER_COLORS.assistant}`
+  },
+  childRow: {
+    padding: '1px 10px 1px 6px',
+    fontSize: 10,
+    overflow: 'hidden' as const,
+    textOverflow: 'ellipsis' as const,
+    whiteSpace: 'nowrap' as const
   }
+}
+
+const childStyles = {
+  assistantText: { color: '#7eadd8' },
+  doneText: { color: '#4ecca3' },
+  toolText: { color: '#b0b0b0' },
+  subagentText: { color: '#c8a0e8' },
+  sessionText: { color: '#707070' },
+  statusRunning: { color: '#e8a838' },
+  statusOk: { color: '#4ecca3' },
+  statusFail: { color: '#e85050' },
+  duration: { color: '#707070' }
+}
+
+// --- Components ---
+
+function TurnSection({
+  turn,
+  allEvents,
+  defaultExpanded
+}: {
+  turn: TurnGroup
+  allEvents: ParsedEvent[]
+  defaultExpanded: boolean
+}): React.JSX.Element {
+  const [expanded, setExpanded] = useState(defaultExpanded)
+  const toggle = useCallback(() => setExpanded((v) => !v), [])
+  const dedupedChildren = useMemo(() => deduplicateChildren(turn.children), [turn.children])
+
+  return (
+    <div style={styles.turnGroup}>
+      <div style={styles.turnHeader} onClick={toggle}>
+        <span style={styles.turnToggle}>{expanded ? '▼' : '▶'}</span>
+        <span style={styles.turnPrompt}>💬 {turn.prompt || 'User message'}</span>
+      </div>
+      {expanded && dedupedChildren.length > 0 && (
+        <div style={styles.childrenContainer}>
+          {dedupedChildren.map((child) => {
+            const rendered = renderChildEvent(child, allEvents)
+            if (!rendered) return null
+            return (
+              <div key={child.id} style={styles.childRow}>
+                {rendered}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
 }
 
 function HudOverlay(): React.JSX.Element | null {
@@ -166,6 +323,8 @@ function HudOverlay(): React.JSX.Element | null {
     () => sessions.find((s) => s.id === selectedSessionId) ?? null,
     [sessions, selectedSessionId]
   )
+
+  const { preamble, turns } = useMemo(() => groupEventsByTurn(events), [events])
 
   // Auto-scroll to bottom when new events arrive
   useEffect(() => {
@@ -179,34 +338,35 @@ function HudOverlay(): React.JSX.Element | null {
 
   return (
     <div style={styles.panel}>
+      {/* Simplified session header */}
       <div style={styles.header}>
-        <div style={styles.title}>🏝️ Session</div>
+        <span>🏝️</span>
         {session ? (
-          <div style={styles.headerDetail}>
+          <span style={styles.headerStatus}>
             {STATUS_ICONS[session.status] ?? '❓'} {session.status} · {session.eventCount} events
-            {' · '}
-            {formatDuration(session.startTime)}
-          </div>
+          </span>
         ) : (
-          <div style={styles.noSession}>No active session</div>
+          <span style={styles.noSession}>No active session</span>
         )}
       </div>
 
       <div ref={scrollRef} style={styles.eventList}>
-        {events.map((event) => {
-          const icon = getEventIcon(event)
-          const label = getEventLabel(event)
-          const detail = getEventDetail(event, events)
-          return (
-            <div key={event.id} style={styles.eventEntry}>
-              <div style={styles.eventTimestamp}>{formatTimestamp(event.timestamp)}</div>
-              <div style={styles.eventLabel}>
-                {icon} {label}
-              </div>
-              {detail && <div style={styles.eventDetail}>{detail}</div>}
-            </div>
-          )
-        })}
+        {/* Preamble: session.start etc. before first user message */}
+        {preamble.events.map((event) => (
+          <div key={event.id} style={styles.preambleEvent}>
+            {event.type === 'session.start' ? '🚀 Session started' : event.type}
+          </div>
+        ))}
+
+        {/* Turn groups */}
+        {turns.map((turn, i) => (
+          <TurnSection
+            key={turn.userEvent.id}
+            turn={turn}
+            allEvents={events}
+            defaultExpanded={i >= turns.length - 2}
+          />
+        ))}
       </div>
     </div>
   )

@@ -155,10 +155,23 @@
 - [x] Integration tests: verified full pipeline (playback → monitoring store → coco state → sound mapping)
 - [x] 117+ tests pass, typecheck clean, build succeeds
 
+#### Session 12: Sky, Ocean, Event Log Tree, Activity Bar, Sub-Agent Animations
+- [x] Replaced broken drei Sky with custom SkyDome: gradient shader (light blue horizon → deep blue zenith) + sun sphere
+- [x] Rewrote Ocean with animated waves: 64×64 vertex displacement, 3 overlapping sine waves, `activityLevel` prop controls wave height/speed
+- [x] Added `activityLevel` to coco-state: computed from 30s sliding window of event timestamps
+- [x] Redesigned HudOverlay as git-like tree view: user messages as top-level collapsible nodes, tool calls/sub-agents nested underneath with color-coded left borders, no timestamps
+- [x] Tool deduplication: hides tool.execution_start when matching complete exists, shows duration and ✓/✗
+- [x] Created ActivityBar component: semi-transparent top overlay showing agent state (Active/Thinking/Running tool/Idle/Error), sub-agent count, active tools count, event rate, session duration
+- [x] ActivityBar works in all modes (island, vanilla, learn, ocean)
+- [x] Redesigned SubAgentMonkeys with enter/exit animations: monkeys jump in from left side with parabolic arc (1s), bob while active, jump out to right (0.8s), face Coco when idle
+- [x] 6 slot positions in semicircle behind Coco, lifecycle state tracking (entering→active→exiting)
+- [x] Ocean waves respond to copilot activity: calm when idle, stormy when busy
+- [x] 131 tests pass, typecheck clean, build succeeds
+
 #### Next Iteration
 - [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
 - [ ] Add thought/speech bubbles above Coco
-- [ ] Improve island aesthetics (better water shader, vegetation variety)
+- [ ] Improve palm tree variety and add vegetation
 
 #### Later
 - [ ] Begin Learn Mode (v0.2.5)

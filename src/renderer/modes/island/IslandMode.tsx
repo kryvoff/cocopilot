@@ -1,6 +1,6 @@
 import React from 'react'
 import { Canvas } from '@react-three/fiber'
-import { Sky, OrbitControls } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import Island from './Island'
 import Ocean from './Ocean'
 import Coco from './Coco'
@@ -8,6 +8,7 @@ import SubAgentMonkeys from './SubAgentMonkeys'
 import ToolObjects from './ToolObjects'
 import HudOverlay from './HudOverlay'
 import DebugPanel from './DebugPanel'
+import SkyDome from './SkyDome'
 import { useIslandEvents } from './use-island-events'
 import EventEffects from './EventEffects'
 import { useCocoStore } from './coco-state'
@@ -15,6 +16,7 @@ import { useCocoStore } from './coco-state'
 function IslandMode(): React.JSX.Element {
   const cocoState = useIslandEvents()
   const toolActive = useCocoStore((s) => s.toolActive)
+  const activityLevel = useCocoStore((s) => s.activityLevel)
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -41,17 +43,10 @@ function IslandMode(): React.JSX.Element {
         />
 
         {/* Sky */}
-        <Sky
-          distance={450000}
-          sunPosition={[5, 3, 1]}
-          turbidity={2}
-          rayleigh={0.5}
-          mieCoefficient={0.005}
-          mieDirectionalG={0.8}
-        />
+        <SkyDome />
 
         {/* Scene objects */}
-        <Ocean />
+        <Ocean activityLevel={activityLevel} />
         <Island />
         <Coco state={cocoState} position={[0.8, 0.55, 0.8]} />
         <SubAgentMonkeys />
