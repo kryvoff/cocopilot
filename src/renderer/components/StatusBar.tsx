@@ -21,6 +21,10 @@ function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
   const processes = useMonitoringStore((s) => s.processes)
   const mode = useAppStore((s) => s.mode)
   const setMode = useAppStore((s) => s.setMode)
+  const audioEnabled = useAppStore((s) => s.audioEnabled)
+  const setAudioEnabled = useAppStore((s) => s.setAudioEnabled)
+  const hudVisible = useAppStore((s) => s.hudVisible)
+  const setHudVisible = useAppStore((s) => s.setHudVisible)
 
   const activeSessions = sessions.filter((s) => s.status === 'active' || s.status === 'idle')
   const completedCount = sessions.length - activeSessions.length
@@ -73,6 +77,22 @@ function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
             {m.label}
           </button>
         ))}
+        {(mode === 'island' || mode === 'ocean') && (
+          <button
+            className={`mode-button ${hudVisible ? 'active' : ''}`}
+            onClick={() => setHudVisible(!hudVisible)}
+            title={hudVisible ? 'Hide HUD overlay' : 'Show HUD overlay'}
+          >
+            HUD
+          </button>
+        )}
+        <button
+          className="mode-button"
+          onClick={() => setAudioEnabled(!audioEnabled)}
+          title={audioEnabled ? 'Mute audio' : 'Enable audio'}
+        >
+          {audioEnabled ? '🔊' : '🔇'}
+        </button>
         <button className="mode-button" onClick={onSettingsClick}>
           ⚙️
         </button>

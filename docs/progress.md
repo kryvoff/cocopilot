@@ -135,18 +135,17 @@
 - [x] Added session selector dropdown to StatusBar (works across all modes)
 - [x] Added debug infrastructure: window.__cocopilot_debug, /api/renderer-state endpoint
 - [x] Added audio indicator in HUD overlay, copy debug state button in debug panel
+- [x] Consolidated all Island UI into StatusBar: HUD toggle, audio toggle (🔊/🔇)
+- [x] Removed floating buttons from 3D viewport — clean scene
+- [x] Fixed sky: added fallback background color, tuned Sky shader (turbidity=2, rayleigh=0.5)
 - [x] 97 tests pass, build succeeds
 
 #### Next Iteration
-- [ ] Move all Island Mode UI controls to the bottom status bar (HUD toggle, audio toggle, sound visualizer)
-- [ ] Remove floating HUD/debug buttons from the 3D viewport — keep it clean
-- [ ] Fix sky rendering — sky appears missing/dark, configure drei Sky properly for a bright tropical look
-- [ ] Make audio toggle (🔊/🔇) clickable in the status bar to enable/disable sound
-
-#### Later
 - [ ] Download high-quality audio assets from Pixabay to replace synthesized placeholders
 - [ ] Add tool-specific objects on the island (typewriter, binoculars, coconut, bottle)
 - [ ] Add sub-agent monkeys spawning from jungle
+
+#### Later
 - [ ] Add particle effects (sparkles for success, smoke for errors)
 - [ ] Add thought/speech bubbles
 - [ ] Begin Learn Mode (v0.2.5)

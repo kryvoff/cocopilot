@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useMonitoringStore } from '../../store/monitoring-store'
-import { AudioManager } from '../../audio/audio-manager'
+import { useAppStore } from '../../store/app-store'
 
 function formatDuration(startTime: string): string {
   const ms = Date.now() - new Date(startTime).getTime()
@@ -57,27 +57,6 @@ const STATUS_ICONS: Record<string, string> = {
 }
 
 const styles = {
-  container: {
-    position: 'absolute' as const,
-    inset: 0,
-    pointerEvents: 'none' as const,
-    zIndex: 10
-  },
-  toggleButton: {
-    position: 'absolute' as const,
-    top: 8,
-    right: 8,
-    pointerEvents: 'auto' as const,
-    background: 'rgba(0, 0, 0, 0.5)',
-    color: '#e0e0e0',
-    border: '1px solid rgba(255, 255, 255, 0.15)',
-    borderRadius: 4,
-    padding: '4px 10px',
-    fontSize: 11,
-    fontFamily: "'SF Mono', 'Fira Code', monospace",
-    cursor: 'pointer',
-    backdropFilter: 'blur(4px)'
-  },
   panel: {
     position: 'absolute' as const,
     bottom: 16,
@@ -138,28 +117,12 @@ const styles = {
   noSession: {
     color: '#a0a0a0',
     fontStyle: 'italic' as const
-  },
-  audioIndicator: {
-    position: 'absolute' as const,
-    top: 8,
-    left: 8,
-    pointerEvents: 'auto' as const,
-    background: 'rgba(0, 0, 0, 0.5)',
-    backdropFilter: 'blur(4px)',
-    borderRadius: 4,
-    padding: '4px 8px',
-    fontSize: 12,
-    fontFamily: "'SF Mono', 'Fira Code', monospace",
-    color: '#e0e0e0',
-    border: '1px solid rgba(255, 255, 255, 0.1)'
   }
 }
 
-function HudOverlay(): React.JSX.Element {
-  const [visible, setVisible] = useState(true)
+function HudOverlay(): React.JSX.Element | null {
+  const hudVisible = useAppStore((s) => s.hudVisible)
   const { sessions, selectedSessionId, events } = useMonitoringStore()
-  const audio = AudioManager.getInstance()
-  const audioEnabled = audio.isEnabled()
 
   const session = useMemo(
     () => sessions.find((s) => s.id === selectedSessionId) ?? null,
@@ -168,60 +131,46 @@ function HudOverlay(): React.JSX.Element {
 
   const recentEvents = useMemo(() => events.slice(-5).reverse(), [events])
 
+  if (!hudVisible) return null
+
   return (
-    <div style={styles.container}>
-      <div style={styles.audioIndicator} data-testid="audio-indicator">
-        {audioEnabled ? '🔊' : '🔇'}
-      </div>
+    <div style={styles.panel}>
+      <div style={styles.title}>🏝️ Island Mode</div>
 
-      <button
-        style={styles.toggleButton}
-        onClick={() => setVisible((v) => !v)}
-        title={visible ? 'Hide HUD' : 'Show HUD'}
-      >
-        {visible ? 'Hide HUD' : 'Show HUD'}
-      </button>
+      {session ? (
+        <>
+          <div>
+            <span style={styles.label}>Session: </span>
+            <span style={styles.value}>
+              {STATUS_ICONS[session.status] ?? '❓'} {session.status}
+            </span>
+          </div>
+          <div>
+            <span style={styles.label}>Events: </span>
+            <span style={styles.value}>{session.eventCount}</span>
+          </div>
+          <div>
+            <span style={styles.label}>Duration: </span>
+            <span style={styles.value}>{formatDuration(session.startTime)}</span>
+          </div>
 
-      {visible && (
-        <div style={styles.panel}>
-          <div style={styles.title}>🏝️ Island Mode</div>
-
-          {session ? (
+          {recentEvents.length > 0 && (
             <>
-              <div>
-                <span style={styles.label}>Session: </span>
-                <span style={styles.value}>
-                  {STATUS_ICONS[session.status] ?? '❓'} {session.status}
-                </span>
-              </div>
-              <div>
-                <span style={styles.label}>Events: </span>
-                <span style={styles.value}>{session.eventCount}</span>
-              </div>
-              <div>
-                <span style={styles.label}>Duration: </span>
-                <span style={styles.value}>{formatDuration(session.startTime)}</span>
-              </div>
-
-              {recentEvents.length > 0 && (
-                <>
-                  <div style={styles.separator} />
-                  <div style={styles.recentHeader}>Recent</div>
-                  {recentEvents.map((event) => (
-                    <div key={event.id} style={styles.eventItem}>
-                      <span style={styles.eventName}>• {formatEventLabel(event)}</span>
-                      <span style={styles.eventTiming}>
-                        {formatEventTiming(event, events)}
-                      </span>
-                    </div>
-                  ))}
-                </>
-              )}
+              <div style={styles.separator} />
+              <div style={styles.recentHeader}>Recent</div>
+              {recentEvents.map((event) => (
+                <div key={event.id} style={styles.eventItem}>
+                  <span style={styles.eventName}>• {formatEventLabel(event)}</span>
+                  <span style={styles.eventTiming}>
+                    {formatEventTiming(event, events)}
+                  </span>
+                </div>
+              ))}
             </>
-          ) : (
-            <div style={styles.noSession}>No active session</div>
           )}
-        </div>
+        </>
+      ) : (
+        <div style={styles.noSession}>No active session</div>
       )}
     </div>
   )
