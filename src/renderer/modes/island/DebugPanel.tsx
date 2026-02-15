@@ -52,6 +52,18 @@ const styles = {
     fontSize: 10,
     color: '#666',
     marginTop: 4
+  },
+  copyButton: {
+    background: 'rgba(255, 255, 255, 0.1)',
+    color: '#c0c0c0',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: 4,
+    padding: '3px 8px',
+    fontSize: 10,
+    fontFamily: "'SF Mono', 'Fira Code', monospace",
+    cursor: 'pointer',
+    marginTop: 4,
+    width: '100%'
   }
 }
 
@@ -107,9 +119,17 @@ function DebugPanel(): React.JSX.Element | null {
   const audio = AudioManager.getInstance()
   const audioEnabled = audio.isEnabled()
   const audioVolume = audio.getVolume()
+  const audioState = audio.getState()
 
   // Last 10 events
   const recentEvents = events.slice(-10).reverse()
+
+  const handleCopyDebugState = useCallback(() => {
+    const debugState = (window as unknown as Record<string, unknown>).__cocopilot_debug
+    if (debugState) {
+      navigator.clipboard.writeText(JSON.stringify(debugState, null, 2))
+    }
+  }, [])
 
   if (!visible) return null
 
@@ -149,6 +169,15 @@ function DebugPanel(): React.JSX.Element | null {
         <span style={styles.label}> vol: </span>
         <span style={styles.value}>{Math.round(audioVolume * 100)}%</span>
       </div>
+      <div style={styles.section}>
+        <span style={styles.label}>Sounds: </span>
+        <span style={styles.value}>
+          {audioState.soundCount} loaded{audioState.initialized ? '' : ' (not init)'}
+        </span>
+        {audioState.ambientPlaying && (
+          <span style={styles.value}> 🎵</span>
+        )}
+      </div>
 
       <div style={styles.separator} />
 
@@ -163,6 +192,14 @@ function DebugPanel(): React.JSX.Element | null {
           <div style={styles.eventItem}>No events</div>
         )}
       </div>
+
+      <button
+        style={styles.copyButton}
+        onClick={handleCopyDebugState}
+        data-testid="copy-debug-state"
+      >
+        📋 Copy Debug State
+      </button>
 
       <div style={styles.hint}>Press D to close</div>
     </div>

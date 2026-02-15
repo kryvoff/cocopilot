@@ -18,5 +18,8 @@ export const IPC_CHANNELS = {
   APP_MODE_CHANGE: 'app:mode-change',
 
   // Schema compatibility
-  SCHEMA_COMPATIBILITY: 'schema:compatibility'
+  SCHEMA_COMPATIBILITY: 'schema:compatibility',
+
+  // Debug
+  RENDERER_STATE: 'renderer:state'
 } as const

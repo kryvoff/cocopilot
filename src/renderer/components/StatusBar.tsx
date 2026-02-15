@@ -17,11 +17,13 @@ interface StatusBarProps {
 function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
   const sessions = useMonitoringStore((s) => s.sessions)
   const selectedSessionId = useMonitoringStore((s) => s.selectedSessionId)
+  const selectSession = useMonitoringStore((s) => s.selectSession)
+  const processes = useMonitoringStore((s) => s.processes)
   const mode = useAppStore((s) => s.mode)
   const setMode = useAppStore((s) => s.setMode)
 
   const activeSessions = sessions.filter((s) => s.status === 'active' || s.status === 'idle')
-  const selected = sessions.find((s) => s.id === selectedSessionId)
+  const completedCount = sessions.length - activeSessions.length
 
   return (
     <div className="status-bar">
@@ -29,10 +31,36 @@ function StatusBar({ onSettingsClick }: StatusBarProps): React.JSX.Element {
         <span className="status-indicator">
           {activeSessions.length > 0 ? '🟢' : '⚪'} {activeSessions.length} active
         </span>
-        {selected && (
-          <span className="status-session">
-            {selected.repository ?? selected.cwd} • {selected.eventCount} events
-          </span>
+        {sessions.length > 0 && (
+          <select
+            value={selectedSessionId ?? ''}
+            onChange={(e) => selectSession(e.target.value)}
+            className="status-session-selector"
+          >
+            {activeSessions.map((s) => {
+              const proc = processes.find((p) => p.sessionId === s.id)
+              const label = s.repository ?? s.id.slice(0, 8)
+              const statusIcon = proc ? '🟢' : s.status === 'active' ? '🟡' : '⚪'
+              return (
+                <option key={s.id} value={s.id}>
+                  {statusIcon} {label} ({s.status}) • {s.eventCount} events
+                </option>
+              )
+            })}
+            {completedCount > 0 && (
+              <option disabled>── {completedCount} completed ──</option>
+            )}
+            {sessions
+              .filter((s) => s.status !== 'active' && s.status !== 'idle')
+              .map((s) => {
+                const label = s.repository ?? s.id.slice(0, 8)
+                return (
+                  <option key={s.id} value={s.id}>
+                    ⚪ {label} ({s.status}) • {s.eventCount} events
+                  </option>
+                )
+              })}
+          </select>
         )}
       </div>
       <div className="status-bar-right">

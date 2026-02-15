@@ -16,7 +16,6 @@ function IslandMode(): React.JSX.Element {
       <Canvas
         shadows
         camera={{ position: [8, 5, 8], fov: 50 }}
-        style={{ background: '#87ceeb' }}
       >
         {/* Lighting */}
         <ambientLight intensity={0.4} />
@@ -36,8 +35,8 @@ function IslandMode(): React.JSX.Element {
 
         {/* Sky */}
         <Sky
-          sunPosition={[100, 20, 100]}
-          turbidity={8}
+          sunPosition={[50, 80, 30]}
+          turbidity={10}
           rayleigh={2}
           mieCoefficient={0.005}
           mieDirectionalG={0.8}

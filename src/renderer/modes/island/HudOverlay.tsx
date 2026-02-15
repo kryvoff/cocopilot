@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import { useMonitoringStore } from '../../store/monitoring-store'
+import { AudioManager } from '../../audio/audio-manager'
 
 function formatDuration(startTime: string): string {
   const ms = Date.now() - new Date(startTime).getTime()
@@ -137,12 +138,28 @@ const styles = {
   noSession: {
     color: '#a0a0a0',
     fontStyle: 'italic' as const
+  },
+  audioIndicator: {
+    position: 'absolute' as const,
+    top: 8,
+    left: 8,
+    pointerEvents: 'auto' as const,
+    background: 'rgba(0, 0, 0, 0.5)',
+    backdropFilter: 'blur(4px)',
+    borderRadius: 4,
+    padding: '4px 8px',
+    fontSize: 12,
+    fontFamily: "'SF Mono', 'Fira Code', monospace",
+    color: '#e0e0e0',
+    border: '1px solid rgba(255, 255, 255, 0.1)'
   }
 }
 
 function HudOverlay(): React.JSX.Element {
   const [visible, setVisible] = useState(true)
   const { sessions, selectedSessionId, events } = useMonitoringStore()
+  const audio = AudioManager.getInstance()
+  const audioEnabled = audio.isEnabled()
 
   const session = useMemo(
     () => sessions.find((s) => s.id === selectedSessionId) ?? null,
@@ -153,6 +170,10 @@ function HudOverlay(): React.JSX.Element {
 
   return (
     <div style={styles.container}>
+      <div style={styles.audioIndicator} data-testid="audio-indicator">
+        {audioEnabled ? '🔊' : '🔇'}
+      </div>
+
       <button
         style={styles.toggleButton}
         onClick={() => setVisible((v) => !v)}

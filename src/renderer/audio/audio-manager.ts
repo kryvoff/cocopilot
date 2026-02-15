@@ -1,5 +1,16 @@
 import { Howl, Howler } from 'howler'
 
+// Import audio files as URLs via Vite's asset handling.
+// Vite resolves these to correct URLs in both dev and production.
+import ambientSrc from '../../../resources/audio/ambient-island.mp3'
+import monkeyCallSrc from '../../../resources/audio/monkey-call.mp3'
+import chimeSrc from '../../../resources/audio/chime.mp3'
+import typewriterSrc from '../../../resources/audio/typewriter.mp3'
+import coconutCrackSrc from '../../../resources/audio/coconut-crack.mp3'
+import errorSrc from '../../../resources/audio/error.mp3'
+import successSrc from '../../../resources/audio/success.mp3'
+import goodbyeSrc from '../../../resources/audio/goodbye.mp3'
+
 /** Sound definition for registration */
 interface SoundDef {
   src: string
@@ -7,31 +18,16 @@ interface SoundDef {
   volume?: number
 }
 
-/**
- * Audio file paths resolved for Electron.
- * In dev, electron-vite serves resources/ at the project root.
- * In production, resources are in process.resourcesPath.
- * Since the renderer runs in a browser context, we detect the environment
- * via the presence of window.__electron_vite_env__ or fall back to a
- * simple heuristic: if window.location.protocol is 'file:', we're in prod.
- */
-function getAudioBasePath(): string {
-  // electron-vite injects resources as static assets accessible at /resources
-  // in dev mode. In production, the files are in the app.asar resources dir
-  // and electron-vite maps them to the same /resources path.
-  return 'resources/audio'
-}
-
 /** Registry of all sound IDs to their definitions */
 const SOUND_DEFS: Record<string, SoundDef> = {
-  ambient: { src: 'ambient-island.mp3', loop: true, volume: 0.3 },
-  'session-start': { src: 'monkey-call.mp3' },
-  'user-message': { src: 'chime.mp3' },
-  'tool-edit': { src: 'typewriter.mp3' },
-  'tool-bash': { src: 'coconut-crack.mp3' },
-  'tool-success': { src: 'success.mp3' },
-  'tool-error': { src: 'error.mp3' },
-  'session-end': { src: 'goodbye.mp3' }
+  ambient: { src: ambientSrc, loop: true, volume: 0.3 },
+  'session-start': { src: monkeyCallSrc },
+  'user-message': { src: chimeSrc },
+  'tool-edit': { src: typewriterSrc },
+  'tool-bash': { src: coconutCrackSrc },
+  'tool-success': { src: successSrc },
+  'tool-error': { src: errorSrc },
+  'session-end': { src: goodbyeSrc }
 }
 
 /**
@@ -61,11 +57,9 @@ export class AudioManager {
     if (this.initialized) return
     this.initialized = true
 
-    const base = getAudioBasePath()
-
     for (const [id, def] of Object.entries(SOUND_DEFS)) {
       const howl = new Howl({
-        src: [`${base}/${def.src}`],
+        src: [def.src],
         loop: def.loop ?? false,
         volume: (def.volume ?? 1) * this.volume,
         preload: true
@@ -136,6 +130,28 @@ export class AudioManager {
     this.sounds.clear()
     this.ambientSound = null
     this.initialized = false
+  }
+
+  /** Whether sounds have been loaded. */
+  isInitialized(): boolean {
+    return this.initialized
+  }
+
+  /** Snapshot of audio manager state for debugging. */
+  getState(): {
+    initialized: boolean
+    enabled: boolean
+    volume: number
+    soundCount: number
+    ambientPlaying: boolean
+  } {
+    return {
+      initialized: this.initialized,
+      enabled: this.enabled,
+      volume: this.volume,
+      soundCount: this.sounds.size,
+      ambientPlaying: this.ambientSound?.playing() ?? false
+    }
   }
 
   /** Reset singleton (for testing). */

@@ -1,4 +1,5 @@
 import http from 'http'
+import { BrowserWindow } from 'electron'
 import type { SessionStore } from '../monitoring/session-store'
 import type { ProcessMonitor } from '../monitoring/process-monitor'
 import { DEBUG_SERVER_PORT } from '@shared/config'
@@ -110,6 +111,30 @@ const OPENAPI_SPEC = {
           }
         }
       }
+    },
+    '/api/renderer-state': {
+      get: {
+        summary: 'Renderer process debug state',
+        operationId: 'getRendererState',
+        description:
+          'Returns renderer state available from the main process. Full renderer state (3D scene, audio, Coco) is available via window.__cocopilot_debug in the renderer devtools console.',
+        responses: {
+          '200': {
+            description: 'Renderer state snapshot',
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    note: { type: 'string' },
+                    mainProcessInfo: { type: 'object' }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -130,7 +155,7 @@ function docsHtml(): string {
 }
 
 export function startDebugServer(store: SessionStore, processMonitor?: ProcessMonitor): void {
-  server = http.createServer((req, res) => {
+  server = http.createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', `http://127.0.0.1:${DEBUG_SERVER_PORT}`)
 
     try {
@@ -197,6 +222,52 @@ export function startDebugServer(store: SessionStore, processMonitor?: ProcessMo
           res.setHeader('Access-Control-Allow-Origin', '*')
           res.end(JSON.stringify(store.getSchemaCompatibility()))
           break
+
+        case '/api/renderer-state': {
+          res.setHeader('Content-Type', 'application/json')
+          res.setHeader('Access-Control-Allow-Origin', '*')
+          const win = BrowserWindow.getAllWindows()[0]
+          if (win) {
+            try {
+              const rendererState = await win.webContents.executeJavaScript(
+                'JSON.parse(JSON.stringify(window.__cocopilot_debug || null))'
+              )
+              res.end(
+                JSON.stringify({
+                  rendererState,
+                  mainProcessInfo: {
+                    activeSessions: store.getActiveSessions().length,
+                    totalSessions: store.getAllSessions().length,
+                    processCount: processMonitor?.processes?.length ?? 0,
+                    uptime: process.uptime()
+                  }
+                })
+              )
+            } catch (err) {
+              res.end(
+                JSON.stringify({
+                  rendererState: null,
+                  error: 'Failed to query renderer: ' + String(err),
+                  mainProcessInfo: {
+                    activeSessions: store.getActiveSessions().length,
+                    totalSessions: store.getAllSessions().length,
+                    processCount: processMonitor?.processes?.length ?? 0,
+                    uptime: process.uptime()
+                  }
+                })
+              )
+            }
+          } else {
+            res.end(
+              JSON.stringify({
+                rendererState: null,
+                error: 'No renderer window available',
+                mainProcessInfo: { uptime: process.uptime() }
+              })
+            )
+          }
+          break
+        }
 
         default:
           res.setHeader('Content-Type', 'application/json')

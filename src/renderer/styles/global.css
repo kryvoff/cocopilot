@@ -38,7 +38,9 @@ body {
 .app-main {
   flex: 1;
   overflow-y: auto;
-  padding: 16px;
+  padding: 0;
+  position: relative;
+  min-height: 0;
 }
 
 /* Status Bar */
@@ -61,6 +63,16 @@ body {
 .status-bar-right {
   display: flex;
   gap: 4px;
+}
+
+.status-session-selector {
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 300px;
 }
 
 .status-session {
@@ -91,6 +103,7 @@ body {
 .vanilla-mode {
   max-width: 960px;
   margin: 0 auto;
+  padding: 16px;
 }
 
 .vanilla-header {
@@ -345,6 +358,10 @@ body {
 }
 
 /* Placeholder modes */
+.mode-placeholder {
+  padding: 16px;
+}
+
 .placeholder {
   display: flex;
   align-items: center;
@@ -358,6 +375,7 @@ body {
 .settings-screen {
   max-width: 640px;
   margin: 0 auto;
+  padding: 16px;
   height: 100%;
   display: flex;
   flex-direction: column;
