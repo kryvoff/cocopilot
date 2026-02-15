@@ -316,6 +316,8 @@ function TurnSection({
 
 function HudOverlay(): React.JSX.Element | null {
   const hudVisible = useAppStore((s) => s.hudVisible)
+  const mode = useAppStore((s) => s.mode)
+  const modeEmoji = mode === 'ocean' ? '🌊' : '🏝️'
   const { sessions, selectedSessionId, events } = useMonitoringStore()
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -340,7 +342,7 @@ function HudOverlay(): React.JSX.Element | null {
     <div style={styles.panel}>
       {/* Simplified session header */}
       <div style={styles.header}>
-        <span>🏝️</span>
+        <span>{modeEmoji}</span>
         {session ? (
           <span style={styles.headerStatus}>
             {STATUS_ICONS[session.status] ?? '❓'} {session.status} · {session.eventCount} events
