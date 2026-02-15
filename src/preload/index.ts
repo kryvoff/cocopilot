@@ -7,6 +7,7 @@ const api = {
   getEvents: (sessionId: string, limit?: number) =>
     ipcRenderer.invoke(IPC_CHANNELS.MONITORING_EVENT, sessionId, limit),
   getSchemaCompatibility: () => ipcRenderer.invoke(IPC_CHANNELS.SCHEMA_COMPATIBILITY),
+  getProcesses: () => ipcRenderer.invoke(IPC_CHANNELS.MONITORING_PROCESSES),
 
   onSessionUpdate: (callback: (session: unknown) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, session: unknown): void => callback(session)
@@ -19,6 +20,13 @@ const api = {
       callback(sessionId, evt)
     ipcRenderer.on(IPC_CHANNELS.MONITORING_EVENT, handler)
     return () => ipcRenderer.removeListener(IPC_CHANNELS.MONITORING_EVENT, handler)
+  },
+
+  onProcesses: (callback: (processes: unknown[]) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, processes: unknown[]): void =>
+      callback(processes)
+    ipcRenderer.on(IPC_CHANNELS.MONITORING_PROCESSES, handler)
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.MONITORING_PROCESSES, handler)
   }
 }
 

@@ -1,15 +1,16 @@
 import http from 'http'
 import type { SessionStore } from '../monitoring/session-store'
+import type { ProcessMonitor } from '../monitoring/process-monitor'
 import { DEBUG_SERVER_PORT } from '@shared/config'
 
 let server: http.Server | null = null
 
-export function startDebugServer(store: SessionStore): void {
+export function startDebugServer(store: SessionStore, processMonitor?: ProcessMonitor): void {
   server = http.createServer((req, res) => {
     res.setHeader('Content-Type', 'application/json')
     res.setHeader('Access-Control-Allow-Origin', '*')
 
-    const url = new URL(req.url ?? '/', `http://localhost:${DEBUG_SERVER_PORT}`)
+    const url = new URL(req.url ?? '/', `http://127.0.0.1:${DEBUG_SERVER_PORT}`)
 
     try {
       switch (url.pathname) {
@@ -22,6 +23,7 @@ export function startDebugServer(store: SessionStore): void {
             JSON.stringify({
               sessions: store.getAllSessions(),
               activeSessions: store.getActiveSessions(),
+              processes: processMonitor?.processes ?? [],
               schemaCompatibility: store.getSchemaCompatibility()
             })
           )
@@ -41,6 +43,10 @@ export function startDebugServer(store: SessionStore): void {
 
         case '/api/sessions':
           res.end(JSON.stringify(store.getAllSessions()))
+          break
+
+        case '/api/processes':
+          res.end(JSON.stringify(processMonitor?.processes ?? []))
           break
 
         case '/api/schema-compatibility':

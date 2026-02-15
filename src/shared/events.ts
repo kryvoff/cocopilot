@@ -212,6 +212,25 @@ export interface SessionInfo {
   endTime?: string
   eventCount: number
   summary?: string
+  /** PID of the copilot process associated with this session (if running) */
+  pid?: number
+}
+
+/** Info about a running copilot CLI process */
+export interface ProcessInfo {
+  pid: number
+  /** CPU usage percentage */
+  cpu: number
+  /** Resident set size in KB */
+  rssKb: number
+  /** Number of threads */
+  threads: number
+  /** Command line arguments */
+  command: string
+  /** Elapsed time string (e.g. "01:23:45") */
+  elapsed: string
+  /** Session ID this process is mapped to (via lsof/session.db) */
+  sessionId: string | null
 }
 
 export interface SchemaCompatibility {

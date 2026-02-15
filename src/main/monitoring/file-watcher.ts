@@ -40,6 +40,7 @@ export class FileWatcher extends EventEmitter<FileWatcherEvents> {
     })
 
     this.watcher.on('add', (filepath) => this.onFileAdded(filepath))
+    this.watcher.on('addDir', (dirpath) => this.onDirAdded(dirpath))
     this.watcher.on('change', (filepath) => this.onFileChanged(filepath))
     this.watcher.on('error', (error) => this.emit('error', error as Error))
 
@@ -64,6 +65,15 @@ export class FileWatcher extends EventEmitter<FileWatcherEvents> {
 
     // Read entire file for initial load
     await this.readNewEvents(filepath)
+  }
+
+  private onDirAdded(dirpath: string): void {
+    // Detect new session directories: .../session-state/<uuid>/
+    const dirName = path.basename(dirpath)
+    // UUID pattern
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(dirName)) {
+      this.emit('session-discovered', dirName, dirpath)
+    }
   }
 
   private async onFileChanged(filepath: string): Promise<void> {

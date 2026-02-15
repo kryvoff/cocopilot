@@ -8,6 +8,7 @@ import type { Queries } from '../database/queries'
 export interface SessionStoreEvents {
   'session-updated': [session: SessionInfo]
   'event-added': [sessionId: string, event: ParsedEvent]
+  'processes-updated': [processes: import('@shared/events').ProcessInfo[]]
 }
 
 export class SessionStore extends EventEmitter<SessionStoreEvents> {
@@ -68,8 +69,7 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
 
   /**
    * Mark sessions as "completed" if they appear active/idle but have no recent
-   * events and no running copilot process. Called on startup to fix sessions
-   * that were active when the app last closed or that never got session.shutdown.
+   * events and no running copilot process. Called on startup and periodically.
    */
   markStaleSessions(): void {
     const staleThresholdMs = 60 * 60 * 1000 // 1 hour
@@ -78,13 +78,33 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
     for (const session of this.sessions.values()) {
       if (session.status !== 'active' && session.status !== 'idle') continue
 
+      // Check events in memory
       const events = this.events.get(session.id) ?? []
       const lastEvent = events.length > 0 ? events[events.length - 1] : null
       const lastEventTime = lastEvent ? new Date(lastEvent.timestamp).getTime() : 0
-      const sessionStartTime = new Date(session.startTime).getTime()
-      const latestTime = Math.max(lastEventTime, sessionStartTime)
 
-      if (now - latestTime > staleThresholdMs) {
+      // Check filesystem for events.jsonl mtime (more reliable than in-memory)
+      let fsMtime = 0
+      if (session.cwd) {
+        try {
+          const eventsFile = join(session.cwd, 'events.jsonl')
+          const s = statSync(eventsFile)
+          fsMtime = s.mtimeMs
+        } catch {
+          // No events file — check directory mtime
+          try {
+            const s = statSync(session.cwd)
+            fsMtime = s.mtimeMs
+          } catch {
+            // Directory gone
+          }
+        }
+      }
+
+      const latestTime = Math.max(lastEventTime, fsMtime)
+
+      // If no evidence of recent activity, mark as completed
+      if (latestTime === 0 || now - latestTime > staleThresholdMs) {
         session.status = 'completed'
         this.queries?.upsertSession(session)
         this.emit('session-updated', session)
@@ -105,16 +125,25 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
     // Use events.jsonl mtime to determine if session is fresh or stale
     let startTime = new Date().toISOString()
     let status: SessionInfo['status'] = 'active'
+    const staleThresholdMs = 60 * 60 * 1000 // 1 hour
     try {
       const eventsFile = join(dir, 'events.jsonl')
       const stat = statSync(eventsFile)
       startTime = stat.birthtime.toISOString()
-      const staleThresholdMs = 60 * 60 * 1000 // 1 hour
       if (Date.now() - stat.mtimeMs > staleThresholdMs) {
         status = 'completed'
       }
     } catch {
-      // No events file yet — session just started
+      // No events file — check directory mtime to determine if fresh
+      try {
+        const dirStat = statSync(dir)
+        startTime = dirStat.birthtime.toISOString()
+        if (Date.now() - dirStat.mtimeMs > staleThresholdMs) {
+          status = 'completed'
+        }
+      } catch {
+        // Directory doesn't exist — just mark as active (brand new session)
+      }
     }
 
     const session: SessionInfo = {
@@ -192,10 +221,15 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
         this.queries?.upsertSession(session)
         break
       case 'user.message':
-      case 'assistant.turn_start':
-        session.status = 'active'
-        this.queries?.upsertSession(session)
+      case 'assistant.turn_start': {
+        // Only mark active for recent events (not when replaying old events from disk)
+        const eventAge = Date.now() - new Date(event.timestamp).getTime()
+        if (eventAge < 60 * 60 * 1000) {
+          session.status = 'active'
+          this.queries?.upsertSession(session)
+        }
         break
+      }
       case 'assistant.usage': {
         const usage = event.data
         this.queries?.insertUsageRecord(sessionId, {
@@ -244,5 +278,36 @@ export class SessionStore extends EventEmitter<SessionStoreEvents> {
   clear(): void {
     this.sessions.clear()
     this.events.clear()
+  }
+
+  /** Update sessions with process info and mark sessions active/completed based on running processes */
+  updateProcesses(processes: import('@shared/events').ProcessInfo[]): void {
+    const pidBySession = new Map<string, number>()
+    for (const proc of processes) {
+      if (proc.sessionId) {
+        pidBySession.set(proc.sessionId, proc.pid)
+      }
+    }
+
+    for (const session of this.sessions.values()) {
+      const pid = pidBySession.get(session.id)
+      const hadPid = session.pid
+      session.pid = pid
+
+      if (pid && (session.status === 'completed' || session.status === 'idle')) {
+        // Process is running but session was marked completed/idle — reactivate
+        session.status = 'active'
+        this.queries?.upsertSession(session)
+        this.emit('session-updated', session)
+      } else if (!pid && hadPid && session.status === 'active') {
+        // Process stopped — mark completed
+        session.status = 'completed'
+        session.endTime = new Date().toISOString()
+        this.queries?.upsertSession(session)
+        this.emit('session-updated', session)
+      }
+    }
+
+    this.emit('processes-updated', processes)
   }
 }

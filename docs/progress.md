@@ -94,6 +94,21 @@
 - [x] **Verified**: 53 tests pass, typecheck clean, build succeeds, smoke test passes, DMG builds (203MB universal), debug API shows 1 active / 20 completed sessions
 - [x] Committed and tagged v0.1.0
 
+#### Session 8: Process Monitoring & Session Detection
+- [x] **Process monitor**: New `ProcessMonitor` module polls `ps` every 5s for copilot CLI processes, tracks CPU%, RSS, threads, command, elapsed time
+- [x] **Process-to-session mapping**: Uses `lsof` to map copilot PIDs to session directories via open `session.db` files
+- [x] **Session reactivation**: Sessions automatically marked active when a copilot process is detected, marked completed when process stops
+- [x] **Stale session fix (final)**: Root cause found — `user.message`/`assistant.turn_start` events replayed from disk were re-activating old sessions. Fix: only set status to "active" for events less than 1 hour old
+- [x] **filesystem-based staleness**: `markStaleSessions()` now checks `events.jsonl` and directory mtimes on disk, not just in-memory timestamps
+- [x] **Directory watching**: FileWatcher now detects new session directories via `addDir` event (not just events.jsonl files)
+- [x] **Session selector always visible**: Dropdown always shown in UI even with 1 session, with process count badge and 🟢/🟡/⚪ status indicators
+- [x] **Process info in dashboard**: Selected session shows CPU%, memory, threads, uptime when copilot process is running
+- [x] **Debug API expanded**: Added `/api/processes` endpoint, added processes to `/api/state`
+- [x] **Debug server fix**: Fixed URL to use `127.0.0.1` instead of `localhost` in Help menu
+- [x] **Graceful shutdown**: FileWatcher now awaited before closing database (fixes shutdown race condition)
+- [x] **Tests**: 9 new tests for ProcessMonitor (polling, events, structure) and SessionStore.updateProcesses. 62 tests pass
+- [x] Typecheck clean, build succeeds, smoke test passes
+
 #### Upcoming
 - [ ] Add tool call details view (expand tool executions inline)
 - [ ] Add session export (JSON/CSV)

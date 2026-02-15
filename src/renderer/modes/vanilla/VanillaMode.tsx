@@ -5,12 +5,19 @@ import ActivityChart from './ActivityChart'
 import EventTypeChart from './EventTypeChart'
 import { useMonitoringStore } from '../../store/monitoring-store'
 
+function formatMemory(rssKb: number): string {
+  if (rssKb > 1024 * 1024) return `${(rssKb / 1024 / 1024).toFixed(1)} GB`
+  if (rssKb > 1024) return `${(rssKb / 1024).toFixed(0)} MB`
+  return `${rssKb} KB`
+}
+
 function VanillaMode(): React.JSX.Element {
   const sessions = useMonitoringStore((s) => s.sessions)
   const selectedSessionId = useMonitoringStore((s) => s.selectedSessionId)
   const selectSession = useMonitoringStore((s) => s.selectSession)
   const showAllSessions = useMonitoringStore((s) => s.showAllSessions)
   const setShowAllSessions = useMonitoringStore((s) => s.setShowAllSessions)
+  const processes = useMonitoringStore((s) => s.processes)
 
   const filteredSessions = showAllSessions
     ? sessions
@@ -20,24 +27,38 @@ function VanillaMode(): React.JSX.Element {
     (s) => s.status === 'completed' || s.status === 'error'
   ).length
 
+  // Find the process for the selected session
+  const selectedProcess = selected?.pid
+    ? processes.find((p) => p.pid === selected.pid)
+    : processes.find((p) => p.sessionId === selected?.id)
+
   return (
     <div className="vanilla-mode">
       <div className="vanilla-header">
         <h2>🐵 Cocopilot — Vanilla Mode</h2>
         <div className="vanilla-header-controls">
-          {filteredSessions.length > 1 && (
-            <select
-              value={selectedSessionId ?? ''}
-              onChange={(e) => selectSession(e.target.value)}
-              className="session-selector"
-            >
-              {filteredSessions.map((s) => (
+          <select
+            value={selectedSessionId ?? ''}
+            onChange={(e) => selectSession(e.target.value)}
+            className="session-selector"
+          >
+            {filteredSessions.length === 0 && (
+              <option value="">No sessions</option>
+            )}
+            {filteredSessions.map((s) => {
+              const proc = processes.find((p) => p.sessionId === s.id)
+              const label = s.repository ?? s.id.slice(0, 8)
+              const statusIcon = proc ? '🟢' : s.status === 'active' ? '🟡' : '⚪'
+              return (
                 <option key={s.id} value={s.id}>
-                  {s.repository ?? s.id.slice(0, 8)} ({s.status})
+                  {statusIcon} {label} ({s.status})
                 </option>
-              ))}
-            </select>
-          )}
+              )
+            })}
+          </select>
+          <span className="process-count" title="Running copilot CLI processes">
+            {processes.length} process{processes.length !== 1 ? 'es' : ''}
+          </span>
           {completedCount > 0 && (
             <label className="show-all-toggle">
               <input
@@ -60,7 +81,10 @@ function VanillaMode(): React.JSX.Element {
             </div>
             <div>
               <strong>Status</strong>
-              <span>{selected.status}</span>
+              <span>
+                {selected.pid ? '🟢' : '⚪'} {selected.status}
+                {selected.pid ? ` (PID ${selected.pid})` : ''}
+              </span>
             </div>
             <div>
               <strong>Repository</strong>
@@ -80,6 +104,26 @@ function VanillaMode(): React.JSX.Element {
               <strong>Events</strong>
               <span>{selected.eventCount}</span>
             </div>
+            {selectedProcess && (
+              <>
+                <div>
+                  <strong>CPU</strong>
+                  <span>{selectedProcess.cpu.toFixed(1)}%</span>
+                </div>
+                <div>
+                  <strong>Memory</strong>
+                  <span>{formatMemory(selectedProcess.rssKb)}</span>
+                </div>
+                <div>
+                  <strong>Threads</strong>
+                  <span>{selectedProcess.threads}</span>
+                </div>
+                <div>
+                  <strong>Uptime</strong>
+                  <span>{selectedProcess.elapsed}</span>
+                </div>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -1,14 +1,16 @@
 import { app, shell, BrowserWindow, Menu } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import { FileWatcher, SessionStore } from './monitoring'
+import { FileWatcher, SessionStore, ProcessMonitor } from './monitoring'
 import { registerIpcHandlers } from './ipc/monitoring-ipc'
 import { startDebugServer, stopDebugServer } from './observability/debug-server'
 import { getDatabase, closeDatabase } from './database/schema'
 import { Queries } from './database/queries'
+import { DEBUG_SERVER_PORT } from '@shared/config'
 
 let sessionStore: SessionStore
 const fileWatcher = new FileWatcher()
+const processMonitor = new ProcessMonitor()
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -54,6 +56,10 @@ function createWindow(): BrowserWindow {
     mainWindow.webContents.send('monitoring:event', sessionId, event)
   })
 
+  sessionStore.on('processes-updated', (processes) => {
+    mainWindow.webContents.send('monitoring:processes', processes)
+  })
+
   return mainWindow
 }
 
@@ -86,7 +92,8 @@ app.whenReady().then(() => {
         submenu: [
           {
             label: 'Debug API',
-            click: () => shell.openExternal('http://localhost:9876/api/health')
+            click: () =>
+              shell.openExternal(`http://127.0.0.1:${DEBUG_SERVER_PORT}/api/health`)
           }
         ]
       }
@@ -105,8 +112,8 @@ app.whenReady().then(() => {
   })
 
   // Set up monitoring
-  registerIpcHandlers(sessionStore)
-  startDebugServer(sessionStore)
+  registerIpcHandlers(sessionStore, processMonitor)
+  startDebugServer(sessionStore, processMonitor)
 
   fileWatcher.on('session-discovered', (sessionId, dir) => {
     sessionStore.addSession(sessionId, dir)
@@ -119,6 +126,12 @@ app.whenReady().then(() => {
   fileWatcher.start().catch((err) => {
     console.error('[Main] Failed to start file watcher:', err)
   })
+
+  // Start process monitor — polls for copilot CLI processes
+  processMonitor.on('processes-updated', (processes) => {
+    sessionStore.updateProcesses(processes)
+  })
+  processMonitor.start()
 
   // After initial file scan, mark stale sessions (give chokidar time to discover all sessions)
   setTimeout(() => {
@@ -138,8 +151,9 @@ app.on('window-all-closed', () => {
   }
 })
 
-app.on('will-quit', () => {
-  fileWatcher.stop()
+app.on('will-quit', async () => {
+  await fileWatcher.stop()
+  processMonitor.stop()
   stopDebugServer()
   closeDatabase()
 })

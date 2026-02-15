@@ -66,7 +66,7 @@ describe('SessionStore', () => {
     store.addEvent('s1', {
       type: 'user.message',
       id: 'e2',
-      timestamp: '2026-01-01T00:01:00Z',
+      timestamp: new Date().toISOString(),
       parentId: null,
       ephemeral: false,
       data: { content: 'hello' },
@@ -77,7 +77,7 @@ describe('SessionStore', () => {
     store.addEvent('s1', {
       type: 'session.shutdown',
       id: 'e3',
-      timestamp: '2026-01-01T00:02:00Z',
+      timestamp: new Date().toISOString(),
       parentId: null,
       ephemeral: true,
       data: {},

@@ -1,13 +1,15 @@
 import { create } from 'zustand'
-import type { SessionInfo, ParsedEvent } from '@shared/events'
+import type { SessionInfo, ParsedEvent, ProcessInfo } from '@shared/events'
 
 interface CocopilotAPI {
   getSessions: () => Promise<unknown[]>
   getMonitoringState: () => Promise<unknown>
   getEvents: (sessionId: string, limit?: number) => Promise<unknown[]>
   getSchemaCompatibility: () => Promise<unknown>
+  getProcesses: () => Promise<unknown[]>
   onSessionUpdate: (callback: (session: unknown) => void) => () => void
   onEvent: (callback: (sessionId: string, event: unknown) => void) => () => void
+  onProcesses: (callback: (processes: unknown[]) => void) => () => void
 }
 
 declare global {
@@ -20,6 +22,7 @@ interface MonitoringState {
   sessions: SessionInfo[]
   selectedSessionId: string | null
   events: ParsedEvent[]
+  processes: ProcessInfo[]
   showAllSessions: boolean
 
   fetchSessions: () => Promise<void>
@@ -32,6 +35,7 @@ export const useMonitoringStore = create<MonitoringState>((set, get) => ({
   sessions: [],
   selectedSessionId: null,
   events: [],
+  processes: [],
   showAllSessions: false,
 
   fetchSessions: async () => {
@@ -81,9 +85,20 @@ export const useMonitoringStore = create<MonitoringState>((set, get) => ({
       }
     })
 
+    const unsubProcesses = window.cocopilot.onProcesses((processes) => {
+      set({ processes: processes as ProcessInfo[] })
+    })
+
+    // Initial process fetch
+    window.cocopilot
+      .getProcesses()
+      .then((processes) => set({ processes: processes as ProcessInfo[] }))
+      .catch(() => {})
+
     return () => {
       unsubSession()
       unsubEvent()
+      unsubProcesses()
     }
   }
 }))

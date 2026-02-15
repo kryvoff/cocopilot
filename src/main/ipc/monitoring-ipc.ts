@@ -1,8 +1,9 @@
 import { ipcMain } from 'electron'
 import { IPC_CHANNELS } from '@shared/ipc-channels'
 import type { SessionStore } from '../monitoring/session-store'
+import type { ProcessMonitor } from '../monitoring/process-monitor'
 
-export function registerIpcHandlers(store: SessionStore): void {
+export function registerIpcHandlers(store: SessionStore, processMonitor?: ProcessMonitor): void {
   ipcMain.handle(IPC_CHANNELS.SESSION_LIST, () => {
     return store.getAllSessions()
   })
@@ -20,5 +21,9 @@ export function registerIpcHandlers(store: SessionStore): void {
 
   ipcMain.handle(IPC_CHANNELS.SCHEMA_COMPATIBILITY, () => {
     return store.getSchemaCompatibility()
+  })
+
+  ipcMain.handle(IPC_CHANNELS.MONITORING_PROCESSES, () => {
+    return processMonitor?.processes ?? []
   })
 }
