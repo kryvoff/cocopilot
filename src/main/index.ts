@@ -43,21 +43,34 @@ function createWindow(): BrowserWindow {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  // Forward events to renderer
-  sessionStore.on('session-updated', (session) => {
+  // Forward events to renderer (guarded against destroyed window)
+  const onSessionUpdated = (session): void => {
+    if (mainWindow.isDestroyed()) return
     mainWindow.webContents.send('monitoring:session-update', session)
     const title = session.summary
       ? `Cocopilot — ${session.summary}`
       : `Cocopilot — Session ${session.id.slice(0, 8)}`
     mainWindow.setTitle(title)
-  })
+  }
 
-  sessionStore.on('event-added', (sessionId, event) => {
+  const onEventAdded = (sessionId, event): void => {
+    if (mainWindow.isDestroyed()) return
     mainWindow.webContents.send('monitoring:event', sessionId, event)
-  })
+  }
 
-  sessionStore.on('processes-updated', (processes) => {
+  const onProcessesUpdated = (processes): void => {
+    if (mainWindow.isDestroyed()) return
     mainWindow.webContents.send('monitoring:processes', processes)
+  }
+
+  sessionStore.on('session-updated', onSessionUpdated)
+  sessionStore.on('event-added', onEventAdded)
+  sessionStore.on('processes-updated', onProcessesUpdated)
+
+  mainWindow.on('closed', () => {
+    sessionStore.removeListener('session-updated', onSessionUpdated)
+    sessionStore.removeListener('event-added', onEventAdded)
+    sessionStore.removeListener('processes-updated', onProcessesUpdated)
   })
 
   return mainWindow
@@ -93,7 +106,7 @@ app.whenReady().then(() => {
           {
             label: 'Debug API',
             click: () =>
-              shell.openExternal(`http://127.0.0.1:${DEBUG_SERVER_PORT}/api/health`)
+              shell.openExternal(`http://127.0.0.1:${DEBUG_SERVER_PORT}/docs`)
           }
         ]
       }
