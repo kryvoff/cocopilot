@@ -99,6 +99,35 @@ body {
   border-color: var(--text-secondary);
 }
 
+/* Icon toggle buttons (Events, Audio) — red strikethrough when off */
+.icon-toggle {
+  position: relative;
+}
+
+.icon-toggle-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.icon-toggle-icon.icon-toggle-off::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -2px;
+  right: -2px;
+  height: 2px;
+  background: #e94560;
+  transform: rotate(-45deg);
+  pointer-events: none;
+}
+
+/* Settings hint text */
+.settings-hint {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
 /* Vanilla Mode */
 .vanilla-mode {
   max-width: 960px;

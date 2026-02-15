@@ -117,18 +117,9 @@ All 11 sounds are procedurally synthesized using a Python script (`resources/aud
 
 **Impact**: Low for a demo/experiment; would matter for a polished product.
 
-### 4.4 Settings Page Audio Controls Use Local State
+### ~~4.4 Settings Page Audio Controls Use Local State~~ (Fixed in v0.6)
 
-In `src/renderer/components/SettingsPanel.tsx`, the audio toggle and volume slider use React `useState` (lines 15-16):
-
-```typescript
-const [audioEnabled, setAudioEnabled] = useState(false)
-const [audioVolume, setAudioVolume] = useState(50)
-```
-
-Meanwhile, the actual audio system reads from the Zustand app store (`useAppStore`), and the StatusBar's sound toggle correctly writes to the app store. The Settings page controls are **disconnected** — changing them has no effect on audio playback.
-
-**Impact**: Medium — users who try to control audio from Settings will be confused.
+Fixed — Settings now uses `useAppStore` for audio toggle and volume, matching the StatusBar's behavior.
 
 ### 4.5 No Persistence of User Preferences
 
@@ -191,12 +182,12 @@ The debug server at `:9876` serves an OpenAPI docs page with Scalar at `/docs`. 
 
 | Item                                    | Severity | Notes                                              |
 |-----------------------------------------|----------|-----------------------------------------------------|
-| Settings audio uses local state         | Medium   | Should use `useAppStore` like StatusBar does        |
+| ~~Settings audio uses local state~~   | ~~Medium~~ | Fixed in v0.6 — now uses `useAppStore`         |
 | No preference persistence               | Medium   | Add Zustand `persist` middleware or electron-store  |
 | Empty fixture directories               | Low      | Either populate or remove from test strategy doc    |
 | Visual regression always updates         | Medium   | CI should compare, not update; update manually      |
 | Testing strategy doc outdated            | Low      | Update to match actual scripts and file structure   |
-| `package.json` version still 0.1.0      | Low      | Should be 0.5.0 to match progress tracker          |
+| ~~`package.json` version still 0.1.0~~ | ~~Low~~  | Fixed in v0.6 — bumped to 0.6.0                |
 | Debug server loads CDN in production     | Low      | Bundle Scalar or skip in prod                       |
 | `waitForTimeout` in E2E tests           | Low      | Replace with `waitForSelector` or `waitForResponse` |
 | `predev`/`prebuild` run electron-rebuild | Low      | Slows every dev start; consider caching             |
@@ -244,23 +235,9 @@ The debug server at `:9876` serves an OpenAPI docs page with Scalar at `/docs`. 
 
 ### Development Sessions (Sunday, Feb 15 2026)
 
-All code was written by GitHub Copilot CLI v0.0.410 (Claude Opus 4.6) in a single day:
+All code was written by GitHub Copilot CLI v0.0.410 (Claude Opus 4.6) in a single day.
 
-| Session  | Events | Duration | Messages | Turns | Tools | Sub-agents |
-|----------|-------:|:--------:|:--------:|------:|------:|-----------:|
-| b05e65df |    910 |   58 min |        3 |    57 |   303 |         14 |
-| 36d3ab10 |  4,675 |  318 min |       14 |   412 | 1,424 |         50 |
-| c7100ec6 |  2,280 |  100 min |        5 |   312 |   601 |         14 |
-| 5ea20091 |  1,008 |   60 min |        5 |   170 |   240 |          1 |
-| 14e1df8a |    133 |   10 min |        2 |    16 |    40 |          0 |
-| c2c1b3ae |    354 |  114 min |        2 |    50 |    98 |          0 |
-| fc85eb9e |    291 |    8 min |        2 |    11 |   112 |          2 |
-| **Total** | **9,651** | **11.1 hrs** | **33** | **1,028** | **2,818** | **81** |
-
-> **Note:** Token usage and cost data are only available in `session.shutdown` events,
-> which fire when a Copilot CLI session ends. Since these sessions were analyzed
-> while still active, per-model token counts and costs are not available.
-> Compaction token usage was observed in `session.compaction_complete` events.
+See [`docs/11-development.md`](11-development.md) for detailed session metrics, cost estimates, and column explanations.
 
 ---
 

@@ -2,7 +2,7 @@
 
 > **A fun desktop companion that watches your GitHub Copilot CLI sessions and brings them to life with dashboards, 3D scenes, and sound!**
 
-**v0.5** · [![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml)
+**v0.6** · [![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml)
 
 ![Cocopilot Demo — all four modes](docs/demo.gif)
 
@@ -268,11 +268,22 @@ test/
 | [`docs/08-future-ideas.md`](docs/08-future-ideas.md)                   | Future ideas and feature backlog         |
 | [`docs/09-sounds.md`](docs/09-sounds.md)                               | Sound synthesis and audio system         |
 | [`docs/10-review.md`](docs/10-review.md)                               | Project review and v1.0 recommendations  |
+| [`docs/11-development.md`](docs/11-development.md)                     | Development session metrics and cost      |
 | [`docs/progress.md`](docs/progress.md)                                 | Development progress tracker             |
 
 ## 🤝 Contributing
 
-This is a fun weekend project — contributions, ideas, and feedback are welcome! Feel free to open issues or PRs.
+This is a **vibe coding experiment** — a weekend project built entirely by AI in a single day. It's not actively maintained and is unlikely to see continued development.
+
+**What this means:**
+- 🍴 **Fork it!** If you want to add features or take it in a different direction, please fork the repo and go for it. No need to ask permission — it's MIT licensed.
+- 🐛 **Bug fixes welcome** — if you find something broken (especially on Windows or Linux, which weren't tested), small fix PRs are welcome and will be reviewed.
+- 💬 **Issues are fine** — feel free to report bugs or share ideas, but don't expect them to be acted on quickly.
+- ❌ **Large PRs likely won't be merged** — if you have big ideas, fork and build! That's the spirit of open source.
+
+## 📊 Development Stats
+
+See [`docs/11-development.md`](docs/11-development.md) for detailed session metrics, cost estimates (~$41 in premium requests), and development timeline.
 
 ## 📄 License
 

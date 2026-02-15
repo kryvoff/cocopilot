@@ -250,11 +250,25 @@
 - [x] Created `docs/10-review.md` — comprehensive project review covering architecture, what works, gaps, tech debt, v1.0 recommendations
 - [x] Updated `README.md` — v0.5 badge, Learn mode 4 tabs, 11 sounds table, Settings as page, ActivityBar+StatusBar at bottom, npm scripts table, docs table, aligned markdown tables, docs/09-sounds.md reference
 
+#### Session 20: v0.6 — UI Polish, Palm Trees, Releases, Docs
+- [x] Events button: red strikethrough line when off (like Audio button), removed active highlight background
+- [x] Audio button: consistent styling with Events (both use icon-toggle with red line)
+- [x] Session selector: only shows active sessions by default
+- [x] Added `showCompletedSessions` setting in app store with toggle in Settings page
+- [x] Fixed Settings audio controls: wired to Zustand app store (was using disconnected local useState)
+- [x] Palm trees: complete rewrite — curved trunk segments, drooping frond geometry, 3 coconuts per tree
+- [x] Added "Pirate/Diver Mode" to `docs/08-future-ideas.md` (camera-attached foreground effects)
+- [x] Published v0.1.0 release on GitHub (was draft)
+- [x] Published v0.5 release on GitHub with full description (was draft with no description)
+- [x] README: clarified vibe coding experiment nature, fork-encouraged, small fixes welcome
+- [x] Created `docs/11-development.md` with session metrics, cost estimate (~$41), column explanations
+- [x] Moved dev session stats from `docs/10-review.md` to `docs/11-development.md`
+- [x] Bumped package.json version to 0.6.0
+- [x] 226 tests pass, typecheck clean
+
 #### Next Iteration
-- [ ] Wire Settings audio controls to app store (currently uses local useState)
-- [ ] Persist user preferences (mode, audio) across restarts
+- [ ] Persist user preferences (mode, audio, showCompletedSessions) across restarts
 - [ ] Fix visual regression CI (compare, don't auto-update)
-- [ ] Bump package.json version to 0.5.0
 - [ ] Update docs/05-testing-strategy.md to match actual scripts/files
 - [ ] Additional polish and bug fixes from user testing
 - [ ] v1.0 final MVP release preparation
@@ -271,4 +285,5 @@
 | v0.3    | Ocean Mode (Flipper + underwater world)            | ✅ Released    |
 | v0.4    | Visual regression tests, performance optimization  | ✅ Complete    |
 | v0.5    | UI polish, review, docs, session stats             | ✅ Released    |
+| v0.6    | Palm trees, button UX, releases, dev docs           | ✅ Complete    |
 | v1.0    | Final MVP — polished, tested, documented           | 📋 Planned     |

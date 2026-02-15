@@ -21,9 +21,11 @@ function StatusBar(): React.JSX.Element {
   const setAudioEnabled = useAppStore((s) => s.setAudioEnabled)
   const hudVisible = useAppStore((s) => s.hudVisible)
   const setHudVisible = useAppStore((s) => s.setHudVisible)
+  const showCompletedSessions = useAppStore((s) => s.showCompletedSessions)
 
   const activeSessions = sessions.filter((s) => s.status === 'active' || s.status === 'idle')
-  const completedCount = sessions.length - activeSessions.length
+  const completedSessions = sessions.filter((s) => s.status !== 'active' && s.status !== 'idle')
+  const completedCount = completedSessions.length
 
   return (
     <div className="status-bar">
@@ -47,12 +49,11 @@ function StatusBar(): React.JSX.Element {
                 </option>
               )
             })}
-            {completedCount > 0 && (
+            {showCompletedSessions && completedCount > 0 && (
               <option disabled>── {completedCount} completed ──</option>
             )}
-            {sessions
-              .filter((s) => s.status !== 'active' && s.status !== 'idle')
-              .map((s) => {
+            {showCompletedSessions &&
+              completedSessions.map((s) => {
                 const label = s.repository ?? s.id.slice(0, 8)
                 return (
                   <option key={s.id} value={s.id}>
@@ -65,18 +66,18 @@ function StatusBar(): React.JSX.Element {
       </div>
       <div className="status-bar-right">
         <button
-          className={`mode-button ${hudVisible ? 'active' : ''}`}
+          className="mode-button icon-toggle"
           onClick={() => setHudVisible(!hudVisible)}
           title={hudVisible ? 'Hide events panel' : 'Show events panel'}
         >
-          📋
+          <span className={`icon-toggle-icon ${!hudVisible ? 'icon-toggle-off' : ''}`}>📋</span>
         </button>
         <button
-          className="mode-button"
+          className="mode-button icon-toggle"
           onClick={() => setAudioEnabled(!audioEnabled)}
           title={audioEnabled ? 'Mute audio' : 'Enable audio'}
         >
-          {audioEnabled ? '🔊' : '🔇'}
+          <span className={`icon-toggle-icon ${!audioEnabled ? 'icon-toggle-off' : ''}`}>🔊</span>
         </button>
         {MODES.map((m) => (
           <button

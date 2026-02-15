@@ -68,6 +68,14 @@ Similar to https://github.com/settings/billing/premium_requests_usage but local:
 - **City Mode** — Retro pixel city with characters
 - **Garden Mode** — Zen garden with peaceful animations
 
+### Pirate / Diver Mode
+A camera-attached foreground effect that puts the user into an observer role:
+- **Pirate mode** — View the island through a spyglass or from a rocking pirate ship deck, with subtle wave motion attached to the camera
+- **Diver mode** — View the ocean through a diving mask with bubbles and condensation, camera bobs gently with wave motion
+- In both modes, the foreground overlay moves with the camera, creating an immersive "you are there" feeling
+- Could include a gentle rocking/breathing animation that follows wave patterns
+- Essentially a camera rig with visual effects: mask frame, lens distortion, water droplets, etc.
+
 ### Advanced Coco Animations
 - Coco learns new tricks based on session patterns
 - Achievements/badges for milestones (100 sessions, etc.)

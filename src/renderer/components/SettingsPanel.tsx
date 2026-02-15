@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useAppStore } from '../store/app-store'
 import type { AppMode } from '@shared/events'
 
@@ -12,8 +12,12 @@ const MODES: { id: AppMode; label: string; description: string }[] = [
 function SettingsPanel(): React.JSX.Element {
   const mode = useAppStore((s) => s.mode)
   const setMode = useAppStore((s) => s.setMode)
-  const [audioEnabled, setAudioEnabled] = useState(false)
-  const [audioVolume, setAudioVolume] = useState(50)
+  const audioEnabled = useAppStore((s) => s.audioEnabled)
+  const setAudioEnabled = useAppStore((s) => s.setAudioEnabled)
+  const audioVolume = useAppStore((s) => s.audioVolume)
+  const setAudioVolume = useAppStore((s) => s.setAudioVolume)
+  const showCompletedSessions = useAppStore((s) => s.showCompletedSessions)
+  const setShowCompletedSessions = useAppStore((s) => s.setShowCompletedSessions)
 
   return (
     <div className="settings-screen">
@@ -53,16 +57,29 @@ function SettingsPanel(): React.JSX.Element {
           </label>
           {audioEnabled && (
             <div className="settings-slider">
-              <label>Volume: {audioVolume}%</label>
+              <label>Volume: {Math.round(audioVolume * 100)}%</label>
               <input
                 type="range"
                 min="0"
                 max="100"
-                value={audioVolume}
-                onChange={(e) => setAudioVolume(Number(e.target.value))}
+                value={Math.round(audioVolume * 100)}
+                onChange={(e) => setAudioVolume(Number(e.target.value) / 100)}
               />
             </div>
           )}
+        </div>
+
+        <div className="settings-section">
+          <h3>Sessions</h3>
+          <label className="settings-toggle">
+            <input
+              type="checkbox"
+              checked={showCompletedSessions}
+              onChange={(e) => setShowCompletedSessions(e.target.checked)}
+            />
+            <span>Show completed sessions in selector</span>
+          </label>
+          <p className="settings-hint">When enabled, completed (past) sessions appear in the session dropdown alongside active ones.</p>
         </div>
 
         <div className="settings-section">
