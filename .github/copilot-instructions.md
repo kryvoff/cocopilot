@@ -6,7 +6,8 @@
 
 ## How We Work
 
-- **NEVER commit, push, or create releases** — the user reviews, tests manually, and commits themselves
+- **By default, do NOT commit, push, or create releases** — the user reviews, tests manually, and commits themselves
+- **When the user explicitly asks** to commit, push, or release (e.g. "do a release", "commit and push"), then do it
 - Make changes, then summarize what was done so the user can review
 - Keep docs and code in sync — update docs when changing features
 - Track progress in `docs/progress.md`

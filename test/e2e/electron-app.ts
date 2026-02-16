@@ -23,11 +23,13 @@ export async function launchApp(): Promise<{ app: ElectronApplication; page: Pag
 
   await page.waitForLoadState('domcontentloaded')
 
-  // Force consistent window size for deterministic screenshots
+  // Force consistent content size for deterministic screenshots across machines
+  // Using setContentSize (not setSize) ensures the viewport is identical
+  // regardless of title bar height differences between OS versions
   await app.evaluate(({ BrowserWindow }, { w, h }) => {
     const win = BrowserWindow.getAllWindows()[0]
     if (win) {
-      win.setSize(w, h)
+      win.setContentSize(w, h)
       win.center()
     }
   }, { w: WINDOW_WIDTH, h: WINDOW_HEIGHT })
