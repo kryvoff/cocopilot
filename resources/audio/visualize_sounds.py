@@ -28,30 +28,20 @@ def read_wav_samples(filename):
 
 
 def compute_spectrogram(samples, sample_rate, window_size=1024, hop=512):
-    """Compute a simple DFT-based spectrogram. Returns 2D array of magnitudes."""
-    n = len(samples)
+    """Compute FFT-based spectrogram using numpy. Returns 2D array of magnitudes."""
+    import numpy as np
+    arr = np.array(samples)
+    n = len(arr)
     num_windows = max(1, (n - window_size) // hop)
     freq_bins = window_size // 2
+    hann = np.hanning(window_size)
     spectrogram = []
     
     for w in range(num_windows):
         start = w * hop
-        window = samples[start:start + window_size]
-        
-        # Apply Hann window
-        windowed = [window[i] * 0.5 * (1 - math.cos(2 * math.pi * i / (window_size - 1)))
-                    for i in range(len(window))]
-        
-        # DFT (only positive frequencies)
-        magnitudes = []
-        for k in range(freq_bins):
-            real = sum(windowed[n_] * math.cos(2 * math.pi * k * n_ / window_size)
-                      for n_ in range(window_size))
-            imag = sum(windowed[n_] * math.sin(2 * math.pi * k * n_ / window_size)
-                      for n_ in range(window_size))
-            mag = math.sqrt(real ** 2 + imag ** 2) / window_size
-            magnitudes.append(mag)
-        
+        windowed = arr[start:start + window_size] * hann
+        fft = np.fft.rfft(windowed)
+        magnitudes = (np.abs(fft[:freq_bins]) / window_size).tolist()
         spectrogram.append(magnitudes)
     
     return spectrogram, freq_bins, sample_rate / 2
@@ -71,7 +61,7 @@ def spectrogram_to_svg(spectrogram, max_freq, duration, title, width=800, height
     cell_w = width / num_time
     cell_h = height / max_bin
     
-    # Find max magnitude for normalization
+    # Find max magnitude for normalization (use log scale for better visibility)
     max_mag = max(max(row[:max_bin]) for row in spectrogram) if spectrogram else 1
     if max_mag == 0:
         max_mag = 1
@@ -79,13 +69,27 @@ def spectrogram_to_svg(spectrogram, max_freq, duration, title, width=800, height
     rects = []
     for t in range(num_time):
         for f in range(max_bin):
-            mag = spectrogram[t][f] / max_mag
-            if mag < 0.01:
+            raw = spectrogram[t][f] / max_mag
+            if raw < 0.005:
                 continue
-            # Color: dark blue → cyan → yellow → white
-            r = min(255, int(mag * 3 * 255))
-            g = min(255, int(mag * 2 * 255))
-            b = min(255, int((0.3 + mag * 0.7) * 255))
+            # Aggressive gamma correction for visibility
+            mag = min(1.0, raw ** 0.3)
+            # Viridis-inspired color ramp: dark purple → teal → green → yellow
+            if mag < 0.33:
+                t2 = mag / 0.33
+                r = int(68 + t2 * (33 - 68))
+                g = int(1 + t2 * (145 - 1))
+                b = int(84 + t2 * (140 - 84))
+            elif mag < 0.66:
+                t2 = (mag - 0.33) / 0.33
+                r = int(33 + t2 * (94 - 33))
+                g = int(145 + t2 * (201 - 145))
+                b = int(140 + t2 * (98 - 140))
+            else:
+                t2 = (mag - 0.66) / 0.34
+                r = int(94 + t2 * (253 - 94))
+                g = int(201 + t2 * (231 - 201))
+                b = int(98 + t2 * (37 - 98))
             x = t * cell_w
             y = height - (f + 1) * cell_h
             rects.append(f'<rect x="{x:.1f}" y="{y:.1f}" width="{cell_w + 0.5:.1f}" height="{cell_h + 0.5:.1f}" fill="rgb({r},{g},{b})"/>')

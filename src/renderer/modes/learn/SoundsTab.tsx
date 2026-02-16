@@ -220,9 +220,11 @@ function SoundsTab(): React.JSX.Element {
       return
     }
     const tick = (): void => {
-      const seek = currentHowl.seek() as number
-      const dur = currentHowl.duration()
-      if (dur > 0) setPlaybackProgress(seek / dur)
+      if (currentHowl.playing()) {
+        const seek = currentHowl.seek() as number
+        const dur = currentHowl.duration()
+        if (dur > 0) setPlaybackProgress(seek / dur)
+      }
       rafRef.current = requestAnimationFrame(tick)
     }
     rafRef.current = requestAnimationFrame(tick)
@@ -280,8 +282,6 @@ function SoundsTab(): React.JSX.Element {
               {playingId === sound.id ? '⏹ Stop' : '▶ Play'}
             </button>
           </div>
-          <div style={styles.soundMeta}>{sound.usedFor}</div>
-          <div style={styles.techniqueRow}>Synthesis: {sound.technique}</div>
           <div style={styles.vizRow}>
             <div style={styles.vizHalf}>
               <div style={styles.vizLabel}>Waveform</div>

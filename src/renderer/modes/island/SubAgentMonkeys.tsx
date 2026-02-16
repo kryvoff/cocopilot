@@ -115,6 +115,14 @@ function SubAgentMonkeys(): React.JSX.Element {
   const [monkeys, setMonkeys] = useState<AnimatedMonkey[]>([])
   const prevAgentIds = useRef<Set<string>>(new Set())
 
+  // Clear phantom monkeys when store has no active sub-agents (e.g. mode switch reset)
+  useEffect(() => {
+    if (activeSubAgents.length === 0) {
+      setMonkeys([])
+      prevAgentIds.current = new Set()
+    }
+  }, [activeSubAgents.length])
+
   // Detect additions and removals
   useEffect(() => {
     const currentIds = new Set(activeSubAgents.map((a) => a.id))

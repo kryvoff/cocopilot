@@ -322,7 +322,20 @@
 - [x] Added 11 PlaybackTab helper tests (getEventSummary, getAnnotation, formatTime, EVENT_ANNOTATIONS coverage)
 - [x] 228 tests pass (excluding pre-existing better-sqlite3 module mismatch), typecheck clean
 
+#### Session 24: Bug Fixes — Mode Switch, Sounds, Island, Spectrograms
+- [x] Fixed dolphin float-up on mode switch: instant scale transition when going from hidden→visible
+- [x] Fixed playback session leak: App.tsx resets playback/3D state on mode switch (Learn→other clears synthetic sessions)
+- [x] Fixed phantom sub-agent monkeys: SubAgentMonkeys clears local state when no active sub-agents
+- [x] Simplified sounds cards: removed usedFor text and synthesis technique rows (kept icon, name, duration, play button, visualizations)
+- [x] Fixed black spectrograms: replaced pure-Python DFT with numpy FFT, applied gamma correction (raw^0.3), viridis-inspired color ramp
+- [x] Fixed playback marker: added `howl.playing()` check before updating progress (prevents stale 0 values)
+- [x] Fixed session start/end sounds: session.start plays on initial load, session.shutdown plays even during bulk event loads
+- [x] Lowered island into water: base y=0.1→-0.15, height 0.7→1.0, waves now naturally overlap island edges
+- [x] Added 7 mode-switch unit tests verifying state isolation (CocoStore, FlipperStore, monitoring store)
+- [x] 242 tests pass (235 + 7 new), typecheck clean
+
 #### Next Iteration
+- [ ] Add Hawaii island music and underwater music (plays when agent is active, volume scales with activity)
 - [ ] Record and publish YouTube video
 - [ ] Final manual testing pass on all modes
 - [ ] Commit, push, CI green, v0.8 release

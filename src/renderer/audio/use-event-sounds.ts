@@ -33,6 +33,22 @@ export function useEventSounds(): void {
     if (!initializedRef.current || newCount > 5) {
       prevLengthRef.current = events.length
       initializedRef.current = true
+      // Even during bulk loads, play session lifecycle sounds if they're at the edges
+      if (newCount > 0) {
+        const lastEvent = events[events.length - 1]
+        if (lastEvent?.type === 'session.shutdown') {
+          const soundId = getSoundForEvent(lastEvent)
+          if (soundId) playSound(soundId)
+        }
+        if (newCount === events.length) {
+          // Initial load — play session.start if it's the first event
+          const firstEvent = events[0]
+          if (firstEvent?.type === 'session.start') {
+            const soundId = getSoundForEvent(firstEvent)
+            if (soundId) playSound(soundId)
+          }
+        }
+      }
       return
     }
 

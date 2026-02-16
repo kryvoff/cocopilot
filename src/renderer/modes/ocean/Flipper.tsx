@@ -61,9 +61,14 @@ function Flipper({ state, position = [0, 0, 0] }: FlipperProps): React.JSX.Eleme
     // --- Scale (hidden vs visible) ---
     const targetScale = state === 'hidden' ? 0 : 1
     const s = groupRef.current.scale
-    s.x = THREE.MathUtils.lerp(s.x, targetScale, delta * 6)
-    s.y = THREE.MathUtils.lerp(s.y, targetScale, delta * 6)
-    s.z = THREE.MathUtils.lerp(s.z, targetScale, delta * 6)
+    // Instant scale when transitioning from hidden to visible (avoid float-up on mode switch)
+    if (s.x < 0.01 && targetScale === 1) {
+      s.set(1, 1, 1)
+    } else {
+      s.x = THREE.MathUtils.lerp(s.x, targetScale, delta * 6)
+      s.y = THREE.MathUtils.lerp(s.y, targetScale, delta * 6)
+      s.z = THREE.MathUtils.lerp(s.z, targetScale, delta * 6)
+    }
 
     // --- Entering: swim in from left ---
     if (state === 'entering') {
