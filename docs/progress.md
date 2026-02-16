@@ -334,12 +334,14 @@
 - [x] Added 7 mode-switch unit tests verifying state isolation (CocoStore, FlipperStore, monitoring store)
 - [x] 242 tests pass (235 + 7 new), typecheck clean
 
+#### Session 25: Simplified Documentation
+- [x] Rewrote README.md — shorter, focused on key message: trying Copilot CLI's new features (autopilot, fleet, events.jsonl), honest about being an unfinished experiment
+- [x] Rewrote docs/13-devto-article.md — removed mode-by-mode details, test commands, extra screenshots; focused on the discovery of events.jsonl and the experience of working with agents
+- [x] Rewrote docs/14-youtube-outline.md — cut from 10min to 5min, focused on events.jsonl discovery and honest takeaways
+
 #### Next Iteration
-- [ ] Add Hawaii island music and underwater music (plays when agent is active, volume scales with activity)
 - [ ] Record and publish YouTube video
-- [ ] Final manual testing pass on all modes
-- [ ] Commit, push, CI green, v0.8 release
-- [ ] v1.0 release
+- [ ] Tag and release (v0.9 — clearly an experiment, not v1.0)
 
 ---
 
@@ -356,4 +358,4 @@
 | v0.6    | Palm trees, button UX, releases, dev docs           | ✅ Released    |
 | v0.7    | 3D polish, dolphin, caustics, sounds marker, covers  | ✅ Complete    |
 | v0.8    | Dolphin redesign, UX polish, status bar, learn mode  | ✅ Complete    |
-| v1.0    | Final MVP — polished, tested, documented           | 📋 Planned     |
+| v0.9    | Simplified docs, honest framing as experiment       | 📋 Current     |
