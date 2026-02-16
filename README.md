@@ -2,7 +2,7 @@
 
 > **An experiment exploring GitHub Copilot CLI's new features — autopilot, fleet (sub-agents), and the `events.jsonl` observability layer — by building a desktop app that visualizes agent activity in real time.**
 
-[![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml) · [DEV.to article](docs/13-devto-article.md) · [YouTube outline](docs/14-youtube-outline.md)
+[![CI](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/kryvoff/cocopilot/actions/workflows/ci.yml) · [DEV.to article](docs/13-devto-article.md) · [YouTube video](https://youtu.be/i8tTvALxEC8)
 
 ![Cocopilot Demo](docs/demo.gif)
 

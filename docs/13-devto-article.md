@@ -9,9 +9,11 @@ tags: devchallenge, githubchallenge, cli, githubcopilot
 
 ## What I Built
 
-I wanted to try the new experimental GitHub Copilot CLI features — **autopilot mode**, **fleet (sub-agents)**, and **plan mode** — and really understand what's happening under the hood. The key insight: Copilot CLI writes every single event to `~/.copilot/session-state/*/events.jsonl` — tool calls, sub-agent spawns, messages, errors — all in real time. That level of observability is incredible.
+I wanted to try the new experimental GitHub Copilot CLI features — **autopilot mode**, **fleet (sub-agents)**, and **plan mode** — and try and understand what's happening under the hood.
 
-So I built **Cocopilot**, a side project that watches those JSONL files and visualizes agent activity through dashboards, 3D scenes, and sound. The whole thing was built by Copilot CLI itself (Claude Opus 4.6) — I didn't write any code, just prompted, reviewed, and iterated.
+I built **Cocopilot**, an Electron app that monitors  `~/.copilot/session-state/*/events.jsonl` and visualises and makes sounds when Copilot does things. It was an experiment with spec-driven development and vibe coding trying to keep going via a `progress.md` and many agent turns and fleet using Claude Opus 4.6 with the Copilot CLI.
+
+Overall it worked and I'm happy with the result:
 
 🔗 **GitHub**: [github.com/kryvoff/cocopilot](https://github.com/kryvoff/cocopilot)
 
@@ -19,21 +21,12 @@ So I built **Cocopilot**, a side project that watches those JSONL files and visu
 
 ## My Experience with Copilot CLI
 
-I'm a Python developer with ~20 years of experience. This was my first TypeScript/Electron app — I relied entirely on the agent for the tech choices and implementation.
+- The new Copilot autopilot mode and fleet of sub-agents is awesome!
+- I managed to vibe-code an app in a day for a few Euros
+- Establishing a debug and test feedback loop where the agents can "see" the app is important
+- Spec-driven development and a `progress.md` can work, but was a bit rocky
+- See 🎥 **YouTube**: [Exploring Copilot CLI's New Features](https://youtu.be/i8tTvALxEC8) 
 
-**What worked:**
-- **Spec-first approach** — starting with specification docs kept the agent focused as the project grew
-- **`progress.md` as agent memory** — this file bridged sessions, letting each new one pick up where the last left off. It works OK, but we're all still learning how to do multi-session agent work effectively
-- **Testing as feedback loop** — a debug HTTP server at `localhost:9876` and Playwright E2E tests let the agent verify its own work. This was essential.
-- **Fleet mode** — watching Copilot CLI spawn parallel sub-agents for independent tasks was genuinely exciting
+# Try it today
 
-**What I'm still figuring out:**
-- Progress tracking between sessions isn't always smooth — sometimes the agent or I lost track of what had been done
-- The event schema isn't fully documented, so there's guesswork involved
-- Agent loops are powerful but still early — I'm learning alongside everyone else
-
-## Honest Assessment
-
-This is very much an unfinished experiment, not a product. There are performance issues, the app isn't feature-complete, and the Copilot CLI event schema isn't fully understood yet. But the core discovery stands: `events.jsonl` gives you fine-grained observability into what the agent is doing, and you can build all kinds of audio/visual monitoring on top of it.
-
-I'm just one developer trying to figure out how to work with agents, and I'm super excited about what Copilot CLI makes possible. If you're curious about agent observability or want to see what a fully agent-generated Electron app looks like, check out the repo!
+Type `copilot --yolo`, set `/experimental on`, shift tab to `autopilot` and type `/fleet Let's go ...`

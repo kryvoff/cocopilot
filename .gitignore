@@ -152,3 +152,5 @@ playwright-report/
 test-results/
 # Playwright visual regression snapshots (resolution-dependent, local-only)
 # Committed snapshots use fixed 1200x800 window size for consistency
+
+.DS_Store
